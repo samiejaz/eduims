@@ -10,7 +10,7 @@ const useConfirmationModal = ({ handleDelete, handleEdit }) => {
       message: "Do you want to edit this record?",
       header: "Edit Confirmation",
       accept: () => handleEdit(id),
-      icon: <i className="pi pi-info-circle text-5xl"></i>,
+      icon: <i className="pi pi-pencil text-5xl"></i>,
       severity: SEVERITIES.PRIMARY,
       defaultFocus: "accept",
     })
@@ -20,7 +20,7 @@ const useConfirmationModal = ({ handleDelete, handleEdit }) => {
       message: "Do you want to delete this record?",
       header: "Delete Confirmation",
       accept: () => handleDelete(id),
-      icon: <i className="pi pi-info-circle text-5xl"></i>,
+      icon: <i className="pi pi-trash text-5xl"></i>,
       severity: SEVERITIES.DANGER,
       defaultFocus: "reject",
     })

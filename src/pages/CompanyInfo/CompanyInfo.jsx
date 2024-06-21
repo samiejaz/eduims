@@ -46,7 +46,7 @@ function CompanyInfoForm({ mode, userRights }) {
   const [reload, setReload] = useState(true)
   const imageRef = useRef()
 
-  const { register, handleSubmit, control, setValue, setFocus } = useForm({
+  const { handleSubmit, control, setValue, setFocus } = useForm({
     defaultValues,
   })
   const { user } = useContext(AuthContext)
