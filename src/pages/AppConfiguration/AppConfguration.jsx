@@ -25,6 +25,7 @@ const apiUrl = import.meta.env.VITE_APP_API_URL
 let defaultValues = {
   ProductName: "Product",
   BranchName: "Branch",
+  ShowTimelineInsideLeadsForm: false,
 }
 
 function AppConfiguration() {
@@ -64,9 +65,15 @@ function AppConfigurationForm() {
         setConfigID(data?.data[0]?.ConfigID)
         setValue("ProductName", data?.data[0]?.ProductTitle)
         setValue("BranchName", data?.data[0]?.CustomerBranchTitle)
+        setValue(
+          "ShowTimelineInsideLeadsForm",
+          data?.data[0]?.ShowTimelineInsideLeadsForm
+        )
         setPageTitles({
           product: data?.data[0]?.ProductTitle,
           branch: data?.data[0]?.CustomerBranchTitle,
+          ShowTimelineInsideLeadsForm:
+            data?.data[0]?.ShowTimelineInsideLeadsForm,
         })
         setReload(false)
       }

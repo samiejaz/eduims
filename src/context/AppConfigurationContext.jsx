@@ -9,6 +9,7 @@ export const AppConfigurationProivder = ({ children }) => {
   const [pageTitles, setPageTitles] = useState({
     product: "Product",
     branch: "Branch",
+    ShowTimelineInsideLeadsForm: false,
   })
   const user = JSON.parse(localStorage.getItem("user"))
 

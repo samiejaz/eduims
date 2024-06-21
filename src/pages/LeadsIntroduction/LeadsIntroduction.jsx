@@ -500,6 +500,7 @@ function LeadIntroductionForm({ mode, userRights }) {
   const { user } = useContext(AuthContext)
 
   const countryRef = useRef()
+  const { pageTitles } = useAppConfigurataionProvider()
 
   const navigate = useNavigate()
   const { LeadIntroductionID } = useParams()
@@ -671,7 +672,7 @@ function LeadIntroductionForm({ mode, userRights }) {
                 countryRef={countryRef}
               />
             </FormProvider>
-            {mode === "view" && (
+            {mode === "view" && pageTitles?.ShowTimelineInsideLeadsForm && (
               <>
                 <LeadsViewerDetailOnLeadsForm
                   LeadIntroductionID={LeadIntroductionID}
