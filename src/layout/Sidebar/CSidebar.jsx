@@ -12,26 +12,16 @@ import { useCheckDeviceHook } from "../../hooks/hooks"
 import { displayYesNoDialog } from "../../utils/helpers"
 import { LayoutDashboard } from "lucide-react"
 import { SEVERITIES } from "../../utils/CONSTANTS"
+import { LOCAL_STORAGE_KEYS } from "../../utils/enums"
+import { decryptedObject } from "../../utils/crypto"
 
 const CSidebar = ({ sideBarRef, searchInputRef }) => {
-  const user = JSON.parse(localStorage.getItem("user"))
+  const user = decryptedObject(
+    localStorage.getItem(LOCAL_STORAGE_KEYS.USER_KEY)
+  )
   const toastRef = useRef(null)
 
   const { isMobileScreen } = useCheckDeviceHook()
-
-  // useEffect(() => {
-  //   async function configurationSetup() {
-  //     let isSidebarOpen = localStorage.getItem("isSidebarOpen")
-  //     if (isSidebarOpen) {
-  //       sideBarRef.current.className = "c-sidebar"
-  //     }
-  //   }
-  //   configurationSetup()
-
-  //   return () => {
-  //     localStorage.removeItem("isSidebarOpen")
-  //   }
-  // }, [])
 
   function closeMobieSidebar() {
     if (isMobileScreen) {

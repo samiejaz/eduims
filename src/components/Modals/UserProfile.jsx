@@ -14,6 +14,8 @@ import {
 import { useNavigate } from "react-router-dom"
 import { FormColumn, FormRow, FormLabel } from "../Layout/LayoutComponents"
 import { Image } from "primereact/image"
+import { LOCAL_STORAGE_KEYS } from "../../utils/enums"
+import { decryptedObject } from "../../utils/crypto"
 const apiUrl = import.meta.env.VITE_APP_API_URL
 
 function UserProfile({ showProfile, handleCloseProfile }) {
@@ -41,7 +43,9 @@ function UserProfile({ showProfile, handleCloseProfile }) {
       const { data } = await axios.post(
         `${apiUrl}/EduIMS/GetUserInfo?LoginUserID=${user.userID}`
       )
-      let localStorageUser = JSON.parse(localStorage.getItem("user"))
+      let localStorageUser = decryptedObject(
+        localStorage.getItem(LOCAL_STORAGE_KEYS.USER_KEY)
+      )
       if (localStorageUser === null) {
         navigate("/auth")
         setUser(null)

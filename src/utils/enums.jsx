@@ -191,3 +191,7 @@ export const MENU_KEYS = {
 export const MOVEABLE_COMPNENTS_NAMES = {
   LEADS_DASHBOARD_CARDS: "InfoCardsContainer",
 }
+
+export const LOCAL_STORAGE_KEYS = {
+  USER_KEY: "sQbnIru",
+}

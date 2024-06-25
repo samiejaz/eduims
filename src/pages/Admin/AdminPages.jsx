@@ -35,6 +35,7 @@ const AdminPageWrapper = ({ children }) => {
                 type="password"
                 className="p-inputtext"
                 value={password}
+                autoComplete="off"
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>

@@ -41,3 +41,18 @@ export function verifyAndReturnEncryptedIDForForms(encryptedID) {
     ShowErrorToast("CRYPTO::" + e.message)
   }
 }
+
+export function encrptyObject(obj) {
+  let jsonString = JSON.stringify(obj)
+  let encodedString = window.btoa(jsonString)
+  return encodedString
+}
+export function decryptedObject(encodedString) {
+  try {
+    let decodedString = window.atob(encodedString)
+    let obj = JSON.parse(decodedString)
+    return obj
+  } catch (err) {
+    return {}
+  }
+}

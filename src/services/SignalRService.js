@@ -3,6 +3,8 @@ import {
   HttpTransportType,
   LogLevel,
 } from "@microsoft/signalr"
+import { LOCAL_STORAGE_KEYS } from "../utils/enums"
+import { decryptedObject } from "../utils/crypto"
 const apiUrl = import.meta.env.VITE_APP_API_URL_FOR_SIGNALR
 
 class SignalRConnectionManager {
@@ -22,7 +24,9 @@ class SignalRConnectionManager {
         .build()
 
       try {
-        const user = JSON.parse(localStorage.getItem("user"))
+        const user = decryptedObject(
+          localStorage.getItem(LOCAL_STORAGE_KEYS.USER_KEY)
+        )
         await this.connection.start()
         await this.connection.invoke("JoinGroup", {
           // GroupName: user.DepartmentID.toString(),

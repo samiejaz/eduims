@@ -4,8 +4,13 @@ import {
   ShowSuccessToast,
   convertBase64StringToFile,
 } from "../utils/CommonFunctions"
-import { TOAST_CONTAINER_IDS } from "../utils/enums"
-import { decryptID, encryptID } from "../utils/crypto"
+import { LOCAL_STORAGE_KEYS, TOAST_CONTAINER_IDS } from "../utils/enums"
+import {
+  decryptID,
+  decryptedObject,
+  encrptyObject,
+  encryptID,
+} from "../utils/crypto"
 
 const apiUrl = import.meta.env.VITE_APP_API_URL
 
@@ -56,7 +61,9 @@ export async function deleteUserByID({ UserID, LoginUserID }) {
 }
 // URL: /gen_User/UserInsertUpdate
 export async function addNewUser({ formData, userID, UserID = 0, UserImage }) {
-  const user = JSON.parse(localStorage.getItem("user"))
+  const user = decryptedObject(
+    localStorage.getItem(LOCAL_STORAGE_KEYS.USER_KEY)
+  )
   try {
     let newFormData = new FormData()
     newFormData.append("FirstName", formData.FirstName)
@@ -69,10 +76,7 @@ export async function addNewUser({ formData, userID, UserID = 0, UserImage }) {
 
     newFormData.append("Inactive", (formData.InActive === false ? 0 : 1) ?? 0)
     newFormData.append("EntryUserID", userID)
-    // if (UserImage !== "") {
-    //   let userImageFile = convertBase64StringToFile(UserImage, true);
-    //   newFormData.append("image", userImageFile);
-    // }
+
     newFormData.append("image", formData.UserImage)
     UserID = UserID === 0 ? 0 : decryptID(UserID)
     if (UserID === 0 || UserID === undefined) {
@@ -95,8 +99,8 @@ export async function addNewUser({ formData, userID, UserID = 0, UserImage }) {
       if (+UserID !== 0) {
         if (UserID === user.userID) {
           localStorage.setItem(
-            "user",
-            JSON.stringify({
+            LOCAL_STORAGE_KEYS.USER_KEY,
+            encrptyObject({
               userID: UserID,
               username: formData.FirstName + " " + formData.LastName,
               image: UserImage,

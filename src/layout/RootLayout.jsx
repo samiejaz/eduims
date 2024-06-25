@@ -85,15 +85,6 @@ function Header({ toggleSidebar, handleMobileToggleSidebar }) {
     localStorage.setItem("activeTheme", theme)
   }
 
-  // useEffect(() => {
-  //   const activeTheme = localStorage.getItem("activeTheme")
-  //   if (activeTheme) {
-  //     console.log("Active", activeTheme)
-  //     setTheme(activeTheme)
-  //     changeMyTheme(activeTheme)
-  //   }
-  // }, [])
-
   return (
     <>
       <div
@@ -123,6 +114,7 @@ function Header({ toggleSidebar, handleMobileToggleSidebar }) {
           ></i>
         )}
         <div className="flex align-items-center gap-4">
+          {/* <TriggerShortcutButton theme={theme} /> */}
           <i
             className="pi pi-user hoverIcon"
             onClick={() => {
@@ -140,6 +132,45 @@ function Header({ toggleSidebar, handleMobileToggleSidebar }) {
       </div>
       {render}
     </>
+  )
+}
+
+const TriggerShortcutButton = ({ theme }) => {
+  const triggerCtrlK = () => {
+    const event = new KeyboardEvent("keydown", {
+      key: "k",
+      ctrlKey: true,
+      bubbles: true,
+      cancelable: true,
+    })
+    document.dispatchEvent(event)
+  }
+
+  return (
+    <div
+      className="py-1 pr-4 pl-2 rounded flex"
+      style={{
+        background: theme === "dark" ? "#111827" : "#EFEFEF",
+        fontFamily: "cursive",
+        alignItems: "center",
+      }}
+      onClick={triggerCtrlK}
+    >
+      <div>
+        <i className="pi pi-search mr-2"></i>
+      </div>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "10px",
+          color: theme === "dark" ? "white" : "inherit",
+        }}
+      >
+        <span>Search</span>
+        <span style={{ fontSize: "10px", fontWeight: "bold" }}>Ctrl + k</span>
+      </div>
+    </div>
   )
 }
 

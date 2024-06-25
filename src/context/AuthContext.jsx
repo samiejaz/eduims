@@ -2,6 +2,8 @@ import { useContext, useEffect } from "react"
 import { useState } from "react"
 import { createContext } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
+import { LOCAL_STORAGE_KEYS } from "../utils/enums"
+import { decryptedObject, encrptyObject } from "../utils/crypto"
 
 export const AuthContext = createContext()
 export const AuthProvier = ({ children }) => {
@@ -10,7 +12,7 @@ export const AuthProvier = ({ children }) => {
   const location = useLocation()
 
   function loginUser(data, navigateToDashBoard = true) {
-    localStorage.setItem("user", JSON.stringify(data))
+    localStorage.setItem(LOCAL_STORAGE_KEYS.USER_KEY, encrptyObject(data))
     setUser(data)
     if (navigateToDashBoard) {
       navigate("/", { replace: true })
@@ -18,14 +20,19 @@ export const AuthProvier = ({ children }) => {
   }
 
   function updateUserName(username) {
-    let existingUserObj = JSON.parse(localStorage.getItem("user"))
+    let existingUserObj = decryptedObject(
+      localStorage.getItem(LOCAL_STORAGE_KEYS.USER_KEY)
+    )
     existingUserObj.username = username
-    localStorage.setItem("user", JSON.stringify(existingUserObj))
+    localStorage.setItem(
+      LOCAL_STORAGE_KEYS.USER_KEY,
+      encrptyObject(existingUserObj)
+    )
     setUser(existingUserObj)
   }
 
   function logoutUser() {
-    localStorage.removeItem("user")
+    localStorage.removeItem(LOCAL_STORAGE_KEYS.USER_KEY)
     setUser(null)
     navigate("/auth")
   }
@@ -33,9 +40,9 @@ export const AuthProvier = ({ children }) => {
   useEffect(() => {
     function checkUser() {
       if (!user) {
-        const userData = localStorage.getItem("user")
+        const userData = localStorage.getItem(LOCAL_STORAGE_KEYS.USER_KEY)
         if (userData !== null) {
-          setUser(JSON.parse(userData))
+          setUser(decryptedObject(userData))
           navigate(location.pathname + location.search)
         } else {
           setUser(null)

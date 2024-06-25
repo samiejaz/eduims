@@ -123,7 +123,7 @@ export default function GenNewCustomerView() {
         <div className="d-flex text-dark p-3 mb-1 ">
           <FormRow className="w-full">
             <FormColumn lg={6} xl={6}>
-              <h2 className="text-start my-auto text-white">Customer Detail</h2>
+              <h2 className="text-start my-auto">Customer Detail</h2>
             </FormColumn>
             <FormColumn lg={6} xl={6}>
               <Controller
@@ -155,29 +155,9 @@ export default function GenNewCustomerView() {
             </FormColumn>
           </FormRow>
         </div>
-        <div className="card " style={{ border: "solid #424B57" }}>
-          <TabView
-            pt={{
-              nav: {
-                style: {
-                  background: "#1F2937",
-                },
-              },
-              navContent: {
-                style: {
-                  background: "#1F2937",
-                },
-              },
-            }}
-          >
-            <TabPanel
-              header="Customer"
-              pt={{
-                headerTitle: {
-                  className: "text-white",
-                },
-              }}
-            >
+        <div className="card ">
+          <TabView>
+            <TabPanel header="Customer">
               <FormProvider {...customerEntryForm}>
                 <CustomerEntry
                   CustomerID={CustomerID}
@@ -197,14 +177,7 @@ export default function GenNewCustomerView() {
                 </div>
               </FormProvider>
             </TabPanel>
-            <TabPanel
-              header="Customer Branches"
-              pt={{
-                headerTitle: {
-                  className: "text-white",
-                },
-              }}
-            >
+            <TabPanel header="Customer Branches">
               <FormProvider {...customerBranchFrom}>
                 <CustomerBranchEntry
                   CustomerID={CustomerID}
@@ -212,14 +185,7 @@ export default function GenNewCustomerView() {
                 />
               </FormProvider>
             </TabPanel>
-            <TabPanel
-              header="Customer Ledgers "
-              pt={{
-                headerTitle: {
-                  className: "text-white",
-                },
-              }}
-            >
+            <TabPanel header="Customer Ledgers ">
               <CustomerAccountEntry
                 CustomerID={CustomerID}
                 isEnable={isGloballyEnable}

@@ -1,6 +1,8 @@
 import axios from "axios"
 import { useContext, useEffect, useState } from "react"
 import { createContext } from "react"
+import { LOCAL_STORAGE_KEYS } from "../utils/enums"
+import { decryptedObject } from "../utils/crypto"
 const apiUrl = import.meta.env.VITE_APP_API_URL
 
 export const AppConfigurationContext = createContext()
@@ -11,7 +13,9 @@ export const AppConfigurationProivder = ({ children }) => {
     branch: "Branch",
     ShowTimelineInsideLeadsForm: false,
   })
-  const user = JSON.parse(localStorage.getItem("user"))
+  const user = decryptedObject(
+    localStorage.getItem(LOCAL_STORAGE_KEYS.USER_KEY)
+  )
 
   useEffect(() => {
     async function fetchCompanyInfo() {
