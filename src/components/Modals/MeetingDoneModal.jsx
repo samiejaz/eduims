@@ -25,6 +25,8 @@ const MeetingDoneModal = ({
   setVisible,
   LeadsIntroductionID,
   LeadIntroductionDetailID,
+  ShowToolBar,
+  ShowSaveButton,
 }) => {
   return (
     <Dialog
@@ -37,6 +39,8 @@ const MeetingDoneModal = ({
         LeadIntroductionID={LeadsIntroductionID}
         LeadIntroductionDetailID={LeadIntroductionDetailID}
         setVisible={setVisible}
+        ShowToolBar={ShowToolBar}
+        ShowSaveButton={ShowSaveButton}
       />
     </Dialog>
   )
@@ -46,6 +50,8 @@ export default MeetingDoneModal
 export const useMeetingDoneModalHook = ({
   LeadsIntroductionID = 0,
   LeadIntroductionDetailID = 0,
+  ShowToolBar = false,
+  ShowSaveButton = false,
 }) => {
   const [visible, setVisible] = useState(false)
 
@@ -57,6 +63,8 @@ export const useMeetingDoneModalHook = ({
         setVisible={setVisible}
         LeadsIntroductionID={LeadsIntroductionID}
         LeadIntroductionDetailID={LeadIntroductionDetailID}
+        ShowToolBar={ShowToolBar}
+        ShowSaveButton={ShowSaveButton}
       />
     ),
   }
@@ -69,6 +77,7 @@ export const MeetingDoneFields = ({
   ResetFields = true,
   AreFieldsEnable = true,
   setVisible,
+  ShowSaveButton = false,
 }) => {
   const queryClient = useQueryClient()
   const [isEnable, setIsEnable] = useState(AreFieldsEnable)
@@ -197,7 +206,7 @@ export const MeetingDoneFields = ({
             alignItems: "center",
           }}
         >
-          {ShowToolBar && (
+          {ShowSaveButton && (
             <>
               <Button
                 label="Save"
