@@ -426,7 +426,7 @@ export function LeadIntroductionDetail({
             removableSort
             emptyMessage="No LeadIntroductions found!"
             filters={filters}
-            filterDisplay="menu"
+            filterDisplay="row"
             resizableColumns
             size="small"
             className={"thead-cell"}

@@ -103,7 +103,11 @@ export const CustomerInvoiceDetailTableRowComponent = ({
             focusOptions={() => method.setFocus(`detail.${index}.BusinessUnit`)}
             onChange={(e) => {
               setInvoiceType(e.value)
-              if (e.value === "Product") {
+              if (
+                e.value === "Product" ||
+                e.value === "Software" ||
+                e.value === "Hardware"
+              ) {
                 method.setValue(
                   `CustomerInvoiceDetail.${index}.ServiceInfoID`,
                   null
@@ -348,7 +352,12 @@ const BusinessUnitDependantRowFields = ({
           placeholder="Select a service"
           options={ServicesInfoSelectData}
           required={invoiceType === "Service"}
-          disabled={disable || invoiceType === "Product"}
+          disabled={
+            disable ||
+            invoiceType === "Product" ||
+            invoiceType === "Software" ||
+            invoiceType === "Hardware"
+          }
           filter={true}
           focusOptions={() =>
             method.setFocus(`CustomerInvoiceDetail.${index}.Qty`)

@@ -59,7 +59,7 @@ export const useLeadsIntroductionModalHook = (LeadIntroductionDetailID = 0) => {
           <div>
             <input
               type="text"
-              className="form-control"
+              className="p-inputtext w-full"
               id="CompanyName"
               value={LeadIntroductionData.data[0]?.CompanyName || ""}
               disabled
@@ -72,7 +72,7 @@ export const useLeadsIntroductionModalHook = (LeadIntroductionDetailID = 0) => {
             <input
               type="text"
               id="CountryID"
-              className="form-control"
+              className="p-inputtext w-full"
               value={LeadIntroductionData.data[0]?.CountryTitle || ""}
               disabled
             />
@@ -84,7 +84,7 @@ export const useLeadsIntroductionModalHook = (LeadIntroductionDetailID = 0) => {
             <input
               type="text"
               id="TehsilID"
-              className="form-control"
+              className="p-inputtext w-full"
               value={LeadIntroductionData.data[0]?.TehsilTitle || ""}
               disabled
             />
@@ -96,7 +96,7 @@ export const useLeadsIntroductionModalHook = (LeadIntroductionDetailID = 0) => {
             <input
               type="text"
               id="BusinessTypeID"
-              className="form-control"
+              className="p-inputtext w-full"
               value={LeadIntroductionData.data[0]?.BusinessTypeTitle || ""}
               disabled
             />
@@ -110,7 +110,7 @@ export const useLeadsIntroductionModalHook = (LeadIntroductionDetailID = 0) => {
             <input
               type="text"
               id="BusinessNatureID"
-              className="form-control"
+              className="p-inputtext w-full"
               value={LeadIntroductionData.data[0]?.BusinessNature || ""}
               disabled
             />
@@ -123,7 +123,7 @@ export const useLeadsIntroductionModalHook = (LeadIntroductionDetailID = 0) => {
             <input
               type="text"
               id="CompanyWebsite"
-              className="form-control"
+              className="p-inputtext w-full"
               value={LeadIntroductionData.data[0]?.CompanyWebsite || ""}
               disabled
             />
@@ -135,7 +135,7 @@ export const useLeadsIntroductionModalHook = (LeadIntroductionDetailID = 0) => {
             <input
               type="text"
               id="ContactPersonName"
-              className="form-control"
+              className="p-inputtext w-full"
               value={LeadIntroductionData.data[0]?.ContactPersonName || ""}
               disabled
             />
@@ -147,7 +147,7 @@ export const useLeadsIntroductionModalHook = (LeadIntroductionDetailID = 0) => {
             <input
               type="text"
               id="ContactPersonMobileNo"
-              className="form-control"
+              className="p-inputtext w-full"
               value={LeadIntroductionData.data[0]?.ContactPersonMobileNo || ""}
               disabled
             />
@@ -161,7 +161,7 @@ export const useLeadsIntroductionModalHook = (LeadIntroductionDetailID = 0) => {
             <input
               type="text"
               id="ContactPersonEmail"
-              className="form-control"
+              className="p-inputtext w-full"
               value={LeadIntroductionData.data[0]?.ContactPersonEmail || ""}
               disabled
             />
@@ -173,7 +173,7 @@ export const useLeadsIntroductionModalHook = (LeadIntroductionDetailID = 0) => {
             <input
               type="text"
               id="CompanyAddress"
-              className="form-control"
+              className="p-inputtext w-full"
               value={LeadIntroductionData.data[0]?.CompanyAddress || ""}
               disabled
             />
@@ -186,7 +186,7 @@ export const useLeadsIntroductionModalHook = (LeadIntroductionDetailID = 0) => {
             <input
               type="text"
               id="ContactPersonWhatsAppNo"
-              className="form-control"
+              className="p-inputtext w-full"
               value={
                 LeadIntroductionData.data[0]?.ContactPersonWhatsAppNo || ""
               }
@@ -202,7 +202,7 @@ export const useLeadsIntroductionModalHook = (LeadIntroductionDetailID = 0) => {
             as={"textarea"}
             rows={1}
             disabled
-            className="form-control"
+            className="p-inputtext w-full"
             style={{
               padding: "0.3rem 0.4rem",
               fontSize: "0.8em",
@@ -239,7 +239,7 @@ export const useLeadsIntroductionModalHook = (LeadIntroductionDetailID = 0) => {
                 ""
               }
               disabled
-              className="form-control"
+              className="p-inputtext w-full"
             />
           </div>
         </FormColumn>
@@ -251,7 +251,7 @@ export const useLeadsIntroductionModalHook = (LeadIntroductionDetailID = 0) => {
               id="Product"
               value={LeadIntroductionData.data[0]?.ProductInfoTitle || ""}
               disabled
-              className="form-control"
+              className="p-inputtext w-full"
             />
           </div>
         </FormColumn>

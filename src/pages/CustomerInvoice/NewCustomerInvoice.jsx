@@ -1083,7 +1083,11 @@ function CustomerInvoiceDetailHeaderForm({ appendSingleRow }) {
                 focusOptions={() => method.setFocus("BusinessUnit")}
                 onChange={(e) => {
                   invoiceTypeRef.current?.setInvoiceType(e.value)
-                  if (e.value === "Product") {
+                  if (
+                    e.value === "Product" ||
+                    e.value === "Software" ||
+                    e.value === "Hardware"
+                  ) {
                     method.resetField("ServiceInfoID")
                   }
                 }}
@@ -1329,8 +1333,12 @@ const DetailHeaderBusinessUnitDependents = React.forwardRef((props, ref) => {
             placeholder={`Select a service`}
             options={ServicesInfoSelectData}
             filter={true}
-            disabled={InvoiceType === "Product"}
-            required={InvoiceType !== "Product"}
+            disabled={
+              InvoiceType === "Product" ||
+              InvoiceType === "Software" ||
+              InvoiceType === "Hardware"
+            }
+            required={InvoiceType == "Service"}
             focusOptions={() => method.setFocus("Qty")}
           />
         </div>
@@ -1365,8 +1373,9 @@ const CustomerInvoiceDetailTable = React.forwardRef(
     const typesOptions = [
       { label: `${pageTitles?.product || "Product"}`, value: "Product" },
       { label: "Service", value: "Service" },
+      { label: "Software", value: "Software" },
+      { label: "Hardware", value: "Hardware" },
     ]
-
     return (
       <>
         <div className="overflow-x-auto">
