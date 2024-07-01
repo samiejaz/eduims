@@ -1,6 +1,6 @@
 import React from "react"
 import ReactDOM from "react-dom/client"
-import App from "./App.jsx"
+import App, { InitMenuNames } from "./App.jsx"
 
 import "primeicons/primeicons.css"
 // import "bootstrap/dist/css/bootstrap.min.css"
@@ -29,13 +29,15 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       <BrowserRouter>
         <AuthProvier>
           <RoutesProivder>
-            <UserRightsProivder>
-              <AppConfigurationProivder>
-                <ThemeProivder>
-                  <App />
-                </ThemeProivder>
-              </AppConfigurationProivder>
-            </UserRightsProivder>
+            <InitMenuNames>
+              <UserRightsProivder>
+                <AppConfigurationProivder>
+                  <ThemeProivder>
+                    <App />
+                  </ThemeProivder>
+                </AppConfigurationProivder>
+              </UserRightsProivder>
+            </InitMenuNames>
           </RoutesProivder>
         </AuthProvier>
       </BrowserRouter>

@@ -1068,8 +1068,10 @@ const LeadsViewerDetailOnLeadsFormHeader = ({
                   fontWeight: "bold",
                 }}
               ></i>
-              <h1 className="p-0 m-0">{status}</h1>
-              <span>{formatDate(date)}</span>
+              <div className="flex align-items-start flex-column">
+                <h1 className="p-0 m-0">{status}</h1>
+                <span>{formatDate(date)}</span>
+              </div>
             </div>
             <div className="flex align-items-center justify-content-start gap-4 mt-1">
               <p className="font-bold p-0 m-0">Detail: </p>
