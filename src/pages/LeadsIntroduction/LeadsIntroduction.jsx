@@ -40,7 +40,7 @@ import LeadsIntroductionViewer, {
   LeadsViewerDetailOnLeadsForm,
 } from "../LeadsIntroductionViewer/LeadsIntroductionViewer"
 import LeadsComments from "./LeadsComments"
-import { encryptID } from "../../utils/crypto"
+import { decryptID, encryptID } from "../../utils/crypto"
 import {
   SingleFileUploadField,
   TextAreaField,
@@ -57,6 +57,7 @@ import { DetailPageTilteAndActionsComponent } from "../../components"
 import { formatDateWithSymbol } from "../../utils/CommonFunctions"
 import { Filter, SortAsc, SortDesc } from "lucide-react"
 import { useAppConfigurataionProvider } from "../../context/AppConfigurationContext"
+import { usePreviousAndNextID } from "../../hooks/api/usePreviousAndNextIDHook"
 
 let parentRoute = ROUTE_URLS.LEAD_INTRODUCTION_ROUTE
 let editRoute = `${parentRoute}/edit/`
@@ -505,6 +506,13 @@ function LeadIntroductionForm({ mode, userRights }) {
   const navigate = useNavigate()
   const { LeadIntroductionID } = useParams()
 
+  const { data: PreviousAndNextIDs } = usePreviousAndNextID({
+    TableName: "gen_LeadIntroduction",
+    IDName: IDENTITY,
+    LoginUserID: user?.userID,
+    RecordID: LeadIntroductionID,
+  })
+
   const method = useForm({
     defaultValues: {
       CompanyName: "",
@@ -663,6 +671,15 @@ function LeadIntroductionForm({ mode, userRights }) {
               showEditButton={userRights[0]?.RoleEdit}
               showDelete={userRights[0]?.RoleDelete}
               mode={mode}
+              PreviousAndNextIDs={PreviousAndNextIDs}
+              handlePrevious={() =>
+                navigate(
+                  `${parentRoute}/${PreviousAndNextIDs.PreviousRecordID}`
+                )
+              }
+              handleNext={() =>
+                navigate(`${parentRoute}/${PreviousAndNextIDs.NextRecordID}`)
+              }
             />
           </div>
           <div className="mt-4">

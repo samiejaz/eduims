@@ -76,6 +76,7 @@ import {
   FormLabel,
 } from "../../components/Layout/LayoutComponents"
 import { DetailPageTilteAndActionsComponent } from "../../components"
+import { usePreviousAndNextID } from "../../hooks/api/usePreviousAndNextIDHook"
 
 let parentRoute = ROUTE_URLS.ACCOUNTS.NEW_CUSTOMER_INVOICE
 let editRoute = `${parentRoute}/edit/`
@@ -373,6 +374,13 @@ function FormComponent({ mode, userRights }) {
     defaultValues,
   })
 
+  const { data: PreviousAndNextIDs } = usePreviousAndNextID({
+    TableName: "data_CustomerInvoice",
+    IDName: IDENTITY,
+    LoginUserID: user?.userID,
+    RecordID: CustomerInvoiceID,
+  })
+
   const { data: CustomerInvoiceData } = useQuery({
     queryKey: [
       QUERY_KEYS.CUSTOMER_INVOICE_QUERY_KEY,
@@ -569,6 +577,15 @@ function FormComponent({ mode, userRights }) {
               handleDelete={handleDelete}
               userRights={userRights}
               CustomerInvoiceID={CustomerInvoiceID}
+              PreviousAndNextIDs={PreviousAndNextIDs}
+              handlePrevious={() =>
+                navigate(
+                  `${parentRoute}/${PreviousAndNextIDs.PreviousRecordID}`
+                )
+              }
+              handleNext={() =>
+                navigate(`${parentRoute}/${PreviousAndNextIDs.NextRecordID}`)
+              }
             />
             <form id="CustomerInvoice" className="mt-4">
               <FormProvider {...method}>
@@ -743,6 +760,9 @@ function CustomerInvoiceToolbar({
   userRights,
   CustomerInvoiceID,
   handleEdit,
+  handleNext,
+  handlePrevious,
+  PreviousAndNextIDs,
 }) {
   const [printQueryParams, setPrintQueryParams] = useState(
     `InvoicePrint?CustomerInvoiceID=${decryptID(CustomerInvoiceID)}`
@@ -774,6 +794,9 @@ function CustomerInvoiceToolbar({
           },
         ]}
         showUtilityContent={mode === "view"}
+        PreviousAndNextIDs={PreviousAndNextIDs}
+        handlePrevious={handlePrevious}
+        handleNext={handleNext}
         // utilityContent={
         //   <>
         //     <div>

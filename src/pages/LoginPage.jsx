@@ -170,7 +170,7 @@ const SignUp = () => {
       </div> */}
       <div className="container">
         <div className="w-full min-h-screen flex align-items-center justify-content-center text-white">
-          <div className="w-full lg:w-5 xl:2-5 p-4 rounded shadow flex flex-column gap-5 card">
+          <div className="w-full lg:w-5 xl:2-5 p-4 rounded shadow flex flex-column gap-5 login_page_card">
             <div className="w-full text-center">
               <h1>
                 edu

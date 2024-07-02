@@ -63,6 +63,7 @@ import {
   FormRow,
 } from "../../components/Layout/LayoutComponents"
 import { DetailPageTilteAndActionsComponent } from "../../components"
+import { usePreviousAndNextID } from "../../hooks/api/usePreviousAndNextIDHook"
 
 const receiptModeOptions = [
   { label: "Cash", value: "Cash" },
@@ -346,6 +347,13 @@ function FormComponent({ mode, userRights }) {
   const [isLoading, setIsLoading] = useState(false)
   const navigate = useNavigate()
   const { user } = useContext(AuthContext)
+
+  const { data: PreviousAndNextIDs } = usePreviousAndNextID({
+    TableName: "data_ReceiptVoucher",
+    IDName: IDENTITY,
+    LoginUserID: user?.userID,
+    RecordID: ReceiptVoucherID,
+  })
   // Ref
   const detailTableRef = useRef()
   const customerCompRef = useRef()
@@ -356,7 +364,7 @@ function FormComponent({ mode, userRights }) {
   })
 
   const { data: ReceiptVoucherData } = useQuery({
-    queryKey: [QUERY_KEYS.RECEIPT_VOUCHER_INFO_QUERY_KEY, +ReceiptVoucherID],
+    queryKey: [QUERY_KEYS.RECEIPT_VOUCHER_INFO_QUERY_KEY, ReceiptVoucherID],
     queryFn: () => fetchReceiptVoucherById(ReceiptVoucherID, user.userID),
     enabled: mode !== "new",
     initialData: [],
@@ -533,6 +541,15 @@ function FormComponent({ mode, userRights }) {
               getPrintFromUrl={
                 "ReceiptVoucherPrint?ReceiptVoucherID=" +
                 decryptID(ReceiptVoucherID)
+              }
+              PreviousAndNextIDs={PreviousAndNextIDs}
+              handlePrevious={() =>
+                navigate(
+                  `${parentRoute}/${PreviousAndNextIDs.PreviousRecordID}`
+                )
+              }
+              handleNext={() =>
+                navigate(`${parentRoute}/${PreviousAndNextIDs.NextRecordID}`)
               }
             />
           </div>

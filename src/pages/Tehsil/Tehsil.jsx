@@ -29,6 +29,7 @@ import useConfirmationModal from "../../hooks/useConfirmationModalHook"
 import { encryptID } from "../../utils/crypto"
 import { FormRightsWrapper } from "../../components/Wrappers/wrappers"
 import { DetailPageTilteAndActionsComponent } from "../../components"
+import { usePreviousAndNextID } from "../../hooks/api/usePreviousAndNextIDHook"
 let parentRoute = ROUTE_URLS.TEHSIL_ROUTE
 let editRoute = `${parentRoute}/edit/`
 let newRoute = `${parentRoute}/new`
@@ -178,9 +179,15 @@ function FormComponent({ mode, userRights }) {
       InActive: false,
     },
   })
+  const { user } = useContext(AuthContext)
+  const { data: PreviousAndNextIDs } = usePreviousAndNextID({
+    TableName: "gen_Tehsil",
+    IDName: IDENTITY,
+    LoginUserID: user?.userID,
+    RecordID: TehsilID,
+  })
 
   const countriesSelectData = useAllCountiesSelectData()
-  const { user } = useContext(AuthContext)
 
   const TehsilData = useQuery({
     queryKey: [queryKey, TehsilID],
@@ -268,6 +275,15 @@ function FormComponent({ mode, userRights }) {
               showAddNewButton={userRights[0]?.RoleNew}
               showEditButton={userRights[0]?.RoleEdit}
               showDelete={userRights[0]?.RoleDelete}
+              PreviousAndNextIDs={PreviousAndNextIDs}
+              handlePrevious={() =>
+                navigate(
+                  `${parentRoute}/${PreviousAndNextIDs.PreviousRecordID}`
+                )
+              }
+              handleNext={() =>
+                navigate(`${parentRoute}/${PreviousAndNextIDs.NextRecordID}`)
+              }
             />
           </div>
           <form className="mt-4">

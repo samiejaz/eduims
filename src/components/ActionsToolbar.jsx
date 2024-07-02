@@ -16,6 +16,8 @@ export default function ButtonToolBar({
   addNewDisable = false,
   editDisable = false,
   printDisable = false,
+  previousDisable = false,
+  nextDisable = false,
   showPrint = false,
   utilityContent = [],
   handleCancel = () => {},
@@ -25,11 +27,15 @@ export default function ButtonToolBar({
   handlePrint = () => {},
   handleSave = () => {},
   handleGoBack = () => {},
+  handlePrevious = () => {},
+  handleNext = () => {},
   saveLabel = "Save",
   viewLabel = "View",
   editLabel = "Edit",
   cancelLabel = "Cancel",
   deleteLabel = "Delete",
+  nextLabel = "Next",
+  previousLabel = "Previous",
   GoBackLabel = "",
   showDelete = true,
   showDeleteButton = true,
@@ -37,10 +43,13 @@ export default function ButtonToolBar({
   showCancelButton = true,
   showAddNewButton = true,
   showEditButton = true,
+  showNextButton = true,
+  showPreviousButton = true,
   mode = "new",
   getPrintFromUrl = "",
   splitButtonItems = [],
   showUtilityContent = false,
+  PreviousAndNextIDs = { NextRecordID: null, PreviousRecordID: null },
 }) {
   useKeyCombination(() => {
     if (mode === "edit" || mode === "new") {
@@ -91,6 +100,7 @@ export default function ButtonToolBar({
       }}
     />
   )
+  console.log(PreviousAndNextIDs)
   const centerContent = (
     <React.Fragment>
       <div className="w-full flex gap-1 flex-wrap">
@@ -212,10 +222,65 @@ export default function ButtonToolBar({
             />
           </>
         ) : null}
-
+        <i className="pi pi-bars p-toolbar-separator mr-2" />
+        {showPreviousButton && (
+          <>
+            <Button
+              label={previousLabel}
+              icon="pi pi-arrow-left"
+              className="rounded"
+              type="button"
+              severity="secondary"
+              text
+              disabled={
+                previousDisable ||
+                (mode === "view" &&
+                  PreviousAndNextIDs.PreviousRecordID === null) ||
+                mode !== "view"
+              }
+              onClick={() => {
+                if (PreviousAndNextIDs.PreviousRecordID !== null) {
+                  handlePrevious()
+                }
+              }}
+              pt={{
+                label: {
+                  className: "hidden md:block lg:block",
+                },
+              }}
+            />
+          </>
+        )}
+        {showNextButton && (
+          <>
+            <Button
+              label={nextLabel}
+              icon="pi pi-arrow-right"
+              className="rounded"
+              type="button"
+              severity="secondary"
+              iconPos="right"
+              disabled={
+                nextDisable ||
+                (mode === "view" && PreviousAndNextIDs.NextRecordID === null) ||
+                mode !== "view"
+              }
+              onClick={() => {
+                if (PreviousAndNextIDs.NextRecordID !== null) {
+                  handleNext()
+                }
+              }}
+              text
+              pt={{
+                label: {
+                  className: "hidden md:block lg:block",
+                },
+              }}
+            />
+          </>
+        )}
         {showPrint ? (
           <>
-            <i className="pi pi-bars p-toolbar-separator mr-2" />
             <PrintRecordButton
               getPrintFromUrl={getPrintFromUrl}
               printDisable={printDisable}

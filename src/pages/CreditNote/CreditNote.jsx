@@ -55,6 +55,7 @@ import { encryptID } from "../../utils/crypto"
 import { FormRightsWrapper } from "../../components/Wrappers/wrappers"
 import { TextAreaField } from "../../components/Forms/form"
 import { DetailPageTilteAndActionsComponent } from "../../components"
+import { usePreviousAndNextID } from "../../hooks/api/usePreviousAndNextIDHook"
 let parentRoute = ROUTE_URLS.ACCOUNTS.CREDIT_NODE_ROUTE
 let editRoute = `${parentRoute}/edit/`
 let newRoute = `${parentRoute}/new`
@@ -229,6 +230,12 @@ function FormComponent({ mode, userRights }) {
   const [isLoading, setIsLoading] = useState(false)
   const navigate = useNavigate()
   const { user } = useContext(AuthContext)
+  const { data: PreviousAndNextIDs } = usePreviousAndNextID({
+    TableName: "data_CreditNote",
+    IDName: IDENTITY,
+    LoginUserID: user?.userID,
+    RecordID: CreditNoteID,
+  })
   // Ref
   const detailTableRef = useRef()
   const customerCompRef = useRef()
@@ -238,7 +245,7 @@ function FormComponent({ mode, userRights }) {
   })
 
   const { data: CreditNoteData } = useQuery({
-    queryKey: [QUERY_KEYS.Credit_Note_QUERY_KEY, +CreditNoteID],
+    queryKey: [QUERY_KEYS.CREDIT_NODE_QUERY_KEY, +CreditNoteID],
     queryFn: () => fetchCreditNoteById(CreditNoteID, user.userID),
     enabled: CreditNoteID !== undefined,
     initialData: [],
@@ -377,6 +384,15 @@ function FormComponent({ mode, userRights }) {
               showAddNewButton={userRights[0]?.RoleNew}
               showEditButton={userRights[0]?.RoleEdit}
               showDelete={userRights[0]?.RoleDelete}
+              PreviousAndNextIDs={PreviousAndNextIDs}
+              handlePrevious={() =>
+                navigate(
+                  `${parentRoute}/${PreviousAndNextIDs.PreviousRecordID}`
+                )
+              }
+              handleNext={() =>
+                navigate(`${parentRoute}/${PreviousAndNextIDs.NextRecordID}`)
+              }
             />
           </div>
           <form id="CreditNote" className="mt-4">
