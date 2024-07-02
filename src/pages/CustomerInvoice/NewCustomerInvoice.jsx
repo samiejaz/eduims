@@ -768,6 +768,12 @@ function CustomerInvoiceToolbar({
     `InvoicePrint?CustomerInvoiceID=${decryptID(CustomerInvoiceID)}`
   )
 
+  useEffect(() => {
+    setPrintQueryParams(
+      `InvoicePrint?CustomerInvoiceID=${decryptID(CustomerInvoiceID)}`
+    )
+  }, [CustomerInvoiceID])
+
   return (
     <div className="mt-4">
       <ButtonToolBar

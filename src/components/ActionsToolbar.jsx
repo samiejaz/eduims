@@ -100,7 +100,6 @@ export default function ButtonToolBar({
       }}
     />
   )
-  console.log(PreviousAndNextIDs)
   const centerContent = (
     <React.Fragment>
       <div className="w-full flex gap-1 flex-wrap">

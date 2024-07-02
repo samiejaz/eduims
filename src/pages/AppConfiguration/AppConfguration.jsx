@@ -69,7 +69,6 @@ function AppConfigurationForm() {
           "ShowTimelineInsideLeadsForm",
           data?.data[0]?.ShowTimelineInsideLeadsForm
         )
-        console.log(data)
         setPageTitles({
           product: data?.data[0]?.ProductTitle,
           branch: data?.data[0]?.CustomerBranchTitle,
