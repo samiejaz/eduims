@@ -34,6 +34,7 @@ import {
   fetchMonthlyMaxCustomerInvoiceNo,
   fetchCustomerInvoiceById,
   fetchAllCustomerInvoices,
+  SendCustomerInvoiceEmail,
 } from "../../api/CustomerInvoiceData"
 import ButtonToolBar from "../../components/ActionsToolbar"
 
@@ -393,12 +394,21 @@ function FormComponent({ mode, userRights }) {
     refetchOnWindowFocus: false,
   })
 
+  const SendEmailMutation = useMutation({
+    mutationFn: SendCustomerInvoiceEmail,
+  })
+
   const CustomerInvoiceMutation = useMutation({
     mutationFn: addNewCustomerInvoice,
-    onSuccess: ({ success, RecordID }) => {
+    onSuccess: ({ success, RecordID, Type }) => {
       if (success) {
         queryClient.invalidateQueries({ queryKey: [queryKey] })
         navigate(`${parentRoute}/${RecordID}`)
+        SendEmailMutation.mutate({
+          LoginUserID: user.userID,
+          CustomerInvoiceID: decryptID(RecordID),
+          Type: Type,
+        })
       }
     },
   })
