@@ -99,6 +99,7 @@ function DebitNoteEntrySearch({ userRights }) {
     queryKey: [queryKey],
     queryFn: () => fetchAllDebitNotees(user.userID),
     initialData: [],
+    refetchOnWindowFocus: false,
   })
 
   const deleteMutation = useMutation({

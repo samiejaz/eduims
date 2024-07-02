@@ -68,6 +68,7 @@ function DetailComponent({ userRights }) {
     queryKey: [queryKey],
     queryFn: () => fetchAllBusinessTypes(user.userID),
     initialData: [],
+    refetchOnWindowFocus: false,
   })
 
   const deleteMutation = useMutation({

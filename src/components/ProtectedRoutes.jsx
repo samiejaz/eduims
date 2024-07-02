@@ -2,6 +2,7 @@ import { Navigate } from "react-router-dom"
 import { AuthContext } from "../context/AuthContext"
 import RootLayout from "../layout/RootLayout"
 import { useContext } from "react"
+// import { CommandBar } from "../App"
 
 function ProtectedRoutes() {
   const { user } = useContext(AuthContext)

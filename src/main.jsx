@@ -3,8 +3,6 @@ import ReactDOM from "react-dom/client"
 import App, { InitMenuNames } from "./App.jsx"
 
 import "primeicons/primeicons.css"
-// import "bootstrap/dist/css/bootstrap.min.css"
-// import "primereact/resources/themes/lara-dark-green/theme.css"
 import "primereact/resources/primereact.css"
 import "react-toastify/dist/ReactToastify.css"
 import "/node_modules/primeflex/primeflex.css"
@@ -20,8 +18,20 @@ import { AppConfigurationProivder } from "./context/AppConfigurationContext.jsx"
 import { UserRightsProivder } from "./context/UserRightContext.jsx"
 import { RoutesProivder } from "./context/RoutesContext.jsx"
 import { ThemeProivder } from "./context/ThemeContext.jsx"
+import { ShowErrorToast } from "./utils/CommonFunctions.jsx"
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+    mutations: {
+      onError: (e) => {
+        ShowErrorToast(e.message)
+      },
+    },
+  },
+})
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
@@ -41,7 +51,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           </RoutesProivder>
         </AuthProvier>
       </BrowserRouter>
-      <ReactQueryDevtools initialIsOpen={false} />
+      {/* <ReactQueryDevtools initialIsOpen={false} /> */}
     </QueryClientProvider>
   </React.StrictMode>
 )

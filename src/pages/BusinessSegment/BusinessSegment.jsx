@@ -65,8 +65,8 @@ function DetailComponent({ userRights }) {
   const { data, isLoading, isFetching } = useQuery({
     queryKey: [queryKey],
     queryFn: () => fetchAllBusinessSegments(user.userID),
-
     initialData: [],
+    refetchOnWindowFocus: false,
   })
 
   const deleteMutation = useMutation({

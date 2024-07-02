@@ -168,78 +168,81 @@ const SignUp = () => {
           </Card.Body>
         </Card>
       </div> */}
-      <div className="w-full min-h-screen flex align-items-center justify-content-center login-container__body text-white">
-        <div className="w-full lg:w-5 xl:2-5 p-4 rounded shadow flex flex-column gap-5 login-container">
-          <div className="w-full text-center">
-            <h1>
-              edu
-              <span style={{ color: "#0CAB77", padding: 0, margin: 0 }}>
-                IMS
-              </span>
-            </h1>
-          </div>
-          <div className="w-full">
-            <form
-              className="flex flex-column gap-3"
-              onSubmit={handleSubmit(onSubmit)}
-              method="post"
-            >
-              <div className="w-full">
-                <label htmlFor="Username" className="font-bold">
-                  Username
-                </label>
+      <div className="container">
+        <div className="w-full min-h-screen flex align-items-center justify-content-center text-white">
+          <div className="w-full lg:w-5 xl:2-5 p-4 rounded shadow flex flex-column gap-5 card">
+            <div className="w-full text-center">
+              <h1>
+                edu
+                <span style={{ color: "#0CAB77", padding: 0, margin: 0 }}>
+                  IMS
+                </span>
+              </h1>
+            </div>
+            <div className="w-full">
+              <form
+                className="flex flex-column gap-3"
+                onSubmit={handleSubmit(onSubmit)}
+                method="post"
+              >
+                <div className="w-full">
+                  <label htmlFor="Username" className="font-bold">
+                    Username
+                  </label>
 
-                <input
-                  {...register("LoginName", {
-                    required: true,
-                  })}
-                  className={`w-full p-2 text-lg rounded login-input ${errors.LoginName ? "invalid" : ""} `}
-                  placeholder="Username"
-                />
-              </div>
-              <div className="w-full">
-                <label htmlFor="Password" className="font-bold">
-                  Password
-                </label>
+                  <input
+                    {...register("LoginName", {
+                      required: true,
+                    })}
+                    className={`w-full p-2 text-lg rounded login-input ${errors.LoginName ? "invalid" : ""} `}
+                    placeholder="Username"
+                  />
+                </div>
+                <div className="w-full">
+                  <label htmlFor="Password" className="font-bold">
+                    Password
+                  </label>
 
-                <input
-                  {...register("Password", {
-                    required: true,
-                  })}
-                  className={`w-full p-2 text-lg rounded login-input ${errors.Password ? "invalid" : ""} `}
-                  type="password"
-                  placeholder="Password"
-                />
-              </div>
-              <div className="w-full">
-                <Button
-                  label="Login"
-                  pt={{
-                    root: {
-                      className: "w-full rounded",
-                    },
-                  }}
-                  loading={mutation.isPending}
-                  loadingIcon="pi pi-spin pi-spinner"
-                />
-              </div>
-              <div className="text-center">
-                <p>
-                  Developed at{" "}
-                  <a
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    href="http://www.edusoftsolutions.com"
-                    className="text-center"
-                    style={{ color: "#0CAB77", textDecoration: "underline" }}
-                  >
-                    Edusoft System Solutions
-                  </a>
-                </p>
-              </div>
-            </form>
+                  <input
+                    {...register("Password", {
+                      required: true,
+                    })}
+                    className={`w-full p-2 text-lg rounded login-input ${errors.Password ? "invalid" : ""} `}
+                    type="password"
+                    placeholder="Password"
+                  />
+                </div>
+                <div className="w-full">
+                  <Button
+                    label="Login"
+                    pt={{
+                      root: {
+                        className: "w-full rounded",
+                      },
+                    }}
+                    loading={mutation.isPending}
+                    loadingIcon="pi pi-spin pi-spinner"
+                  />
+                </div>
+                <div className="text-center">
+                  <p>
+                    Developed at{" "}
+                    <a
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      href="http://www.edusoftsolutions.com"
+                      className="text-center"
+                      style={{ color: "#0CAB77", textDecoration: "underline" }}
+                    >
+                      Edusoft System Solutions
+                    </a>
+                  </p>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
+        <div className="blob"></div>
       </div>
     </>
   )

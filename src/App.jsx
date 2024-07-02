@@ -35,7 +35,7 @@ import { ROUTE_URLS } from "./utils/enums"
 import signalRConnectionManager from "./services/SignalRService"
 
 import { ConfirmDialog } from "primereact/confirmdialog"
-import { useUserData } from "./context/AuthContext"
+import { useAuthProvider, useUserData } from "./context/AuthContext"
 import { useQuery } from "@tanstack/react-query"
 import { GetAllMenus } from "./api/MenusData"
 import { useRoutesData } from "./context/RoutesContext"
@@ -54,6 +54,8 @@ import {
   KBarResults,
   NO_GROUP,
 } from "kbar"
+import { displayYesNoDialog } from "./utils/helpers"
+import { SEVERITIES } from "./utils/CONSTANTS"
 
 const searchStyle = {
   padding: "12px 16px",
@@ -230,7 +232,7 @@ const App = () => {
 export default App
 
 export function InitMenuNames({ children }) {
-  const user = useUserData()
+  const { user, logoutUser } = useAuthProvider()
   const navigate = useNavigate()
   const { setAuthorizedRoutes, setOriginalRoutes } = useRoutesData()
 
@@ -244,6 +246,7 @@ export function InitMenuNames({ children }) {
     enabled: user != null,
     refetchOnWindowFocus: false,
     staleTime: Infinity,
+    retry: false,
   })
 
   const kbarActions =
@@ -254,8 +257,29 @@ export function InitMenuNames({ children }) {
         name: item.menuName,
         keywords: item.menuName.toLowerCase(),
         perform: () => navigate(item.routeUrl),
+        section: "Pages",
       }
     })
+
+  const addtionalKbarActions = kbarActions && [
+    ...kbarActions,
+    {
+      id: "logout",
+      name: "Logout",
+      keywords: "logout",
+      perform: () => {
+        displayYesNoDialog({
+          message: "Are you sure you want to logout?",
+          header: "Confirmation",
+          accept: () => logoutUser(),
+          reject: () => null,
+          icon: <i className="pi pi-info-circle text-5xl"></i>,
+          severity: SEVERITIES.DANGER,
+        })
+      },
+      section: "Actions",
+    },
+  ]
 
   useEffect(() => {
     if (AllowedMenus) {
@@ -266,9 +290,11 @@ export function InitMenuNames({ children }) {
 
   return (
     <>
-      {isLoading || isFetching ? null : (
+      {isLoading || isFetching ? (
+        <>{children}</>
+      ) : (
         <>
-          <KBarProvider actions={kbarActions}>
+          <KBarProvider actions={addtionalKbarActions}>
             <CommandBar />
             {children}
           </KBarProvider>
@@ -278,10 +304,10 @@ export function InitMenuNames({ children }) {
   )
 }
 
-function CommandBar() {
+export function CommandBar() {
   return (
     <KBarPortal>
-      <KBarPositioner>
+      <KBarPositioner style={{ zIndex: 10 }}>
         <KBarAnimator style={animatorStyle}>
           <KBarSearch style={searchStyle} />
           <RenderResults />
