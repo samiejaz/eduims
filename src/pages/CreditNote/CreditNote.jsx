@@ -98,6 +98,7 @@ function DetailComponent({ userRights }) {
     queryKey: [queryKey],
     queryFn: () => fetchAllCreditNotees(user.userID),
     initialData: [],
+    refetchOnWindowFocus: false,
   })
 
   const deleteMutation = useMutation({

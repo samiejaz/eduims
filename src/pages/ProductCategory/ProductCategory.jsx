@@ -72,6 +72,7 @@ export function DetailComponent({ userRights }) {
     queryKey: [queryKey],
     queryFn: () => fetchAllProductCategories(user.userID),
     initialData: [],
+    refetchOnWindowFocus: false,
   })
 
   const deleteMutation = useMutation({

@@ -156,6 +156,7 @@ export function GenOldCustomerDetail({ userRights }) {
     queryKey: [queryKey],
     queryFn: () => fetchAllGenOldCustomers(user.userID),
     initialData: [],
+    refetchOnWindowFocus: false,
   })
 
   const deleteMutation = useMutation({

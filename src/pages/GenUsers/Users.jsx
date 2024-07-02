@@ -81,6 +81,7 @@ function DetailComponent({ userRights }) {
     queryKey: [queryKey],
     queryFn: () => fetchAllUsers(user.userID),
     initialData: [],
+    refetchOnWindowFocus: false,
   })
 
   const deleteMutation = useMutation({

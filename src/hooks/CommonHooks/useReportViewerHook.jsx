@@ -28,7 +28,6 @@ const useReportViewer = ({ controllerName, ShowPrintInNewTab = false }) => {
   })
 
   function generateReport(reportQueyrParams) {
-    console.log(isStale, "is")
     setReload((previous) => !previous)
     queryclient.removeQueries({ queryKey: ["accountLedgerReport"] })
     if (!ShowPrintInNewTab) {

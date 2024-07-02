@@ -35,7 +35,7 @@ import { ROUTE_URLS } from "./utils/enums"
 import signalRConnectionManager from "./services/SignalRService"
 
 import { ConfirmDialog } from "primereact/confirmdialog"
-import { useUserData } from "./context/AuthContext"
+import { useAuthProvider, useUserData } from "./context/AuthContext"
 import { useQuery } from "@tanstack/react-query"
 import { GetAllMenus } from "./api/MenusData"
 import { useRoutesData } from "./context/RoutesContext"
@@ -54,6 +54,8 @@ import {
   KBarResults,
   NO_GROUP,
 } from "kbar"
+import { displayYesNoDialog } from "./utils/helpers"
+import { SEVERITIES } from "./utils/CONSTANTS"
 
 const searchStyle = {
   padding: "12px 16px",
@@ -85,203 +87,13 @@ const groupNameStyle = {
 
 const App = () => {
   const { theme: mode } = useThemeProvider()
-  const navigate = useNavigate()
 
   useEffect(() => {
     signalRConnectionManager.startConnection()
   }, [])
 
-  const kbarActions = [
-    // General
-    {
-      id: "country",
-      name: "Country",
-      keywords: "general country",
-      perform: () => navigate(ROUTE_URLS.COUNTRY_ROUTE),
-    },
-    {
-      id: "tehsil",
-      name: "Tehsil",
-      keywords: "general tehsil",
-      perform: () => navigate(ROUTE_URLS.TEHSIL_ROUTE),
-    },
-    {
-      id: "companyInfo",
-      name: "Company Info",
-      keywords: "general company info",
-      perform: () => navigate(ROUTE_URLS.GENERAL.COMPANY_INFO_ROUTE),
-    },
-    {
-      id: "businessUnit",
-      name: "Business Unit",
-      keywords: "general business unit",
-      perform: () => navigate(ROUTE_URLS.GENERAL.BUSINESS_UNITS),
-    },
-    {
-      id: "businessNature",
-      name: "Business Nature",
-      keywords: "general business nature",
-      perform: () => navigate(ROUTE_URLS.BUSINESS_NATURE_ROUTE),
-    },
-    {
-      id: "businessType",
-      name: "Business Type",
-      keywords: "general business type",
-      perform: () => navigate(ROUTE_URLS.BUSINESS_TYPE),
-    },
-    {
-      id: "businessSegments",
-      name: "Business Segments",
-      keywords: "general business segments",
-      perform: () => navigate(ROUTE_URLS.BUSINESS_SEGMENT_ROUTE),
-    },
-    {
-      id: "sessionInfo",
-      name: "Session Info",
-      keywords: "general session info",
-      perform: () => navigate(ROUTE_URLS.GENERAL.SESSION_INFO),
-    },
-    {
-      id: "productCategory",
-      name: "Product Category",
-      keywords: "utilities product category",
-      perform: () => navigate(ROUTE_URLS.UTILITIES.PRODUCT_CATEGORY_ROUTE),
-    },
-    {
-      id: "productInfo",
-      name: "Product Info",
-      keywords: "utilities product info",
-      perform: () => navigate(ROUTE_URLS.UTILITIES.PRODUCT_INFO_ROUTE),
-    },
-    // Customers
-    {
-      id: "customerEntry",
-      name: "Customer Entry",
-      keywords: "customers entry",
-      perform: () => navigate(ROUTE_URLS.CUSTOMERS.CUSTOMER_ENTRY),
-    },
-    {
-      id: "oldCustomerEntry",
-      name: "Old Customer Entry",
-      keywords: "customers old entry",
-      perform: () => navigate(ROUTE_URLS.CUSTOMERS.OLD_CUSTOMER_ENTRY),
-    },
-    // Users
-    {
-      id: "users",
-      name: "Users",
-      keywords: "users",
-      perform: () => navigate(ROUTE_URLS.USER_ROUTE),
-    },
-    {
-      id: "departments",
-      name: "Departments",
-      keywords: "users departments",
-      perform: () => navigate(ROUTE_URLS.DEPARTMENT),
-    },
-    // Accounts
-    {
-      id: "bankAccountOpening",
-      name: "Bank Account Opening",
-      keywords: "accounts bank account",
-      perform: () => navigate(ROUTE_URLS.ACCOUNTS.BANK_ACCOUNT_OPENING),
-    },
-    {
-      id: "customerInvoice",
-      name: "Customer Invoice",
-      keywords: "accounts customer invoice",
-      perform: () => navigate(ROUTE_URLS.ACCOUNTS.NEW_CUSTOMER_INVOICE),
-    },
-    {
-      id: "receiptVoucher",
-      name: "Receipt Voucher",
-      keywords: "accounts receipt voucher",
-      perform: () => navigate(ROUTE_URLS.ACCOUNTS.RECIEPT_VOUCHER_ROUTE),
-    },
-    {
-      id: "debitNote",
-      name: "Debit Note",
-      keywords: "accounts debit note",
-      perform: () => navigate(ROUTE_URLS.ACCOUNTS.DEBIT_NODE_ROUTE),
-    },
-    {
-      id: "creditNote",
-      name: "Credit Note",
-      keywords: "accounts credit note",
-      perform: () => navigate(ROUTE_URLS.ACCOUNTS.CREDIT_NODE_ROUTE),
-    },
-    // Utilities
-    {
-      id: "appConfiguration",
-      name: "App Configuration",
-      keywords: "utilities app configuration",
-      perform: () => navigate(ROUTE_URLS.GENERAL.APP_CONFIGURATION_ROUTE),
-    },
-    {
-      id: "userRights",
-      name: "User Rights",
-      keywords: "configuration user rights",
-      perform: () => navigate(ROUTE_URLS.CONFIGURATION.USER_RIGHTS_ROUTE),
-    },
-    // Leads
-    {
-      id: "leadsDashboard",
-      name: "Leads Dashboard",
-      keywords: "leads dashboard",
-      perform: () => navigate(ROUTE_URLS.LEADS.LEADS_DASHBOARD),
-    },
-    {
-      id: "userDashboard",
-      name: "User Dashboard",
-      keywords: "leads user dashboard",
-      perform: () => navigate(ROUTE_URLS.LEADS.LEADS_USER_DASHBOARD),
-    },
-    {
-      id: "leadsIntroduction",
-      name: "Leads Introduction",
-      keywords: "leads introduction",
-      perform: () => navigate(ROUTE_URLS.LEAD_INTRODUCTION_ROUTE),
-    },
-    {
-      id: "leadsSource",
-      name: "Leads Source",
-      keywords: "leads source",
-      perform: () => navigate(ROUTE_URLS.LEED_SOURCE_ROUTE),
-    },
-    // Reports
-    {
-      id: "customerLedger",
-      name: "Customer Ledger",
-      keywords: "reports customer ledger",
-      perform: () => navigate(ROUTE_URLS.REPORTS.ACCOUNT_LEDGER_REPORT_ROUTE),
-    },
-    {
-      id: "customerDetailLedger",
-      name: "Customer Detail Ledger",
-      keywords: "reports customer detail ledger",
-      perform: () =>
-        navigate(
-          ROUTE_URLS.REPORTS.BUSINESS_UNIT_AND_BALANCE_LEDGER_REPORT_ROUTE
-        ),
-    },
-    {
-      id: "subsidarySheet",
-      name: "Subsidary Sheet",
-      keywords: "reports subsidary sheet",
-      perform: () => navigate(ROUTE_URLS.REPORTS.SUBSIDIARY_SHEET_REPORT_ROUTE),
-    },
-  ]
-
   return (
     <PrimeReactProvider value={{ ripple: true }}>
-      <InitMenuNames />
-      {/* <KBarProvider
-        actions={kbarActions}
-        options={{
-          enableHistory: true,
-        }}
-      >
-        <CommandBar /> */}
       <Routes>
         <Route path="auth" element={<SignUp />} />
         <Route path="/" element={<ProtectedRoutes />}>
@@ -403,7 +215,6 @@ const App = () => {
           {/* Reports End */}
         </Route>
       </Routes>
-      {/* </KBarProvider> */}
 
       <ConfirmDialog id="EditDeleteDialog" draggable={false} />
       <ToastContainer
@@ -420,17 +231,55 @@ const App = () => {
 
 export default App
 
-export function InitMenuNames() {
-  const user = useUserData()
+export function InitMenuNames({ children }) {
+  const { user, logoutUser } = useAuthProvider()
+  const navigate = useNavigate()
   const { setAuthorizedRoutes, setOriginalRoutes } = useRoutesData()
 
-  const { data: AllowedMenus } = useQuery({
+  const {
+    data: AllowedMenus,
+    isLoading,
+    isFetching,
+  } = useQuery({
     queryKey: ["allowRoutes", user?.userID],
     queryFn: () => GetAllMenus({ LoginUserID: user?.userID }),
     enabled: user != null,
     refetchOnWindowFocus: false,
     staleTime: Infinity,
+    retry: false,
   })
+
+  const kbarActions =
+    AllowedMenus?.orignalRoutes &&
+    AllowedMenus?.orignalRoutes.map((item) => {
+      return {
+        id: item.menuKey,
+        name: item.menuName,
+        keywords: item.menuName.toLowerCase(),
+        perform: () => navigate(item.routeUrl),
+        section: "Pages",
+      }
+    })
+
+  const addtionalKbarActions = kbarActions && [
+    ...kbarActions,
+    {
+      id: "logout",
+      name: "Logout",
+      keywords: "logout",
+      perform: () => {
+        displayYesNoDialog({
+          message: "Are you sure you want to logout?",
+          header: "Confirmation",
+          accept: () => logoutUser(),
+          reject: () => null,
+          icon: <i className="pi pi-info-circle text-5xl"></i>,
+          severity: SEVERITIES.DANGER,
+        })
+      },
+      section: "Actions",
+    },
+  ]
 
   useEffect(() => {
     if (AllowedMenus) {
@@ -439,13 +288,26 @@ export function InitMenuNames() {
     }
   }, [AllowedMenus])
 
-  return null
+  return (
+    <>
+      {isLoading || isFetching ? (
+        <>{children}</>
+      ) : (
+        <>
+          <KBarProvider actions={addtionalKbarActions}>
+            <CommandBar />
+            {children}
+          </KBarProvider>
+        </>
+      )}
+    </>
+  )
 }
 
-function CommandBar() {
+export function CommandBar() {
   return (
     <KBarPortal>
-      <KBarPositioner>
+      <KBarPositioner style={{ zIndex: 10 }}>
         <KBarAnimator style={animatorStyle}>
           <KBarSearch style={searchStyle} />
           <RenderResults />

@@ -19,7 +19,7 @@ function RootLayout() {
     () => {
       toggleSideBar(true)
     },
-    "k",
+    "l",
     true
   )
 
@@ -114,7 +114,7 @@ function Header({ toggleSidebar, handleMobileToggleSidebar }) {
           ></i>
         )}
         <div className="flex align-items-center gap-4">
-          {/* <TriggerShortcutButton theme={theme} /> */}
+          <TriggerShortcutButton theme={theme} />
           <i
             className="pi pi-user hoverIcon"
             onClick={() => {
