@@ -167,6 +167,7 @@ export const downloadFile = (file) => {
 }
 
 export function formatDateWithSymbol(dateInput, symbol = "-") {
+  console.log(dateInput)
   const month = dateInput.toLocaleString("en-US", { month: "short" })
   const date = dateInput.getDate()
   const year = dateInput.getFullYear()

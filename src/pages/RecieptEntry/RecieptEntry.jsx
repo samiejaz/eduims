@@ -24,6 +24,7 @@ import DetailHeaderActionButtons from "../../components/DetailHeaderActionButton
 import CDropdown from "../../components/Forms/CDropdown"
 import { DevTool } from "@hookform/devtools"
 import {
+  SendReceiptVoucherEmail,
   addNewReceiptVoucher,
   deleteReceiptVoucherByID,
   fetchAllReceiptVoucheres,
@@ -368,13 +369,20 @@ function FormComponent({ mode, userRights }) {
     initialData: [],
     enabled: mode !== "",
   })
-
+  const SendEmailMutation = useMutation({
+    mutationFn: SendReceiptVoucherEmail,
+  })
   const receiptVoucherMutation = useMutation({
     mutationFn: addNewReceiptVoucher,
-    onSuccess: ({ success, RecordID }) => {
+    onSuccess: ({ success, RecordID, Type }) => {
       if (success) {
         queryClient.invalidateQueries({ queryKey: [queryKey] })
         navigate(`${parentRoute}/${RecordID}`)
+        SendEmailMutation.mutate({
+          LoginUserID: user.userID,
+          ReceiptVoucherID: decryptID(RecordID),
+          Type: Type,
+        })
       }
     },
   })

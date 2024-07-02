@@ -6,6 +6,7 @@ import {
   verifyAndReturnEncryptedIDForForms,
 } from "../utils/crypto"
 import { ShowErrorToast, formatDateWithSymbol } from "../utils/CommonFunctions"
+import { Type } from "lucide-react"
 
 const apiUrl = import.meta.env.VITE_APP_API_URL
 
@@ -135,12 +136,16 @@ export async function addNewReceiptVoucher({
         } else {
           toast.success("ReceiptVoucher created successfully!")
         }
-        return { success: true, RecordID: encryptID(data?.ReceiptVoucherID) }
+        return {
+          success: true,
+          RecordID: encryptID(data?.ReceiptVoucherID),
+          Type: data?.Type,
+        }
       } else {
         toast.error(data.message, {
           autoClose: false,
         })
-        return { success: false, RecordID: ReceiptVoucherID }
+        return { success: false, RecordID: ReceiptVoucherID, Type: "" }
       }
     } catch (error) {
       toast.error(error.message, {
@@ -151,5 +156,26 @@ export async function addNewReceiptVoucher({
     toast.error("Please add atleast 1 row!", {
       autoClose: false,
     })
+  }
+}
+
+export async function SendReceiptVoucherEmail({
+  LoginUserID,
+  Type,
+  ReceiptVoucherID,
+}) {
+  try {
+    const { data } = await axios.post(
+      `${apiUrl}/${CONTROLLER}/SendReceiptVoucherEmail?ReceiptVoucherID=${ReceiptVoucherID}&Type=${Type}&LoginUserID=${LoginUserID}`
+    )
+
+    if (data.success === true) {
+      return true
+    } else {
+      ShowErrorToast(data.message)
+      return false
+    }
+  } catch (error) {
+    ShowErrorToast(error.message)
   }
 }

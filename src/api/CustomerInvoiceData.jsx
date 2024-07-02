@@ -178,10 +178,14 @@ export async function addNewCustomerInvoice({
       } else {
         ShowSuccessToast("Invoice created successfully!")
       }
-      return { success: true, RecordID: encryptID(data?.CustomerInvoiceID) }
+      return {
+        success: true,
+        RecordID: encryptID(data?.CustomerInvoiceID),
+        Type: data?.Type,
+      }
     } else {
       ShowErrorToast(data.message)
-      return { success: false, RecordID: CustomerInvoiceID }
+      return { success: false, RecordID: CustomerInvoiceID, Type: "" }
     }
   } catch (e) {
     ShowErrorToast("Insert::" + e.message)
@@ -199,5 +203,26 @@ export async function fetchMonthlyMaxCustomerInvoiceNo(BusinessUnitID) {
     }
   } else {
     return []
+  }
+}
+
+export async function SendCustomerInvoiceEmail({
+  LoginUserID,
+  Type,
+  CustomerInvoiceID,
+}) {
+  try {
+    const { data } = await axios.post(
+      `${apiUrl}/${CONTROLLER}/SendCustomerInvoiceEmail?CustomerInvoiceID=${CustomerInvoiceID}&Type=${Type}&LoginUserID=${LoginUserID}`
+    )
+
+    if (data.success === true) {
+      return true
+    } else {
+      ShowErrorToast(data.message)
+      return false
+    }
+  } catch (error) {
+    ShowErrorToast(error.message)
   }
 }
