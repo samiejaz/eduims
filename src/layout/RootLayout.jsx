@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom"
 
-import CSidebar from "./Sidebar/CSidebar"
+import CSidebar, { SignOut } from "./Sidebar/CSidebar"
 import { useContext, useEffect, useRef } from "react"
 
 import useKeyCombination from "../hooks/useKeyCombinationHook"
@@ -121,6 +121,7 @@ function Header({ toggleSidebar, handleMobileToggleSidebar }) {
               handleShowProfile()
             }}
           ></i>
+          <SignOut />
           <i
             className={`pi pi-${theme === "dark" ? "sun" : "moon"} hoverIcon`}
             onClick={() => {

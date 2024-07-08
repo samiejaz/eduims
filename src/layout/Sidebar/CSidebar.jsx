@@ -145,11 +145,7 @@ export const SignOut = () => {
 
   return (
     <>
-      <i
-        className="pi pi-sign-out"
-        onClick={confirmLogout}
-        style={{ width: "50px", minWidth: "50px" }}
-      ></i>
+      <i className="pi pi-sign-out" onClick={confirmLogout}></i>
     </>
   )
 }
