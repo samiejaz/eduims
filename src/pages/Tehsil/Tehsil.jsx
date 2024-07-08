@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useNavigate, useParams } from "react-router-dom"
 import { FilterMatchMode } from "primereact/api"
-import { useContext, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { CustomSpinner } from "../../components/CustomSpinner"
 import { DataTable } from "primereact/datatable"
 import { Column } from "primereact/column"
@@ -10,7 +10,7 @@ import { useForm } from "react-hook-form"
 import ButtonToolBar from "../../components/ActionsToolbar"
 import TextInput from "../../components/Forms/TextInput"
 import CheckBox from "../../components/Forms/CheckBox"
-import { AuthContext, useUserData } from "../../context/AuthContext"
+import { useAuthProvider } from "../../context/AuthContext"
 import {
   addNewTehsil,
   deleteTehsilByID,
@@ -19,7 +19,12 @@ import {
 } from "../../api/TehsilData"
 import CDropdown from "../../components/Forms/CDropdown"
 import { useAllCountiesSelectData } from "../../hooks/SelectData/useSelectData"
-import { MENU_KEYS, QUERY_KEYS, ROUTE_URLS } from "../../utils/enums"
+import {
+  MENU_KEYS,
+  QUERY_KEYS,
+  ROUTE_URLS,
+  TABLE_NAMES,
+} from "../../utils/enums"
 import {
   FormRow,
   FormColumn,
@@ -64,7 +69,7 @@ function DetailComponent({ userRights }) {
     CountryTitle: { value: null, matchMode: FilterMatchMode.CONTAINS },
   })
 
-  const user = useUserData()
+  const { user } = useAuthProvider()
 
   const { data, isLoading, isFetching } = useQuery({
     queryKey: [queryKey],
@@ -179,9 +184,9 @@ function FormComponent({ mode, userRights }) {
       InActive: false,
     },
   })
-  const { user } = useContext(AuthContext)
+  const { user } = useAuthProvider()
   const { data: PreviousAndNextIDs } = usePreviousAndNextID({
-    TableName: "gen_Tehsil",
+    TableName: TABLE_NAMES.TEHSIL,
     IDName: IDENTITY,
     LoginUserID: user?.userID,
     RecordID: TehsilID,

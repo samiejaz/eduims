@@ -22,6 +22,7 @@ import {
   QUERY_KEYS,
   SELECT_QUERY_KEYS,
   MENU_KEYS,
+  TABLE_NAMES,
 } from "../../utils/enums"
 import CDatePicker from "../../components/Forms/CDatePicker"
 import { parseISO } from "date-fns"
@@ -34,6 +35,7 @@ import useConfirmationModal from "../../hooks/useConfirmationModalHook"
 import { encryptID } from "../../utils/crypto"
 import { FormRightsWrapper } from "../../components/Wrappers/wrappers"
 import { DetailPageTilteAndActionsComponent } from "../../components"
+import { usePreviousAndNextID } from "../../hooks/api/usePreviousAndNextIDHook"
 
 let parentRoute = ROUTE_URLS.GENERAL.SESSION_INFO
 let editRoute = `${parentRoute}/edit/`
@@ -191,6 +193,13 @@ export function FormComponent({ mode, userRights }) {
 
   const user = useUserData()
 
+  const { data: PreviousAndNextIDs } = usePreviousAndNextID({
+    TableName: TABLE_NAMES.SESSION_INFO,
+    IDName: IDENTITY,
+    LoginUserID: user?.userID,
+    RecordID: SessionID,
+  })
+
   const SessionData = useQuery({
     queryKey: [queryKey, SessionID],
     queryFn: () => fetchSessionById(SessionID, user?.userID),
@@ -291,6 +300,15 @@ export function FormComponent({ mode, userRights }) {
               showAddNewButton={userRights[0]?.RoleNew}
               showEditButton={userRights[0]?.RoleEdit}
               showDelete={userRights[0]?.RoleDelete}
+              PreviousAndNextIDs={PreviousAndNextIDs}
+              handlePrevious={() =>
+                navigate(
+                  `${parentRoute}/${PreviousAndNextIDs.PreviousRecordID}`
+                )
+              }
+              handleNext={() =>
+                navigate(`${parentRoute}/${PreviousAndNextIDs.NextRecordID}`)
+              }
             />
           </div>
           <form className="mt-4">

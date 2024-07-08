@@ -18,7 +18,12 @@ import {
   fetchAllUsers,
   fetchUserById,
 } from "../../api/UserData"
-import { ROUTE_URLS, QUERY_KEYS, MENU_KEYS } from "../../utils/enums"
+import {
+  ROUTE_URLS,
+  QUERY_KEYS,
+  MENU_KEYS,
+  TABLE_NAMES,
+} from "../../utils/enums"
 import {
   useAllDepartmentsSelectData,
   useAllUserRolesSelectData,
@@ -39,6 +44,7 @@ import { Avatar } from "primereact/avatar"
 
 import { FormRightsWrapper } from "../../components/Wrappers/wrappers"
 import { DetailPageTilteAndActionsComponent } from "../../components"
+import { usePreviousAndNextID } from "../../hooks/api/usePreviousAndNextIDHook"
 let parentRoute = ROUTE_URLS.USER_ROUTE
 let editRoute = `${parentRoute}/edit/`
 let newRoute = `${parentRoute}/new`
@@ -232,6 +238,13 @@ function FormComponent({ mode, userRights }) {
   const { UserID } = useParams()
   const user = useUserData()
 
+  const { data: PreviousAndNextIDs } = usePreviousAndNextID({
+    TableName: TABLE_NAMES.USERS,
+    IDName: "LoginUserID",
+    LoginUserID: user?.userID,
+    RecordID: UserID,
+  })
+
   const {
     control,
     handleSubmit,
@@ -381,6 +394,15 @@ function FormComponent({ mode, userRights }) {
                 UserData?.data[0]?.FirstName === "ADMINISTRATOR"
                   ? false
                   : true
+              }
+              PreviousAndNextIDs={PreviousAndNextIDs}
+              handlePrevious={() =>
+                navigate(
+                  `${parentRoute}/${PreviousAndNextIDs.PreviousRecordID}`
+                )
+              }
+              handleNext={() =>
+                navigate(`${parentRoute}/${PreviousAndNextIDs.NextRecordID}`)
               }
             />
           </div>

@@ -12,6 +12,7 @@ export const fetchPreviousAndNextID = async ({
   TableName,
   IDName,
 }) => {
+  console.log(RecordID)
   let ID = decryptID(RecordID)
   if (ID !== null) {
     try {

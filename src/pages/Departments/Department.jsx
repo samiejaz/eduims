@@ -22,6 +22,7 @@ import {
   QUERY_KEYS,
   MENU_KEYS,
   SELECT_QUERY_KEYS,
+  TABLE_NAMES,
 } from "../../utils/enums"
 import {
   FormRow,
@@ -32,6 +33,7 @@ import useConfirmationModal from "../../hooks/useConfirmationModalHook"
 import { encryptID } from "../../utils/crypto"
 import { FormRightsWrapper } from "../../components/Wrappers/wrappers"
 import { DetailPageTilteAndActionsComponent } from "../../components"
+import { usePreviousAndNextID } from "../../hooks/api/usePreviousAndNextIDHook"
 
 let parentRoute = ROUTE_URLS.DEPARTMENT
 let editRoute = `${parentRoute}/edit/`
@@ -178,6 +180,13 @@ function FormComponent({ mode, userRights }) {
 
   const user = useUserData()
 
+  const { data: PreviousAndNextIDs } = usePreviousAndNextID({
+    TableName: TABLE_NAMES.DEPARTMENTS,
+    IDName: IDENTITY,
+    LoginUserID: user?.userID,
+    RecordID: DepartmentID,
+  })
+
   const DepartmentData = useQuery({
     queryKey: [queryKey, DepartmentID],
     queryFn: () => fetchDepartmentById(DepartmentID, user.userID),
@@ -268,6 +277,15 @@ function FormComponent({ mode, userRights }) {
               showAddNewButton={userRights[0]?.RoleNew}
               showEditButton={userRights[0]?.RoleEdit}
               showDelete={userRights[0]?.RoleDelete}
+              PreviousAndNextIDs={PreviousAndNextIDs}
+              handlePrevious={() =>
+                navigate(
+                  `${parentRoute}/${PreviousAndNextIDs.PreviousRecordID}`
+                )
+              }
+              handleNext={() =>
+                navigate(`${parentRoute}/${PreviousAndNextIDs.NextRecordID}`)
+              }
             />
           </div>
           <form className="mt-4">

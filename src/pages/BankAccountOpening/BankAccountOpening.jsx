@@ -18,7 +18,12 @@ import {
   fetchAllBankAccounts,
   fetchBankAccountById,
 } from "../../api/BankAccountData"
-import { ROUTE_URLS, QUERY_KEYS, MENU_KEYS } from "../../utils/enums"
+import {
+  ROUTE_URLS,
+  QUERY_KEYS,
+  MENU_KEYS,
+  TABLE_NAMES,
+} from "../../utils/enums"
 import {
   FormRow,
   FormColumn,
@@ -30,6 +35,7 @@ import { encryptID } from "../../utils/crypto"
 import { FormRightsWrapper } from "../../components/Wrappers/wrappers"
 import { CommonBusinessUnitCheckBoxDatatable } from "../../components/CommonFormFields"
 import { DetailPageTilteAndActionsComponent } from "../../components"
+import { usePreviousAndNextID } from "../../hooks/api/usePreviousAndNextIDHook"
 
 let parentRoute = ROUTE_URLS.ACCOUNTS.BANK_ACCOUNT_OPENING
 let editRoute = `${parentRoute}/edit/`
@@ -211,8 +217,15 @@ function BankAccountForm({ mode, userRights }) {
     },
   })
 
+  const { data: PreviousAndNextIDs } = usePreviousAndNextID({
+    TableName: TABLE_NAMES.BANK_ACCOUNT_OPENING,
+    IDName: IDENTITY,
+    LoginUserID: user?.userID,
+    RecordID: BankAccountID,
+  })
+
   const BankAccountData = useQuery({
-    queryKey: [queryKey, +BankAccountID],
+    queryKey: [queryKey, BankAccountID],
     queryFn: () => fetchBankAccountById(BankAccountID, user.userID),
     enabled: mode !== "new",
     initialData: [],
@@ -314,6 +327,15 @@ function BankAccountForm({ mode, userRights }) {
               showAddNewButton={userRights[0]?.RoleNew}
               showEditButton={userRights[0]?.RoleEdit}
               showDelete={userRights[0]?.RoleDelete}
+              PreviousAndNextIDs={PreviousAndNextIDs}
+              handlePrevious={() => {
+                navigate(
+                  `${parentRoute}/${PreviousAndNextIDs.PreviousRecordID}`
+                )
+              }}
+              handleNext={() =>
+                navigate(`${parentRoute}/${PreviousAndNextIDs.NextRecordID}`)
+              }
             />
           </div>
           <form className="mt-4">

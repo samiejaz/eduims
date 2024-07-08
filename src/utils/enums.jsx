@@ -195,3 +195,29 @@ export const MOVEABLE_COMPNENTS_NAMES = {
 export const LOCAL_STORAGE_KEYS = {
   USER_KEY: "sQbnIru",
 }
+
+export const TABLE_NAMES = {
+  COUNTRY: "gen_Country",
+  TEHSIL: "gen_Tehsil",
+  COMPANY_INFO: "gen_CompanyInfo",
+  BUSINESS_UNIT: "gen_BusinessUnits",
+  BUSINESS_NATURE: "gen_BusinessNature",
+  BUSINESS_TYPE: "gen_BusinessType",
+  BUSINESS_SEGMENT: "gen_BusinessSegment",
+  SESSION_INFO: "gen_SessionInfo",
+  PRODUCT_CATEGORY: "gen_ProductCategory",
+  PRODUCTS_INFO: "gen_ProductsInfo",
+  CUSTOMER_INFO_1: "gen_CustomerInfo",
+  OLD_CUSTOMER_INFO: "gen_CustomerInfo",
+  USERS: "gen_Users",
+  DEPARTMENTS: "gen_Departments",
+  BANK_ACCOUNT_OPENING: "gen_BankAccountOpening",
+  CUSTOMER_INVOICE: "data_CustomerInvoice",
+  RECEIPT_VOUCHER: "data_ReceiptVoucher",
+  CREDIT_NOTE: "data_CreditNote",
+  DEBIT_NOTE: "data_DebitNote",
+  APP_CONFIGURATION: "gen_AppConfiguration",
+  USER_ROLE: "gen_UserRole",
+  LEAD_SOURCE: "gen_LeadSource",
+  LEAD_INTRODUCTION: "gen_LeadIntroduction",
+}

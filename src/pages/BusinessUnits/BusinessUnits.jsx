@@ -23,7 +23,12 @@ import {
   fetchAllBusinessUnits,
   fetchBusinessUnitById,
 } from "../../api/BusinessUnitData"
-import { ROUTE_URLS, QUERY_KEYS, MENU_KEYS } from "../../utils/enums"
+import {
+  ROUTE_URLS,
+  QUERY_KEYS,
+  MENU_KEYS,
+  TABLE_NAMES,
+} from "../../utils/enums"
 import { ColorPicker } from "primereact/colorpicker"
 import { classNames } from "primereact/utils"
 import useConfirmationModal from "../../hooks/useConfirmationModalHook"
@@ -34,6 +39,7 @@ import {
 } from "../../components/Forms/form"
 import { FormRightsWrapper } from "../../components/Wrappers/wrappers"
 import { DetailPageTilteAndActionsComponent } from "../../components"
+import { usePreviousAndNextID } from "../../hooks/api/usePreviousAndNextIDHook"
 
 let parentRoute = ROUTE_URLS.GENERAL.BUSINESS_UNITS
 let editRoute = `${parentRoute}/edit/`
@@ -233,6 +239,13 @@ function FormComponent({ mode, userRights }) {
       },
     })
 
+  const { data: PreviousAndNextIDs } = usePreviousAndNextID({
+    TableName: TABLE_NAMES.BUSINESS_UNIT,
+    IDName: IDENTITY,
+    LoginUserID: user?.userID,
+    RecordID: BusinessUnitID,
+  })
+
   const BusinessUnitData = useQuery({
     queryKey: [queryKey, BusinessUnitID],
     queryFn: () => fetchBusinessUnitById(BusinessUnitID, user.userID),
@@ -241,7 +254,7 @@ function FormComponent({ mode, userRights }) {
   })
 
   useEffect(() => {
-    if (+BusinessUnitID !== undefined && BusinessUnitData?.data?.length > 0) {
+    if (BusinessUnitID !== undefined && BusinessUnitData?.data?.length > 0) {
       try {
         setValue(
           "BusinessUnitName",
@@ -369,6 +382,15 @@ function FormComponent({ mode, userRights }) {
               showAddNewButton={userRights[0]?.RoleNew}
               showEditButton={userRights[0]?.RoleEdit}
               showDelete={userRights[0]?.RoleDelete}
+              PreviousAndNextIDs={PreviousAndNextIDs}
+              handlePrevious={() =>
+                navigate(
+                  `${parentRoute}/${PreviousAndNextIDs.PreviousRecordID}`
+                )
+              }
+              handleNext={() =>
+                navigate(`${parentRoute}/${PreviousAndNextIDs.NextRecordID}`)
+              }
             />
           </div>
           <form className="mt-4">

@@ -15,6 +15,7 @@ import {
   QUERY_KEYS,
   ROUTE_URLS,
   SELECT_QUERY_KEYS,
+  TABLE_NAMES,
 } from "../../utils/enums"
 import { useNavigate, useParams } from "react-router-dom"
 
@@ -36,6 +37,7 @@ import ActionButtons from "../../components/ActionButtons"
 import { initAuthorizedMenus } from "../../utils/routes"
 import { FormRightsWrapper } from "../../components/Wrappers/wrappers"
 import { DetailPageTilteAndActionsComponent } from "../../components"
+import { usePreviousAndNextID } from "../../hooks/api/usePreviousAndNextIDHook"
 
 let parentRoute = ROUTE_URLS.CONFIGURATION.USER_RIGHTS_ROUTE
 let editRoute = `${parentRoute}/edit/`
@@ -68,6 +70,13 @@ const FormComponent = ({ mode, userRights }) => {
   })
   const user = useUserData()
   const userRightsRef = useRef()
+
+  const { data: PreviousAndNextIDs } = usePreviousAndNextID({
+    TableName: TABLE_NAMES.USER_ROLE,
+    IDName: IDENTITY,
+    LoginUserID: user?.userID,
+    RecordID: RoleID,
+  })
 
   const RoleData = useQuery({
     queryKey: [queryKey, RoleID],
@@ -165,6 +174,13 @@ const FormComponent = ({ mode, userRights }) => {
           showAddNewButton={userRights[0]?.RoleNew}
           showEditButton={userRights[0]?.RoleEdit}
           showDelete={userRights[0]?.RoleDelete}
+          PreviousAndNextIDs={PreviousAndNextIDs}
+          handlePrevious={() =>
+            navigate(`${parentRoute}/${PreviousAndNextIDs.PreviousRecordID}`)
+          }
+          handleNext={() =>
+            navigate(`${parentRoute}/${PreviousAndNextIDs.NextRecordID}`)
+          }
         />
       </div>
       <form onKeyDown={preventFormByEnterKeySubmission}>

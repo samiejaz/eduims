@@ -245,7 +245,7 @@ function FormComponent({ mode, userRights }) {
   })
 
   const { data: CreditNoteData } = useQuery({
-    queryKey: [QUERY_KEYS.CREDIT_NODE_QUERY_KEY, +CreditNoteID],
+    queryKey: [QUERY_KEYS.CREDIT_NODE_QUERY_KEY, CreditNoteID],
     queryFn: () => fetchCreditNoteById(CreditNoteID, user.userID),
     enabled: CreditNoteID !== undefined,
     initialData: [],

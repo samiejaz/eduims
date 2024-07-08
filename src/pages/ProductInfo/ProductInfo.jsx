@@ -28,6 +28,7 @@ import {
   QUERY_KEYS,
   SELECT_QUERY_KEYS,
   MENU_KEYS,
+  TABLE_NAMES,
 } from "../../utils/enums"
 import CDropdown from "../../components/Forms/CDropdown"
 import { useUserData } from "../../context/AuthContext"
@@ -50,6 +51,7 @@ import { confirmDialog } from "primereact/confirmdialog"
 import { Dialog } from "primereact/dialog"
 import { CommonBusinessUnitCheckBoxDatatable } from "../../components/CommonFormFields"
 import { DetailPageTilteAndActionsComponent } from "../../components"
+import { usePreviousAndNextID } from "../../hooks/api/usePreviousAndNextIDHook"
 let parentRoute = ROUTE_URLS.UTILITIES.PRODUCT_INFO_ROUTE
 let editRoute = `${parentRoute}/edit/`
 let newRoute = `${parentRoute}/new`
@@ -216,6 +218,13 @@ function FormComponent({ mode, userRights }) {
 
   const user = useUserData()
 
+  const { data: PreviousAndNextIDs } = usePreviousAndNextID({
+    TableName: TABLE_NAMES.PRODUCTS_INFO,
+    IDName: IDENTITY,
+    LoginUserID: user?.userID,
+    RecordID: ProductInfoID,
+  })
+
   const ProductInfoData = useQuery({
     queryKey: [queryKey, ProductInfoID],
     queryFn: () => fetchProductInfoByID(ProductInfoID, user.userID),
@@ -250,6 +259,9 @@ function FormComponent({ mode, userRights }) {
     onSuccess: ({ success, RecordID }) => {
       if (success) {
         queryClient.invalidateQueries({ queryKey: [queryKey] })
+        queryClient.invalidateQueries({
+          queryKey: [SELECT_QUERY_KEYS.PRODUCTS_INFO_SELECT_QUERY_KEY],
+        })
         navigate(`${parentRoute}/${RecordID}`)
       }
     },
@@ -320,6 +332,15 @@ function FormComponent({ mode, userRights }) {
               showAddNewButton={userRights[0]?.RoleNew}
               showEditButton={userRights[0]?.RoleEdit}
               showDelete={userRights[0]?.RoleDelete}
+              PreviousAndNextIDs={PreviousAndNextIDs}
+              handlePrevious={() =>
+                navigate(
+                  `${parentRoute}/${PreviousAndNextIDs.PreviousRecordID}`
+                )
+              }
+              handleNext={() =>
+                navigate(`${parentRoute}/${PreviousAndNextIDs.NextRecordID}`)
+              }
             />
           </div>
           <form className="mt-4">

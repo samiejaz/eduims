@@ -1280,7 +1280,7 @@ const DetailHeaderBusinessUnitDependents = React.forwardRef((props, ref) => {
   const { data: BusinessUnitSelectData } = useQuery({
     queryKey: [SELECT_QUERY_KEYS.BUSINESS_UNIT_SELECT_QUERY_KEY],
     queryFn: fetchAllBusinessUnitsForSelect,
-    refetchOnWindowFocus: false,
+    refetchOnWindowFocus: true,
     staleTime: 600000,
     refetchInterval: 600000,
   })
@@ -1290,16 +1290,12 @@ const DetailHeaderBusinessUnitDependents = React.forwardRef((props, ref) => {
       BusinessUnitID,
     ],
     queryFn: () => fetchAllProductsForSelect(BusinessUnitID),
-    refetchOnWindowFocus: false,
-    staleTime: 600000,
-    refetchInterval: 600000,
+    refetchOnWindowFocus: true,
   })
   const { data: ServicesInfoSelectData } = useQuery({
     queryKey: [SELECT_QUERY_KEYS.SERVICES_SELECT_QUERY_KEY, BusinessUnitID],
     queryFn: () => fetchAllServicesForSelect(BusinessUnitID),
-    refetchOnWindowFocus: false,
-    staleTime: 600000,
-    refetchInterval: 600000,
+    refetchOnWindowFocus: true,
   })
 
   React.useImperativeHandle(ref, () => ({

@@ -17,7 +17,12 @@ import {
   fetchAllBusinessNatures,
   fetchBusinessNatureById,
 } from "../../api/BusinessNatureData"
-import { MENU_KEYS, QUERY_KEYS, ROUTE_URLS } from "../../utils/enums"
+import {
+  MENU_KEYS,
+  QUERY_KEYS,
+  ROUTE_URLS,
+  TABLE_NAMES,
+} from "../../utils/enums"
 import useConfirmationModal from "../../hooks/useConfirmationModalHook"
 import {
   FormRow,
@@ -27,6 +32,7 @@ import {
 import { encryptID } from "../../utils/crypto"
 import { FormRightsWrapper } from "../../components/Wrappers/wrappers"
 import { DetailPageTilteAndActionsComponent } from "../../components"
+import { usePreviousAndNextID } from "../../hooks/api/usePreviousAndNextIDHook"
 
 let parentRoute = ROUTE_URLS.BUSINESS_NATURE_ROUTE
 let editRoute = `${parentRoute}/edit/`
@@ -179,6 +185,13 @@ function FormComponent({ mode, userRights }) {
     initialData: [],
   })
 
+  const { data: PreviousAndNextIDs } = usePreviousAndNextID({
+    TableName: TABLE_NAMES.BUSINESS_NATURE,
+    IDName: IDENTITY,
+    LoginUserID: user?.userID,
+    RecordID: BusinessNatureID,
+  })
+
   useEffect(() => {
     if (BusinessNatureID !== undefined && BusinessNatureData?.data.length > 0) {
       setValue(
@@ -261,6 +274,15 @@ function FormComponent({ mode, userRights }) {
               showAddNewButton={userRights[0]?.RoleNew}
               showEditButton={userRights[0]?.RoleEdit}
               showDelete={userRights[0]?.RoleDelete}
+              PreviousAndNextIDs={PreviousAndNextIDs}
+              handlePrevious={() =>
+                navigate(
+                  `${parentRoute}/${PreviousAndNextIDs.PreviousRecordID}`
+                )
+              }
+              handleNext={() =>
+                navigate(`${parentRoute}/${PreviousAndNextIDs.NextRecordID}`)
+              }
             />
           </div>
           <form className="mt-4">

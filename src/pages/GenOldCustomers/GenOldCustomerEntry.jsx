@@ -18,7 +18,12 @@ import {
   fetchAllGenOldCustomers,
   fetchGenOldCustomerById,
 } from "../../api/GenOldCustomerData"
-import { ROUTE_URLS, QUERY_KEYS, MENU_KEYS } from "../../utils/enums"
+import {
+  ROUTE_URLS,
+  QUERY_KEYS,
+  MENU_KEYS,
+  TABLE_NAMES,
+} from "../../utils/enums"
 import {
   useActivationClientsSelectData,
   useSoftwareClientsSelectData,
@@ -33,12 +38,14 @@ import {
 import { checkForUserRightsAsync } from "../../api/MenusData"
 import AccessDeniedPage from "../../components/AccessDeniedPage"
 import { DetailPageTilteAndActionsComponent } from "../../components"
+import { usePreviousAndNextID } from "../../hooks/api/usePreviousAndNextIDHook"
 
 let parentRoute = ROUTE_URLS.CUSTOMERS.OLD_CUSTOMER_ENTRY
 let editRoute = `${parentRoute}/edit/`
 let newRoute = `${parentRoute}/new`
 let viewRoute = `${parentRoute}/`
 let queryKey = QUERY_KEYS.OLD_CUSTOMERS_QUERY_KEY
+const IDENTITY = "CustomerID"
 
 export default function OldCustomers() {
   const [userRights, setUserRights] = useState([])
@@ -269,6 +276,13 @@ export function GenOldCustomerForm({ mode, userRights }) {
     CustomerID ? decryptID(CustomerID) : 0
   )
 
+  const { data: PreviousAndNextIDs } = usePreviousAndNextID({
+    TableName: TABLE_NAMES.OLD_CUSTOMER_INFO,
+    IDName: IDENTITY,
+    LoginUserID: user?.userID,
+    RecordID: CustomerID,
+  })
+
   const GenOldCustomerData = useQuery({
     queryKey: [queryKey, CustomerID],
     queryFn: () => fetchGenOldCustomerById(CustomerID, user.userID),
@@ -367,6 +381,15 @@ export function GenOldCustomerForm({ mode, userRights }) {
               showDelete={false}
               showAddNewButton={userRights[0]?.RoleNew}
               showEditButton={userRights[0]?.RoleEdit}
+              PreviousAndNextIDs={PreviousAndNextIDs}
+              handlePrevious={() =>
+                navigate(
+                  `${parentRoute}/${PreviousAndNextIDs.PreviousRecordID}`
+                )
+              }
+              handleNext={() =>
+                navigate(`${parentRoute}/${PreviousAndNextIDs.NextRecordID}`)
+              }
             />
           </div>
           <form className="mt-4">
