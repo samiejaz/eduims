@@ -2,10 +2,11 @@ import React from "react"
 import { Toolbar } from "primereact/toolbar"
 import { Button } from "primereact/button"
 import useKeyCombination from "../hooks/useKeyCombinationHook"
-import { confirmDialog } from "primereact/confirmdialog"
 import { useMutation } from "@tanstack/react-query"
 import { PrintReportInNewTab } from "../utils/CommonFunctions"
 import { SplitButton } from "primereact/splitbutton"
+import { displayYesNoDialog } from "../utils/helpers"
+import { SEVERITIES } from "../utils/CONSTANTS"
 
 export default function ButtonToolBar({
   printLoading = false,
@@ -49,6 +50,8 @@ export default function ButtonToolBar({
   getPrintFromUrl = "",
   splitButtonItems = [],
   showUtilityContent = false,
+  showBackButton = true,
+  showSeparator = true,
   PreviousAndNextIDs = { NextRecordID: null, PreviousRecordID: null },
 }) {
   useKeyCombination(() => {
@@ -59,15 +62,13 @@ export default function ButtonToolBar({
 
   useKeyCombination(() => {
     if (mode === "view") {
-      confirmDialog({
-        message: "Are you sure you delete this record?",
-        header: "Confirmation",
-        icon: "pi pi-info-circle",
-        defaultFocus: "reject",
-        acceptClassName: "p-button-danger",
-        position: "top",
+      displayYesNoDialog({
+        message: "Do you want to delete this record?",
+        header: "Delete Confirmation",
         accept: () => handleDelete(),
-        reject: () => {},
+        icon: <i className="pi pi-trash text-5xl"></i>,
+        severity: SEVERITIES.DANGER,
+        defaultFocus: "reject",
       })
     }
   }, "d")
@@ -91,14 +92,20 @@ export default function ButtonToolBar({
   }, "n")
 
   const startContent = (
-    <Button
-      icon="pi pi-arrow-left"
-      tooltip={GoBackLabel}
-      className="p-button-text"
-      onClick={() => {
-        handleGoBack()
-      }}
-    />
+    <>
+      {showBackButton && (
+        <>
+          <Button
+            icon="pi pi-arrow-left"
+            tooltip={GoBackLabel}
+            className="p-button-text"
+            onClick={() => {
+              handleGoBack()
+            }}
+          />
+        </>
+      )}
+    </>
   )
   const centerContent = (
     <React.Fragment>
@@ -175,15 +182,13 @@ export default function ButtonToolBar({
                 deleteDisable ? true : mode === "edit" || mode === "new"
               }
               onClick={() => {
-                confirmDialog({
-                  message: "Are you sure you delete this record?",
-                  header: "Confirmation",
-                  icon: "pi pi-info-circle",
-                  defaultFocus: "reject",
-                  acceptClassName: "p-button-danger",
-                  position: "top",
+                displayYesNoDialog({
+                  message: "Do you want to delete this record?",
+                  header: "Delete Confirmation",
                   accept: () => handleDelete(),
-                  reject: () => {},
+                  icon: <i className="pi pi-trash text-5xl"></i>,
+                  severity: SEVERITIES.DANGER,
+                  defaultFocus: "reject",
                 })
               }}
               className="p-button-success rounded"
@@ -221,7 +226,12 @@ export default function ButtonToolBar({
             />
           </>
         ) : null}
-        <i className="pi pi-bars p-toolbar-separator mr-2" />
+        {showSeparator && (
+          <>
+            <i className="pi pi-bars p-toolbar-separator mr-2" />
+          </>
+        )}
+
         {showPreviousButton && (
           <>
             <Button

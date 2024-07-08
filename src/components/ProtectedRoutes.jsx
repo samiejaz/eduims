@@ -1,4 +1,4 @@
-import { Navigate } from "react-router-dom"
+import { Navigate, useLocation } from "react-router-dom"
 import { AuthContext } from "../context/AuthContext"
 import RootLayout from "../layout/RootLayout"
 import { useContext } from "react"
@@ -6,6 +6,16 @@ import { useContext } from "react"
 
 function ProtectedRoutes() {
   const { user } = useContext(AuthContext)
+  const location = useLocation()
+
+  function CurrentRoutes() {
+    if (!location.pathname.includes("pub")) {
+      return <Navigate to={"/auth"} />
+    } else {
+      return <Navigate to={location.pathname} />
+    }
+  }
+
   return (
     <>
       {user !== null ? (
@@ -14,7 +24,7 @@ function ProtectedRoutes() {
         </>
       ) : (
         <>
-          <Navigate to={"/auth"} />
+          <CurrentRoutes />
         </>
       )}
     </>

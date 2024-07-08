@@ -87,10 +87,10 @@ let queryKey = QUERY_KEYS.CUSTOMER_INVOICE_QUERY_KEY
 let IDENTITY = "CustomerInvoiceID"
 let MENU_KEY = MENU_KEYS.ACCOUNTS.CUSTOMER_INVOICE_FORM_KEY
 
-export default function CreditNotes() {
+export default function Customerinvoice() {
   return (
     <FormRightsWrapper
-      FormComponent={FormComponent}
+      FormComponent={CustomerInvoiceFormCompoent}
       DetailComponent={DetailComponent}
       menuKey={MENU_KEY}
       identity={IDENTITY}
@@ -356,7 +356,11 @@ const defaultValues = {
   installments: [],
 }
 
-function FormComponent({ mode, userRights }) {
+export function CustomerInvoiceFormCompoent({
+  mode,
+  userRights,
+  isPublicRoute = false,
+}) {
   document.title = "Customer Invoice"
   const queryClient = useQueryClient()
   const { CustomerInvoiceID } = useParams()
@@ -364,6 +368,7 @@ function FormComponent({ mode, userRights }) {
   const navigate = useNavigate()
   const { user } = useContext(AuthContext)
 
+  let UserId = isPublicRoute ? 1 : user?.userID
   // Ref
   const detailTableRef = useRef()
   const customerCompRef = useRef()
@@ -388,7 +393,7 @@ function FormComponent({ mode, userRights }) {
         CustomerInvoiceID: CustomerInvoiceID,
       },
     ],
-    queryFn: () => fetchCustomerInvoiceById(CustomerInvoiceID, user.userID),
+    queryFn: () => fetchCustomerInvoiceById(CustomerInvoiceID, UserId),
     enabled: CustomerInvoiceID !== undefined,
     initialData: [],
     refetchOnWindowFocus: false,
@@ -413,7 +418,7 @@ function FormComponent({ mode, userRights }) {
         queryClient.invalidateQueries({ queryKey: [queryKey] })
         navigate(`${parentRoute}/${RecordID}`)
         SendEmailMutation.mutate({
-          LoginUserID: user.userID,
+          LoginUserID: UserId,
           CustomerInvoiceID: decryptID(RecordID),
           Type: Type,
         })
@@ -535,7 +540,7 @@ function FormComponent({ mode, userRights }) {
   function handleDelete() {
     deleteMutation.mutate({
       CustomerInvoiceID: CustomerInvoiceID,
-      LoginUserID: user.userID,
+      LoginUserID: UserId,
     })
     navigate(parentRoute)
   }
@@ -544,7 +549,7 @@ function FormComponent({ mode, userRights }) {
     if (data?.CustomerInvoiceDetail.length > 0) {
       CustomerInvoiceMutation.mutate({
         formData: data,
-        userID: user.userID,
+        userID: UserId,
         CustomerInvoiceID: CustomerInvoiceID,
       })
     } else {
@@ -586,6 +591,7 @@ function FormComponent({ mode, userRights }) {
               handleNext={() =>
                 navigate(`${parentRoute}/${PreviousAndNextIDs.NextRecordID}`)
               }
+              isPublic={isPublicRoute}
             />
             <form id="CustomerInvoice" className="mt-4">
               <FormProvider {...method}>
@@ -763,6 +769,7 @@ function CustomerInvoiceToolbar({
   handleNext,
   handlePrevious,
   PreviousAndNextIDs,
+  isPublic,
 }) {
   const [printQueryParams, setPrintQueryParams] = useState(
     `InvoicePrint?CustomerInvoiceID=${decryptID(CustomerInvoiceID)}`
@@ -789,7 +796,7 @@ function CustomerInvoiceToolbar({
         showAddNewButton={userRights[0]?.RoleNew}
         showEditButton={userRights[0]?.RoleEdit}
         showDelete={userRights[0]?.RoleDelete}
-        showPrint={mode === "view" && userRights[0]?.RolePrint}
+        showPrint={mode === "view" && userRights[0]?.RolePrint && !isPublic}
         printDisable={mode !== "view"}
         getPrintFromUrl={mode !== "new" && printQueryParams}
         splitButtonItems={[
@@ -803,6 +810,14 @@ function CustomerInvoiceToolbar({
         PreviousAndNextIDs={PreviousAndNextIDs}
         handlePrevious={handlePrevious}
         handleNext={handleNext}
+        showPreviousButton={!isPublic}
+        showSaveButton={!isPublic}
+        showCancelButton={!isPublic}
+        showNextButton={!isPublic}
+        showDeleteButton={!isPublic}
+        showBackButton={!isPublic}
+        showSeparator={!isPublic}
+
         // utilityContent={
         //   <>
         //     <div>

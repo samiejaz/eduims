@@ -59,6 +59,9 @@ export const ROUTE_URLS = {
   ADMIN: {
     SYNC_ROUTES: "/admin/syncroutes",
   },
+  PUBLIC: {
+    CUSTOMER_INVOICE_ROUTE: "/pub/customerinvoice",
+  },
 }
 
 export const QUERY_KEYS = {

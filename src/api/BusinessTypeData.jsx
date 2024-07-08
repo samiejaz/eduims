@@ -30,8 +30,8 @@ export async function fetchBusinessTypeById(BusinessTypeID = 0, LoginUserID) {
   }
 }
 // URL: /gen_BusinessType/BusinessTypeDelete?BusinessTypeID=??&LoginUserID=??
-export async function deleteBusinessTypeByID({ BusinessTypeID, LoginUserID }) {
-  BusinessTypeID = decryptID(BusinessTypeID)
+export async function deleteBusinessTypeByID({ id, LoginUserID }) {
+  let BusinessTypeID = decryptID(id)
   const { data } = await axios.post(
     `${apiUrl}/${CONTROLLER}/${DELETEMETHOD}?BusinessTypeID=${BusinessTypeID}&LoginUserID=${LoginUserID}`
   )
@@ -47,17 +47,13 @@ export async function deleteBusinessTypeByID({ BusinessTypeID, LoginUserID }) {
   }
 }
 // URL: /gen_BusinessType/BusinessTypeInsertUpdate
-export async function addNewBusinessType({
-  formData,
-  userID,
-  BusinessTypeID = 0,
-}) {
+export async function addNewBusinessType({ formData, userID, id = 0 }) {
   let DataToSend = {
     BusinessTypeTitle: formData.BusinessTypeTitle,
     InActive: formData.InActive === true ? 1 : 0,
     EntryUserID: userID,
   }
-  BusinessTypeID = BusinessTypeID === 0 ? 0 : decryptID(BusinessTypeID)
+  let BusinessTypeID = id === 0 ? 0 : decryptID(id)
   if (BusinessTypeID === 0 || BusinessTypeID === undefined) {
     DataToSend.BusinessTypeID = 0
   } else {

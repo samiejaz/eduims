@@ -6,7 +6,7 @@ import { CustomSpinner } from "../../components/CustomSpinner"
 import { DataTable } from "primereact/datatable"
 import { Column } from "primereact/column"
 import ActionButtons from "../../components/ActionButtons"
-import { useForm } from "react-hook-form"
+import { FormProvider, useForm } from "react-hook-form"
 import ButtonToolBar from "../../components/ActionsToolbar"
 import TextInput from "../../components/Forms/TextInput"
 import CheckBox from "../../components/Forms/CheckBox"
@@ -31,7 +31,10 @@ import {
   TABLE_NAMES,
 } from "../../utils/enums"
 import { encryptID } from "../../utils/crypto"
-import { FormRightsWrapper } from "../../components/Wrappers/wrappers"
+import {
+  FormRightsWrapper,
+  FormWrapper,
+} from "../../components/Wrappers/wrappers"
 import { DetailPageTilteAndActionsComponent } from "../../components"
 import { usePreviousAndNextID } from "../../hooks/api/usePreviousAndNextIDHook"
 
@@ -49,7 +52,7 @@ export default function BusinessType() {
       FormComponent={FormComponent}
       DetailComponent={DetailComponent}
       menuKey={MENU_KEY}
-      identity={IDENTITY}
+      identity={"id"}
     />
   )
 }
@@ -321,4 +324,63 @@ function FormComponent({ mode, userRights }) {
       )}
     </>
   )
+
+  // const method = useForm()
+
+  // return (
+  //   <>
+  //     <FormProvider {...method}>
+  //       <FormWrapper
+  //         IDENTITY={IDENTITY}
+  //         mode={mode}
+  //         userRights={userRights}
+  //         queryKey={queryKey}
+  //         tableName={TABLE_NAMES.BUSINESS_TYPE}
+  //         functionToAddData={addNewBusinessType}
+  //         functionToDeleteData={deleteBusinessTypeByID}
+  //         functionToLoadRecordData={fetchBusinessTypeById}
+  //         title="Business Type"
+  //         parentRoute={parentRoute}
+  //         newRoute={newRoute}
+  //         editRoute={editRoute}
+  //         viewRoute={viewRoute}
+  //         children={
+  //           <>
+  //             <form className="mt-4">
+  //               <FormRow>
+  //                 <FormColumn lg={6} xl={6} md={6}>
+  //                   <FormLabel>
+  //                     Business Type
+  //                     <span className="text-red-700 fw-bold ">*</span>
+  //                   </FormLabel>
+
+  //                   <div>
+  //                     <TextInput
+  //                       control={method.control}
+  //                       ID={"BusinessTypeTitle"}
+  //                       required={true}
+  //                       focusOptions={() => setFocus("InActive")}
+  //                       isEnable={mode !== "view"}
+  //                     />
+  //                   </div>
+  //                 </FormColumn>
+  //                 <FormColumn lg={6} xl={6} md={6}>
+  //                   <FormLabel></FormLabel>
+  //                   <div className="mt-1">
+  //                     <CheckBox
+  //                       control={method.control}
+  //                       ID={"InActive"}
+  //                       Label={"InActive"}
+  //                       isEnable={mode !== "view"}
+  //                     />
+  //                   </div>
+  //                 </FormColumn>
+  //               </FormRow>
+  //             </form>
+  //           </>
+  //         }
+  //       />
+  //     </FormProvider>
+  //   </>
+  // )
 }

@@ -56,6 +56,7 @@ import {
 } from "kbar"
 import { displayYesNoDialog } from "./utils/helpers"
 import { SEVERITIES } from "./utils/CONSTANTS"
+import PublicPages from "./pages/PublicRoutes"
 
 const searchStyle = {
   padding: "12px 16px",
@@ -95,6 +96,7 @@ const App = () => {
   return (
     <PrimeReactProvider value={{ ripple: true }}>
       <Routes>
+        <Route path={`pub/*`} element={<PublicPages />} />
         <Route path="auth" element={<SignUp />} />
         <Route path="/" element={<ProtectedRoutes />}>
           <Route index element={<Dashboard />} />

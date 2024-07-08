@@ -46,7 +46,11 @@ export const AuthProvier = ({ children }) => {
           navigate(location.pathname + location.search)
         } else {
           setUser(null)
-          navigate("/auth")
+          if (!location.pathname.includes("pub")) {
+            navigate("/auth")
+          } else {
+            navigate(location.pathname + location.search)
+          }
         }
       }
     }
