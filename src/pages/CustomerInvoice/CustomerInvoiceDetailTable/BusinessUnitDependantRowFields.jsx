@@ -263,6 +263,7 @@ export const CustomerInvoiceDetailTableRowComponent = ({
               borderRadius: "16px",
               fontSize: "0.9em",
             }}
+            disabled={disable}
             onClick={() => remove(index)}
           />
         </td>

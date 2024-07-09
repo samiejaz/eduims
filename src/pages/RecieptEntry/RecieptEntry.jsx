@@ -92,7 +92,7 @@ let MENU_KEY = MENU_KEYS.ACCOUNTS.RECIEPT_VOUCHER_FORM_KEY
 export default function RecieptVouchers() {
   return (
     <FormRightsWrapper
-      FormComponent={FormComponent}
+      FormComponent={ReceiptEntryFormComponent}
       DetailComponent={DetailComponent}
       menuKey={MENU_KEY}
       identity={IDENTITY}
@@ -340,18 +340,18 @@ const defaultValues = {
   receiptDetail: [],
 }
 
-function FormComponent({ mode, userRights }) {
+export function ReceiptEntryFormComponent({ mode, userRights, isPublicRoute }) {
   document.title = "Receipt Voucher Entry"
   const queryClient = useQueryClient()
   const { ReceiptVoucherID } = useParams()
   const [isLoading, setIsLoading] = useState(false)
   const navigate = useNavigate()
   const { user } = useContext(AuthContext)
-
+  let UserId = isPublicRoute ? 1 : user?.userID
   const { data: PreviousAndNextIDs } = usePreviousAndNextID({
     TableName: "data_ReceiptVoucher",
     IDName: IDENTITY,
-    LoginUserID: user?.userID,
+    LoginUserID: UserId,
     RecordID: ReceiptVoucherID,
   })
   // Ref
@@ -365,7 +365,7 @@ function FormComponent({ mode, userRights }) {
 
   const { data: ReceiptVoucherData } = useQuery({
     queryKey: [QUERY_KEYS.RECEIPT_VOUCHER_INFO_QUERY_KEY, ReceiptVoucherID],
-    queryFn: () => fetchReceiptVoucherById(ReceiptVoucherID, user.userID),
+    queryFn: () => fetchReceiptVoucherById(ReceiptVoucherID, UserId),
     enabled: mode !== "new",
     initialData: [],
     refetchOnWindowFocus: false,
@@ -498,7 +498,7 @@ function FormComponent({ mode, userRights }) {
   function handleDelete() {
     deleteMutation.mutate({
       ReceiptVoucherID: ReceiptVoucherID,
-      LoginUserID: user.userID,
+      LoginUserID: UserId,
     })
     navigate(parentRoute)
   }
@@ -506,7 +506,7 @@ function FormComponent({ mode, userRights }) {
   function onSubmit(data) {
     receiptVoucherMutation.mutate({
       formData: data,
-      userID: user.userID,
+      userID: UserId,
       ReceiptVoucherID: ReceiptVoucherID,
     })
   }
@@ -551,6 +551,13 @@ function FormComponent({ mode, userRights }) {
               handleNext={() =>
                 navigate(`${parentRoute}/${PreviousAndNextIDs.NextRecordID}`)
               }
+              showPreviousButton={!isPublicRoute}
+              showSaveButton={!isPublicRoute}
+              showCancelButton={!isPublicRoute}
+              showNextButton={!isPublicRoute}
+              showDeleteButton={!isPublicRoute}
+              showBackButton={!isPublicRoute}
+              showSeparator={!isPublicRoute}
             />
           </div>
           <form id="receiptVoucher" className="mt-4">
@@ -1300,6 +1307,7 @@ function ReceiptDetailTableRow({
               borderRadius: "16px",
               fontSize: "0.9em",
             }}
+            disabled={disable}
             onClick={() => remove(index)}
           />
         </td>

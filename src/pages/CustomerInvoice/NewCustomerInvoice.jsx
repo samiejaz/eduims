@@ -613,23 +613,27 @@ export function CustomerInvoiceFormCompoent({
                   <FormColumn lg={2} xl={2} md={6}>
                     <FormLabel>
                       Invoice Due Date
-                      <Button
-                        tooltip="Installments"
-                        icon="pi pi-money-bill"
-                        severity="primary"
-                        size="small"
-                        className="rounded-2"
-                        type="button"
-                        onClick={() =>
-                          invoiceInstallmentRef.current?.openDialog(true)
-                        }
-                        style={{
-                          padding: "1px 0px",
-                          fontSize: "small",
-                          width: "30px",
-                          marginLeft: "10px",
-                        }}
-                      />
+                      {!isPublicRoute && (
+                        <>
+                          <Button
+                            tooltip="Installments"
+                            icon="pi pi-money-bill"
+                            severity="primary"
+                            size="small"
+                            className="rounded-2"
+                            type="button"
+                            onClick={() =>
+                              invoiceInstallmentRef.current?.openDialog(true)
+                            }
+                            style={{
+                              padding: "1px 0px",
+                              fontSize: "small",
+                              width: "30px",
+                              marginLeft: "10px",
+                            }}
+                          />
+                        </>
+                      )}
                     </FormLabel>
                     <div>
                       <CDatePicker

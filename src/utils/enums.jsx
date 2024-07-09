@@ -61,6 +61,7 @@ export const ROUTE_URLS = {
   },
   PUBLIC: {
     CUSTOMER_INVOICE_ROUTE: "/pub/customerinvoice",
+    RECEIPT_VOUCHER_ROUTE: "/pub/receiptvoucher",
   },
 }
 
