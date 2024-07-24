@@ -179,3 +179,23 @@ export async function SendReceiptVoucherEmail({
     ShowErrorToast(error.message)
   }
 }
+
+export async function SendReceiptVoucherWAMsg({
+  LoginUserID,
+  Type,
+  ReceiptVoucherID,
+}) {
+  try {
+    const { data } = await axios.post(
+      `${apiUrl}/${CONTROLLER}/SendReceiptWAMessage?ReceiptVoucherID=${ReceiptVoucherID}&Type=${Type}&LoginUserID=${LoginUserID}`
+    )
+
+    if (data.success === true) {
+      return true
+    } else {
+      return true
+    }
+  } catch (error) {
+    ShowErrorToast(error.message)
+  }
+}
