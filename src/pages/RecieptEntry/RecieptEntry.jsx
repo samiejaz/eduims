@@ -25,6 +25,7 @@ import CDropdown from "../../components/Forms/CDropdown"
 import { DevTool } from "@hookform/devtools"
 import {
   SendReceiptVoucherEmail,
+  SendReceiptVoucherWAMsg,
   addNewReceiptVoucher,
   deleteReceiptVoucherByID,
   fetchAllReceiptVoucheres,
@@ -380,13 +381,23 @@ export function ReceiptEntryFormComponent({ mode, userRights, isPublicRoute }) {
   const SendEmailMutation = useMutation({
     mutationFn: SendReceiptVoucherEmail,
   })
+  const SendWAMsgMutation = useMutation({
+    mutationFn: SendReceiptVoucherWAMsg,
+  })
   const receiptVoucherMutation = useMutation({
     mutationFn: addNewReceiptVoucher,
     onSuccess: ({ success, RecordID, Type }) => {
       if (success) {
         queryClient.invalidateQueries({ queryKey: [queryKey] })
         navigate(`${parentRoute}/${RecordID}`)
+
         SendEmailMutation.mutate({
+          LoginUserID: user.userID,
+          ReceiptVoucherID: decryptID(RecordID),
+          Type: Type,
+        })
+
+        SendWAMsgMutation.mutate({
           LoginUserID: user.userID,
           ReceiptVoucherID: decryptID(RecordID),
           Type: Type,

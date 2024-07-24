@@ -35,6 +35,7 @@ import {
   fetchCustomerInvoiceById,
   fetchAllCustomerInvoices,
   SendCustomerInvoiceEmail,
+  SendCustomerInvoiceWAMsg,
 } from "../../api/CustomerInvoiceData"
 import ButtonToolBar from "../../components/ActionsToolbar"
 
@@ -411,13 +412,24 @@ export function CustomerInvoiceFormCompoent({
     mutationFn: SendCustomerInvoiceEmail,
   })
 
+  const SendWAMsgMutation = useMutation({
+    mutationFn: SendCustomerInvoiceWAMsg,
+  })
+
   const CustomerInvoiceMutation = useMutation({
     mutationFn: addNewCustomerInvoice,
     onSuccess: ({ success, RecordID, Type }) => {
       if (success) {
         queryClient.invalidateQueries({ queryKey: [queryKey] })
         navigate(`${parentRoute}/${RecordID}`)
+
         SendEmailMutation.mutate({
+          LoginUserID: UserId,
+          CustomerInvoiceID: decryptID(RecordID),
+          Type: Type,
+        })
+
+        SendWAMsgMutation.mutate({
           LoginUserID: UserId,
           CustomerInvoiceID: decryptID(RecordID),
           Type: Type,
