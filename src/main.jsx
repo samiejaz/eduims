@@ -13,12 +13,12 @@ import { QueryClientProvider, QueryClient } from "@tanstack/react-query"
 import { AuthProvier } from "./context/AuthContext"
 
 import { BrowserRouter } from "react-router-dom"
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import { AppConfigurationProivder } from "./context/AppConfigurationContext.jsx"
 import { UserRightsProivder } from "./context/UserRightContext.jsx"
 import { RoutesProivder } from "./context/RoutesContext.jsx"
 import { ThemeProivder } from "./context/ThemeContext.jsx"
 import { ShowErrorToast } from "./utils/CommonFunctions.jsx"
+import { ErrorBoundary } from "react-error-boundary"
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -33,6 +33,17 @@ const queryClient = new QueryClient({
   },
 })
 
+function fallbackRender({ error, resetErrorBoundary }) {
+  return (
+    <div
+      className="flex align-items-center justify-content-center h-screen text-white font-bold text-4xl"
+      style={{ background: "red" }}
+    >
+      <h1>Oops! Something went wrong.</h1>
+    </div>
+  )
+}
+
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
@@ -43,7 +54,12 @@ ReactDOM.createRoot(document.getElementById("root")).render(
               <UserRightsProivder>
                 <AppConfigurationProivder>
                   <ThemeProivder>
-                    <App />
+                    <ErrorBoundary
+                      fallbackRender={fallbackRender}
+                      onReset={(details) => {}}
+                    >
+                      <App />
+                    </ErrorBoundary>
                   </ThemeProivder>
                 </AppConfigurationProivder>
               </UserRightsProivder>
