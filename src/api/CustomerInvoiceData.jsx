@@ -226,3 +226,23 @@ export async function SendCustomerInvoiceEmail({
     ShowErrorToast(error.message)
   }
 }
+
+export async function SendCustomerInvoiceWAMsg({
+  LoginUserID,
+  Type,
+  CustomerInvoiceID,
+}) {
+  try {
+    const { data } = await axios.post(
+      `${apiUrl}/${CONTROLLER}/SendInvoiceWAMessage?CustomerInvoiceID=${CustomerInvoiceID}&Type=${Type}&LoginUserID=${LoginUserID}`
+    )
+
+    if (data.success === true) {
+      return true
+    } else {
+      return true
+    }
+  } catch (error) {
+    ShowErrorToast(error.message)
+  }
+}
