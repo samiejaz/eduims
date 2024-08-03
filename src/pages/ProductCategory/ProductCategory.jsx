@@ -335,6 +335,7 @@ function FormComponent({ mode, userRights }) {
                     required={true}
                     focusOptions={() => setFocus("ProductType")}
                     isEnable={mode !== "view"}
+                    autoFocus
                   />
                 </div>
               </FormColumn>

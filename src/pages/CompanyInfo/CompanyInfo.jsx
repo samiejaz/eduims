@@ -166,6 +166,7 @@ function CompanyInfoForm({ mode, userRights }) {
                   ID={"CompanyName"}
                   required={true}
                   focusOptions={() => setFocus("Address")}
+                  autoFocus
                 />
               </div>
             </FormColumn>

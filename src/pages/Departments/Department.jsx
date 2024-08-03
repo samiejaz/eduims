@@ -303,6 +303,7 @@ function FormComponent({ mode, userRights }) {
                     required={true}
                     focusOptions={() => setFocus("InActive")}
                     isEnable={mode !== "view"}
+                    autoFocus
                   />
                 </div>
               </FormColumn>

@@ -19,6 +19,7 @@ const CDropdown = ({
   disabled = false,
   errorMessage = "This field is required!",
   value,
+  autoFocus = false,
   ...moreOptions
 }) => {
   return (
@@ -38,6 +39,7 @@ const CDropdown = ({
               options={options}
               focusInputRef={field.ref}
               ref={field.ref}
+              autoFocus={autoFocus}
               onChange={(e) => {
                 field.onChange(e.value)
                 if (focusOptions) {

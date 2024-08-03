@@ -196,6 +196,11 @@ export const routes = [
         menuKey: MENU_KEYS.REPORTS.SUBSIDIARY_REPORT_FORM_KEY,
         route: ROUTE_URLS.REPORTS.SUBSIDIARY_SHEET_REPORT_ROUTE,
       },
+      {
+        name: "Customer Aging Report",
+        menuKey: MENU_KEYS.REPORTS.CUSTOMER_AGING_FORM_KEY,
+        route: ROUTE_URLS.REPORTS.CUSTOMER_AGING_REPORT_ROUTE,
+      },
     ],
   },
 ]

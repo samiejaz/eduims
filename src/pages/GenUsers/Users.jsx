@@ -421,6 +421,7 @@ function FormComponent({ mode, userRights }) {
                     required={true}
                     focusOptions={() => setFocus("LastName")}
                     isEnable={mode !== "view"}
+                    autoFocus
                   />
                 </div>
               </FormColumn>

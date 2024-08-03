@@ -418,6 +418,7 @@ export function GenOldCustomerForm({ mode, userRights }) {
                         display="chip"
                         filter
                         showClear
+                        autoFocus
                         defaultValue={null}
                         virtualScrollerOptions={{ itemSize: 43 }}
                         disabled={mode === "view"}

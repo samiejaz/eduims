@@ -13,9 +13,9 @@ function TextInput({
   onChange,
   type = "text",
   placeHolder = "",
-
   errorMessage = "This field is required!",
   showErrorMessage = true,
+  autoFocus = false,
   ...options
 }) {
   return (
@@ -28,6 +28,7 @@ function TextInput({
           <label htmlFor={field.name}>{Label}</label>
           <span className={floatLabel ? "p-float-label" : ""}>
             <InputText
+              autoFocus={autoFocus}
               disabled={!isEnable}
               id={field.name}
               value={field.value}

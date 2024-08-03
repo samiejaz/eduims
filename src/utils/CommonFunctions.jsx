@@ -96,6 +96,7 @@ export async function PrintReportInNewTabWithLoadingToast({
 
     let url =
       fullUrl !== "" ? fullUrl : `${apiUrl}/Reports/${controllerName}&Export=p`
+    console.log(url)
     const { data } = await axios.post(url)
 
     const win = window.open("")
@@ -156,11 +157,11 @@ export function formatDateAndTime(dateString) {
   return formattedDate
 }
 
-export const downloadFile = (file) => {
+export const downloadFile = (file, fileName = null) => {
   const url = URL.createObjectURL(file)
   const link = document.createElement("a")
   link.href = url
-  link.setAttribute("download", file.name)
+  link.setAttribute("download", fileName ?? file.name)
   document.body.appendChild(link)
   link.click()
   document.body.removeChild(link)

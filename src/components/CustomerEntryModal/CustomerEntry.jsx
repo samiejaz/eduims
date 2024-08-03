@@ -78,6 +78,7 @@ function CustomerEntry(props) {
                 focusOptions={() => setFocus("CustomerBusinessName")}
                 isEnable={isEnable}
                 required={true}
+                autoFocus
               />
             </div>
           </FormColumn>

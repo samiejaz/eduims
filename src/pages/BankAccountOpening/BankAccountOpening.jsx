@@ -353,6 +353,7 @@ function BankAccountForm({ mode, userRights }) {
                     required={true}
                     focusOptions={() => setFocus("BankAccountTitle")}
                     isEnable={mode !== "view"}
+                    autoFocus
                   />
                 </div>
               </FormColumn>
