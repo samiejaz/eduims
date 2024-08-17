@@ -1,0 +1,60 @@
+import { useEffect } from "react"
+import { useController, useForm } from "react-hook-form"
+
+export default function Form() {
+  const method = useForm()
+
+  useEffect(() => {
+    method.setValue("currency", "190000")
+  }, [])
+
+  return (
+    <>
+      <CurrencyInput control={method.control} name="currency" />
+    </>
+  )
+}
+
+function CurrencyInput({ control, name }) {
+  const { field } = useController({ control, name, defaultValue: 0 })
+
+  const divideFieldBy100 = parseFloat(field.value || 0) / 100
+
+  function formatCurrency(number) {
+    return new Intl.NumberFormat("en-US", {
+      currency: "USD",
+      maximumFractionDigits: "2",
+      minimumFractionDigits: "2",
+      style: "currency",
+    }).format(number)
+  }
+
+  function handleCurrencyInput(e) {
+    e.target.value = parseFloat(e.target.value.replace(/\D/g, ""))
+    field.onChange(e)
+  }
+
+  function handleKeyDowns(e) {
+    if (e.key === "Backspace") {
+      e.target.value = 0
+      console.log(e)
+      field.onChange(e)
+    } else if (e.key === "Delete") {
+      let value = e.target.value.replace(/\D/g, "")
+      e.target.value = value.slice(0, -1)
+      field.onChange(e)
+    }
+  }
+
+  return (
+    <div className="flex align-items-center justify-content-center min-h-screen flex-column gap-4">
+      <input
+        className="p-inputtext"
+        type="text"
+        value={formatCurrency(divideFieldBy100)}
+        onChange={handleCurrencyInput}
+        onKeyDown={handleKeyDowns}
+      />
+    </div>
+  )
+}

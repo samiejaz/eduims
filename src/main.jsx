@@ -19,7 +19,6 @@ import { RoutesProivder } from "./context/RoutesContext.jsx"
 import { ThemeProivder } from "./context/ThemeContext.jsx"
 import { ShowErrorToast } from "./utils/CommonFunctions.jsx"
 import { ErrorBoundary } from "react-error-boundary"
-import DocViewerComponent from "./components/DocViewer.jsx"
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -60,7 +59,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                       onReset={(details) => {}}
                     >
                       <App />
-                      {/* <DocViewerComponent /> */}
                     </ErrorBoundary>
                   </ThemeProivder>
                 </AppConfigurationProivder>
