@@ -170,7 +170,7 @@ const FormComponent = ({ mode, userRights }) => {
           GoBackLabel="Roles"
           saveLoading={mutation.isPending}
           handleDelete={handleDelete}
-          showPrint={userRights[0]?.RolePrint}
+          showPrint={false}
           showAddNewButton={userRights[0]?.RoleNew}
           showEditButton={userRights[0]?.RoleEdit}
           showDelete={userRights[0]?.RoleDelete}
@@ -181,6 +181,13 @@ const FormComponent = ({ mode, userRights }) => {
           handleNext={() =>
             navigate(`${parentRoute}/${PreviousAndNextIDs.NextRecordID}`)
           }
+          currentRecordId={RoleID}
+          handleFirstRecord={() => {
+            navigate(`${parentRoute}/${PreviousAndNextIDs.FirstRecordID}`)
+          }}
+          handleLastRecord={() => {
+            navigate(`${parentRoute}/${PreviousAndNextIDs.LastRecordID}`)
+          }}
         />
       </div>
       <form onKeyDown={preventFormByEnterKeySubmission}>

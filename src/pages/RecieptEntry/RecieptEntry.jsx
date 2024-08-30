@@ -569,6 +569,13 @@ export function ReceiptEntryFormComponent({ mode, userRights, isPublicRoute }) {
               showDeleteButton={!isPublicRoute}
               showBackButton={!isPublicRoute}
               showSeparator={!isPublicRoute}
+              currentRecordId={ReceiptVoucherID}
+              handleFirstRecord={() => {
+                navigate(`${parentRoute}/${PreviousAndNextIDs.FirstRecordID}`)
+              }}
+              handleLastRecord={() => {
+                navigate(`${parentRoute}/${PreviousAndNextIDs.LastRecordID}`)
+              }}
             />
           </div>
           <form id="receiptVoucher" className="mt-4">
@@ -707,12 +714,14 @@ const CustomerDependentFields = React.forwardRef(
       queryKey: [QUERY_KEYS.ALL_CUSTOMER_QUERY_KEY],
       queryFn: fetchAllOldCustomersForSelect,
       initialData: [],
+      refetchOnWindowFocus: true,
     })
 
     const { data: CustomerAccounts } = useQuery({
       queryKey: [QUERY_KEYS.CUSTOMER_ACCOUNTS_QUERY_KEY, CustomerID],
       queryFn: () => fetchAllCustomerAccountsForSelect(CustomerID),
       initialData: [],
+      refetchOnWindowFocus: true,
     })
 
     const method = useFormContext()
@@ -998,6 +1007,7 @@ const MasterBankFields = ({
     queryKey: [SELECT_QUERY_KEYS.BANKS_SELECT_QUERY_KEY],
     queryFn: fetchAllBankAccountsForSelect,
     initialData: [],
+    refetchOnWindowFocus: true,
   })
 
   const method = useFormContext()
@@ -1258,10 +1268,10 @@ function ReceiptDetailTableRow({
           <input
             id="RowID"
             readOnly
-            className="form-control"
+            className="p-inputtext w-full"
             style={{ padding: "0.25rem 0.4rem", fontSize: "0.9em" }}
             value={index + 1}
-            disabled={disable}
+            disabled
           />
         </td>
         <td>

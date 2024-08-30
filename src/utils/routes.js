@@ -201,6 +201,11 @@ export const routes = [
         menuKey: MENU_KEYS.REPORTS.CUSTOMER_AGING_FORM_KEY,
         route: ROUTE_URLS.REPORTS.CUSTOMER_AGING_REPORT_ROUTE,
       },
+      {
+        name: "Leads / Information",
+        menuKey: MENU_KEYS.REPORTS.LEADS_INFORMATION_FORM_KEY,
+        route: ROUTE_URLS.REPORTS.LEADS_INFORMATION_REPORT_ROUTE,
+      },
     ],
   },
 ]

@@ -406,5 +406,10 @@ a {
   }
 }
 
+.max-w-90 {
+  max-width: 90%;
+}
 
-
+.hover {
+  cursor: pointer;
+}

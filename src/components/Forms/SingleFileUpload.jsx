@@ -242,7 +242,7 @@ const SingleFileUpload = React.forwardRef(
                         </>
                       ) : (
                         <>
-                          <div className="flex flex-column gap-2">
+                          <div className="flex align-items-center flex-column gap-2">
                             <i className="pi pi-file text-7xl"></i>
 
                             <span className="text-sm">

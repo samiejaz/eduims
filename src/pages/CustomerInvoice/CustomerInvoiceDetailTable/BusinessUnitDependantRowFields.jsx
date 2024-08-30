@@ -395,6 +395,8 @@ const CustomerBranchDetailField = ({ pageTitles, index, disable }) => {
           required={true}
           disabled={disable}
           filter={true}
+          showOnFocus={false}
+          showErrorMessage={false}
           focusOptions={() =>
             method.setFocus(`CustomerInvoiceDetail.${index}.ProductInfo`)
           }

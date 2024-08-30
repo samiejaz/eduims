@@ -2,13 +2,12 @@ import { Dialog } from "primereact/dialog"
 import { useState } from "react"
 import { Button } from "primereact/button"
 import { useQueryClient } from "@tanstack/react-query"
-import { useContext } from "react"
-import { AppConfigurationContext } from "../../context/AppConfigurationContext"
+import { useAppConfigurataionProvider } from "../../context/AppConfigurationContext"
 import AllCustomersBranchEntry from "../CustomerEntryModal/AllCustomersBranchEntry"
 
 export function useAllCustomersBranchEntryModal(CustomerID) {
   const queryClient = useQueryClient()
-  const { pageTitles } = useContext(AppConfigurationContext)
+  const { pageTitles } = useAppConfigurataionProvider()
   const [visible, setVisible] = useState(false)
   return {
     setVisible,

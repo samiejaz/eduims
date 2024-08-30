@@ -391,6 +391,13 @@ function FormComponent({ mode, userRights }) {
               handleNext={() =>
                 navigate(`${parentRoute}/${PreviousAndNextIDs.NextRecordID}`)
               }
+              currentRecordId={BusinessUnitID}
+              handleFirstRecord={() => {
+                navigate(`${parentRoute}/${PreviousAndNextIDs.FirstRecordID}`)
+              }}
+              handleLastRecord={() => {
+                navigate(`${parentRoute}/${PreviousAndNextIDs.LastRecordID}`)
+              }}
             />
           </div>
           <form className="mt-4">

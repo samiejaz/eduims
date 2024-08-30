@@ -159,32 +159,42 @@ export function useBankAccountsSelectData() {
 }
 
 // Countries
-export function useAllCountiesSelectData() {
+export function useAllCountiesSelectData({
+  refetchOnWindowFocus = false,
+} = {}) {
   const data = useQuery({
     queryKey: [SELECT_QUERY_KEYS.COUNTRIES_SELECT_QUERY_KEY],
     queryFn: () => fetchAllCountriesForSelect(),
     initialData: [],
+    refetchOnWindowFocus: refetchOnWindowFocus,
   })
   return data
 }
 
 // Tehsils
-export function useAllTehsilsSelectData(CountryID = 0) {
+export function useAllTehsilsSelectData({
+  CountryID = 0,
+  refetchOnWindowFocus = false,
+} = {}) {
   const bankAccountsSelectData = useQuery({
     queryKey: [SELECT_QUERY_KEYS.TEHSIL_SELECT_QUERY_KEY, CountryID],
     queryFn: () => fetchAllTehsilsForSelect(CountryID),
     enabled: CountryID !== 0,
     initialData: [],
+    refetchOnWindowFocus,
   })
   return bankAccountsSelectData
 }
 
 // Business Types
-export function useAllBusinessTypesSelectData() {
+export function useAllBusinessTypesSelectData({
+  refetchOnWindowFocus = false,
+} = {}) {
   const data = useQuery({
     queryKey: [SELECT_QUERY_KEYS.BUSINESS_TYPES_SELECT_QUERY_KEY],
     queryFn: () => fetchAllBusinessTypesForSelect(),
     initialData: [],
+    refetchOnWindowFocus: refetchOnWindowFocus,
   })
   return data
 }

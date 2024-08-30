@@ -12,7 +12,6 @@ export const fetchPreviousAndNextID = async ({
   TableName,
   IDName,
 }) => {
-  console.log(RecordID)
   let ID = decryptID(RecordID)
   if (ID !== null) {
     try {
@@ -30,13 +29,31 @@ export const fetchPreviousAndNextID = async ({
             data.data[0].NextRecordID === null
               ? null
               : encryptID(data.data[0].NextRecordID),
+          FirstRecordID:
+            data.data[0].FirstRecordID === null
+              ? null
+              : encryptID(data.data[0].FirstRecordID),
+          LastRecordID:
+            data.data[0].LastRecordID === null
+              ? null
+              : encryptID(data.data[0].LastRecordID),
         }
       }
     } catch (error) {
       ShowErrorToast(error)
-      return { PreviousRecordID: null, NextRecordID: null }
+      return {
+        PreviousRecordID: null,
+        NextRecordID: null,
+        LastRecordID: null,
+        FirstRecordID: null,
+      }
     }
   } else {
-    return { PreviousRecordID: null, NextRecordID: null }
+    return {
+      PreviousRecordID: null,
+      NextRecordID: null,
+      LastRecordID: null,
+      FirstRecordID: null,
+    }
   }
 }

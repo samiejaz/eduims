@@ -1,11 +1,14 @@
 import { toast } from "react-toastify"
 import { Controller, useForm } from "react-hook-form"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useContext, useEffect, useState } from "react"
 import { AuthContext } from "../../context/AuthContext"
 import axios from "axios"
 import { preventFormByEnterKeySubmission } from "../../utils/CommonFunctions"
-import { AppConfigurationContext } from "../../context/AppConfigurationContext"
+import {
+  AppConfigurationContext,
+  useAppConfigurataionProvider,
+} from "../../context/AppConfigurationContext"
 import {
   FormRow,
   FormColumn,
@@ -39,10 +42,11 @@ function AppConfiguration() {
 
 function AppConfigurationForm() {
   document.title = "App Configuration"
+  const queryClient = useQueryClient()
 
   const [reload, setReload] = useState(true)
   const [ConfigID, setConfigID] = useState(true)
-  const { setPageTitles } = useContext(AppConfigurationContext)
+  const { setPageTitles } = useAppConfigurataionProvider()
   const { control, setFocus, handleSubmit, setValue } = useForm({
     defaultValues,
   })
@@ -69,12 +73,13 @@ function AppConfigurationForm() {
           "ShowTimelineInsideLeadsForm",
           data?.data[0]?.ShowTimelineInsideLeadsForm
         )
-        setPageTitles({
-          product: data?.data[0]?.ProductTitle,
-          branch: data?.data[0]?.CustomerBranchTitle,
-          ShowTimelineInsideLeadsForm:
-            data?.data[0]?.ShowTimelineInsideLeadsForm,
-        })
+        // setPageTitles({
+        //   product: data?.data[0]?.ProductTitle,
+        //   branch: data?.data[0]?.CustomerBranchTitle,
+        //   ShowTimelineInsideLeadsForm:
+        //     data?.data[0]?.ShowTimelineInsideLeadsForm,
+        // })
+        queryClient.invalidateQueries({ queryKey: ["appconfigData"] })
         setReload(false)
       }
     }

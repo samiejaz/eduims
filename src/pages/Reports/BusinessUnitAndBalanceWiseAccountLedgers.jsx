@@ -27,6 +27,7 @@ import {
 } from "../../utils/CommonFunctions"
 import { useAuthProvider } from "../../context/AuthContext"
 import { useReportViewerHook } from "../../hooks/CommonHooks/commonhooks"
+import { useAppConfigurataionProvider } from "../../context/AppConfigurationContext"
 
 const BusinessUnitAndBalanceWiseAccountLedgers = () => {
   document.title = "Customer Detail Ledger"
@@ -35,11 +36,7 @@ const BusinessUnitAndBalanceWiseAccountLedgers = () => {
   const [reportQueryParams, setReportQueryParams] = useState(null)
 
   const { user } = useAuthProvider()
-
-  const CustomerID =
-    queryParams.get("customer") !== null
-      ? decryptID(queryParams.get("customer"))
-      : null
+  const { sessionConfigData } = useAppConfigurataionProvider()
 
   const { data: customerSelectData } = useQuery({
     queryKey: [QUERY_KEYS.ALL_CUSTOMER_QUERY_KEY],
@@ -61,7 +58,7 @@ const BusinessUnitAndBalanceWiseAccountLedgers = () => {
   const method = useForm({
     defaultValues: {
       CustomerID: null,
-      DateFrom: new Date(),
+      DateFrom: sessionConfigData?.data?.SessionOpeningDate,
       DateTo: new Date(),
     },
   })

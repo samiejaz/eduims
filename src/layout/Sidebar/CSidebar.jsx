@@ -46,7 +46,10 @@ const CSidebar = ({ sideBarRef, searchInputRef }) => {
         <SearchBar searchInputRef={searchInputRef} />
 
         <ul className="c-nav-links">
-          <li className="flex justify-content-start gap-5">
+          <li
+            className="flex justify-content-start gap-5"
+            onClick={closeMobieSidebar}
+          >
             <Link to={"/"}>
               <i>
                 <LayoutDashboard className="text-white " />
@@ -63,7 +66,8 @@ const CSidebar = ({ sideBarRef, searchInputRef }) => {
           </li>
 
           <SubSidebar closeMobieSidebar={closeMobieSidebar} />
-
+        </ul>
+        <ul>
           <li>
             <div className="c-profile-details">
               <div className="flex align-content-center justify-content-between w-full">
@@ -72,7 +76,7 @@ const CSidebar = ({ sideBarRef, searchInputRef }) => {
                     {user?.username}
                   </div>
                 </div>
-                <SignOut />
+                <SignOut color="white" />
               </div>
             </div>
           </li>
@@ -129,7 +133,7 @@ const NotificationHandler = ({ toast }) => {
   return null
 }
 
-export const SignOut = () => {
+export const SignOut = ({ color = "black" }) => {
   const { logoutUser } = useContext(AuthContext)
 
   const confirmLogout = () => {
@@ -145,7 +149,11 @@ export const SignOut = () => {
 
   return (
     <>
-      <i className="pi pi-sign-out" onClick={confirmLogout}></i>
+      <i
+        className="pi pi-sign-out px-2 hover"
+        style={{ color }}
+        onClick={confirmLogout}
+      ></i>
     </>
   )
 }

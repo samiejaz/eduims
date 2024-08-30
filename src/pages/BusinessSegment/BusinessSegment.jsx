@@ -269,6 +269,14 @@ function FormComponent({ mode, userRights }) {
               showAddNewButton={userRights[0]?.RoleNew}
               showEditButton={userRights[0]?.RoleEdit}
               showDelete={userRights[0]?.RoleDelete}
+              currentRecordId={BusinessSegmentID}
+              handleFirstRecord={() => {
+                navigate(`${parentRoute}/${PreviousAndNextIDs.FirstRecordID}`)
+              }}
+              handleLastRecord={() => {
+                navigate(`${parentRoute}/${PreviousAndNextIDs.LastRecordID}`)
+              }}
+              //TODO::  Add Prev Next Routes here
             />
           </div>
           <form className="mt-4">

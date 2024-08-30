@@ -2,6 +2,7 @@ import { Route, Routes } from "react-router-dom"
 import { ROUTE_URLS } from "../../utils/enums"
 import { CustomerInvoiceFormCompoent } from "../CustomerInvoice/NewCustomerInvoice"
 import { ReceiptEntryFormComponent } from "../RecieptEntry/RecieptEntry"
+import AccountLedgerPage from "./AccountLedger"
 
 const PublicePageWrapper = ({ children }) => {
   return <div className="px-4 py-2">{children}</div>
@@ -53,6 +54,17 @@ export default function PublicPages() {
               ]}
               isPublicRoute={true}
             />
+          </PublicePageWrapper>
+        }
+      />
+      <Route
+        path={`${ROUTE_URLS.PUBLIC.ACCOUNT_LEDGER_ROUTE.replaceAll(
+          "/pub",
+          ""
+        )}/:id`}
+        element={
+          <PublicePageWrapper>
+            <AccountLedgerPage />
           </PublicePageWrapper>
         }
       />

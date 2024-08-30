@@ -52,7 +52,7 @@ export default function BusinessType() {
       FormComponent={FormComponent}
       DetailComponent={DetailComponent}
       menuKey={MENU_KEY}
-      identity={"id"}
+      identity={"BusinessTypeID"}
     />
   )
 }
@@ -203,7 +203,7 @@ function FormComponent({ mode, userRights }) {
       setValue("BusinessTypeTitle", BusinessTypeData.data[0].BusinessTypeTitle)
       setValue("InActive", BusinessTypeData.data[0].InActive)
     }
-  }, [BusinessTypeID, BusinessTypeData])
+  }, [BusinessTypeID, BusinessTypeData.data])
 
   const mutation = useMutation({
     mutationFn: addNewBusinessType,
@@ -287,6 +287,13 @@ function FormComponent({ mode, userRights }) {
               handleNext={() =>
                 navigate(`${parentRoute}/${PreviousAndNextIDs.NextRecordID}`)
               }
+              currentRecordId={BusinessTypeID}
+              handleFirstRecord={() => {
+                navigate(`${parentRoute}/${PreviousAndNextIDs.FirstRecordID}`)
+              }}
+              handleLastRecord={() => {
+                navigate(`${parentRoute}/${PreviousAndNextIDs.LastRecordID}`)
+              }}
             />
           </div>
           <form className="mt-4">

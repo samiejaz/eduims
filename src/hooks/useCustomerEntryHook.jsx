@@ -9,7 +9,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import axios from "axios"
 import { toast } from "react-toastify"
 import { AuthContext } from "../context/AuthContext"
-import { AppConfigurationContext } from "../context/AppConfigurationContext"
+import { useAppConfigurataionProvider } from "../context/AppConfigurationContext"
 import { Dropdown } from "primereact/dropdown"
 import { useOldCustomerSelectData } from "./SelectData/useSelectData"
 const apiUrl = import.meta.env.VITE_APP_API_URL
@@ -48,7 +48,7 @@ const customerAccountDefaultValues = {
 const useCustomerEntryHook = () => {
   const queryClient = useQueryClient()
   const { user } = useContext(AuthContext)
-  const { pageTitles } = useContext(AppConfigurationContext)
+  const { pageTitles } = useAppConfigurataionProvider()
   const [visible, setVisible] = useState(false)
   const [CustomerID, setCustomerID] = useState(0)
   const [dialogIndex, setDialogIndex] = useState(0)

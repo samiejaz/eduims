@@ -72,7 +72,7 @@ export default function ProductInfo() {
 }
 
 function DetailComponent({ userRights }) {
-  const { pageTitles } = useContext(AppConfigurationContext)
+  const { pageTitles } = useAppConfigurataionProvider()
 
   document.title = `${pageTitles?.product + "s" || "Products"}`
   const queryClient = useQueryClient()
@@ -203,7 +203,7 @@ function DetailComponent({ userRights }) {
 }
 
 function FormComponent({ mode, userRights }) {
-  const { pageTitles } = useContext(AppConfigurationContext)
+  const { pageTitles } = useAppConfigurataionProvider()
   document.title = `${pageTitles?.product || "Product"} Entry`
   const queryClient = useQueryClient()
   const navigate = useNavigate()
@@ -341,6 +341,13 @@ function FormComponent({ mode, userRights }) {
               handleNext={() =>
                 navigate(`${parentRoute}/${PreviousAndNextIDs.NextRecordID}`)
               }
+              currentRecordId={ProductInfoID}
+              handleFirstRecord={() => {
+                navigate(`${parentRoute}/${PreviousAndNextIDs.FirstRecordID}`)
+              }}
+              handleLastRecord={() => {
+                navigate(`${parentRoute}/${PreviousAndNextIDs.LastRecordID}`)
+              }}
             />
           </div>
           <form className="mt-4">

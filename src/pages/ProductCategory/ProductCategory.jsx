@@ -29,7 +29,10 @@ import {
 } from "../../utils/enums"
 import CDropdown from "../../components/Forms/CDropdown"
 import { useUserData } from "../../context/AuthContext"
-import { AppConfigurationContext } from "../../context/AppConfigurationContext"
+import {
+  AppConfigurationContext,
+  useAppConfigurataionProvider,
+} from "../../context/AppConfigurationContext"
 import useConfirmationModal from "../../hooks/useConfirmationModalHook"
 
 import { encryptID } from "../../utils/crypto"
@@ -57,7 +60,7 @@ export default function ProductCategory() {
 }
 
 export function DetailComponent({ userRights }) {
-  const { pageTitles } = useContext(AppConfigurationContext)
+  const { pageTitles } = useAppConfigurataionProvider()
   document.title = `${pageTitles?.product ?? "Product"} Categories`
   const queryClient = useQueryClient()
   const navigate = useNavigate()
@@ -187,7 +190,7 @@ export function DetailComponent({ userRights }) {
 }
 
 function FormComponent({ mode, userRights }) {
-  const { pageTitles } = useContext(AppConfigurationContext)
+  const { pageTitles } = useAppConfigurataionProvider()
   document.title = `${pageTitles?.product || "Product"} Category Entry`
 
   const queryClient = useQueryClient()
@@ -318,6 +321,13 @@ function FormComponent({ mode, userRights }) {
               handleNext={() =>
                 navigate(`${parentRoute}/${PreviousAndNextIDs.NextRecordID}`)
               }
+              currentRecordId={ProductCategoryID}
+              handleFirstRecord={() => {
+                navigate(`${parentRoute}/${PreviousAndNextIDs.FirstRecordID}`)
+              }}
+              handleLastRecord={() => {
+                navigate(`${parentRoute}/${PreviousAndNextIDs.LastRecordID}`)
+              }}
             />
           </div>
           <form className="mt-4">

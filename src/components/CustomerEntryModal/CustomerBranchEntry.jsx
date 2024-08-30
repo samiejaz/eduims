@@ -19,7 +19,10 @@ import { DataTable } from "primereact/datatable"
 import { Column } from "primereact/column"
 import { Dialog } from "primereact/dialog"
 import { CustomerAccountEntryModal } from "../Modals/CustomerAccountEntryModal"
-import { AppConfigurationContext } from "../../context/AppConfigurationContext"
+import {
+  AppConfigurationContext,
+  useAppConfigurataionProvider,
+} from "../../context/AppConfigurationContext"
 import { deleteCustomerBranchByID } from "../../api/CustomerBranchData"
 import useDeleteModal from "../../hooks/useDeleteModalHook"
 import {
@@ -48,7 +51,7 @@ const BranchEntryProiver = ({ children }) => {
 
 function CustomerBranchEntry(props) {
   const { CustomerID, isEnable = true } = props
-  const { pageTitles } = useContext(AppConfigurationContext)
+  const { pageTitles } = useAppConfigurataionProvider()
   return (
     <>
       <BranchEntryProiver>

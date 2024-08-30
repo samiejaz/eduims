@@ -13,7 +13,10 @@ const CountryDependentFields = React.forwardRef(
 
     const method = useFormContext()
     const countriesSelectData = useAllCountiesSelectData()
-    const tehsilsSelectData = useAllTehsilsSelectData(CountryID)
+    const tehsilsSelectData = useAllTehsilsSelectData({
+      CountryID,
+      refetchOnWindowFocus: true,
+    })
 
     React.useImperativeHandle(ref, () => ({
       setCountryID,

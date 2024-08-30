@@ -56,6 +56,7 @@ export const ROUTE_URLS = {
     SUBSIDIARY_SHEET_REPORT_ROUTE: "/reports/subsidiarysheet",
     SUBSIDIARY_SHEET_SUMMARY_REPORT_ROUTE: "/reports/subsidiarysheetsummary",
     CUSTOMER_AGING_REPORT_ROUTE: "/reports/customeragingreport",
+    LEADS_INFORMATION_REPORT_ROUTE: "/reports/leadinformationreport",
   },
   ADMIN: {
     SYNC_ROUTES: "/admin/syncroutes",
@@ -63,6 +64,7 @@ export const ROUTE_URLS = {
   PUBLIC: {
     CUSTOMER_INVOICE_ROUTE: "/pub/customerinvoice",
     RECEIPT_VOUCHER_ROUTE: "/pub/receiptvoucher",
+    ACCOUNT_LEDGER_ROUTE: "/pub/accountledger",
   },
 }
 
@@ -185,6 +187,7 @@ export const MENU_KEYS = {
     SUBSIDIARY_REPORT_FORM_KEY: "mnuSubsidarySheetReport",
     SUBSIDIARY_SHEET_SUMMARY_REPORT_ROUTE: "mnuSubsidarySheetReportSummary",
     CUSTOMER_AGING_FORM_KEY: "mnuCustomerAgingReport",
+    LEADS_INFORMATION_FORM_KEY: "mnuLeadsInformationReport",
   },
   CUSTOMERS: {
     GROUP_NAME: "Customers",

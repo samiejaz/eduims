@@ -17,6 +17,7 @@ const CDropdown = ({
   showClear = false,
   filter = true,
   disabled = false,
+  showErrorMessage = true,
   errorMessage = "This field is required!",
   value,
   autoFocus = false,
@@ -99,9 +100,13 @@ const CDropdown = ({
               resetFilterOnHide
               {...moreOptions}
             />
-            <span className="text-red-700 text-sm">
-              {fieldState.error ? errorMessage : ""}
-            </span>
+            {showErrorMessage && (
+              <>
+                <span className="text-red-700 text-sm">
+                  {fieldState.error ? errorMessage : ""}
+                </span>
+              </>
+            )}
           </>
         )}
       />

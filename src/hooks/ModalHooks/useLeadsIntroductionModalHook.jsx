@@ -9,6 +9,7 @@ import {
   useAllBusinessNatureSelectData,
   useAllBusinessTypesSelectData,
   useAllLeadsSouceSelectData,
+  useAllUsersSelectData,
 } from "../SelectData/useSelectData"
 import CDropdown from "../../components/Forms/CDropdown"
 import CheckBox from "../../components/Forms/CheckBox"
@@ -31,7 +32,7 @@ import { decryptID } from "../../utils/crypto"
 import { formatDateAndTime } from "../../utils/CommonFunctions"
 import { InputTextarea } from "primereact/inputtextarea"
 import CountryDependentFields from "../../components/CommonFormFields/CountryDependantFields"
-import { TextAreaField } from "../../components/Forms/form"
+import { CDatePicker, TextAreaField } from "../../components/Forms/form"
 
 export const useLeadsIntroductionModalHook = (LeadIntroductionDetailID = 0) => {
   const queryClient = useQueryClient()
@@ -312,6 +313,7 @@ export function LeadsIntroductionFormComponent({
   const businessTypesSelectData = useAllBusinessTypesSelectData()
   const businessNatureSelectData = useAllBusinessNatureSelectData(true)
   const leadSourcesSelectData = useAllLeadsSouceSelectData()
+  const usersSelectData = useAllUsersSelectData()
 
   const method = useFormContext()
 
@@ -532,7 +534,7 @@ export function LeadsIntroductionFormComponent({
             <>
               <FormColumn lg={3} xl={3} md={6}>
                 <FormLabel></FormLabel>
-                <div className="mt-1">
+                <div className="mt-4">
                   <CheckBox
                     control={method.control}
                     ID={"IsWANumberSameAsMobile"}
@@ -589,6 +591,41 @@ export function LeadsIntroductionFormComponent({
             <></>
           )}
         </FormRow>
+        <FormRow>
+          <FormColumn lg={3} xl={3} md={6}>
+            <FormLabel>
+              Demo Person
+              <span className="text-red-700 fw-bold ">*</span>
+            </FormLabel>
+            <div>
+              <CDropdown
+                control={method.control}
+                name={`DemoPersonID`}
+                optionLabel="UserName"
+                optionValue="UserID"
+                placeholder="Select a person"
+                options={usersSelectData.data}
+                focusOptions={() => method.setFocus("DemoDate")}
+                required
+                disabled={mode === "view"}
+              />
+            </div>
+          </FormColumn>
+          <FormColumn lg={3} xl={3} md={6}>
+            <FormLabel>
+              Demo Date
+              <span className="text-red-700 fw-bold ">*</span>
+            </FormLabel>
+            <div>
+              <CDatePicker
+                control={method.control}
+                name={"DemoDate"}
+                disabled={mode === "view"}
+                required={true}
+              />
+            </div>
+          </FormColumn>
+        </FormRow>
       </form>
     </>
   )
@@ -639,7 +676,9 @@ export const CustomerAndLeadsInfo = ({
 
   const method = useFormContext()
 
-  const businessTypesSelectData = useAllBusinessTypesSelectData()
+  const businessTypesSelectData = useAllBusinessTypesSelectData({
+    refetchOnWindowFocus: true,
+  })
   const businessNatureSelectData = useAllBusinessNatureSelectData(true)
   const search = (event) => {
     let _filteredItems

@@ -393,6 +393,13 @@ function FormComponent({ mode, userRights }) {
               handleNext={() =>
                 navigate(`${parentRoute}/${PreviousAndNextIDs.NextRecordID}`)
               }
+              currentRecordId={CreditNoteID}
+              handleFirstRecord={() => {
+                navigate(`${parentRoute}/${PreviousAndNextIDs.FirstRecordID}`)
+              }}
+              handleLastRecord={() => {
+                navigate(`${parentRoute}/${PreviousAndNextIDs.LastRecordID}`)
+              }}
             />
           </div>
           <form id="CreditNote" className="mt-4">
@@ -525,12 +532,14 @@ const CustomerDependentFields = React.forwardRef(
       queryKey: [QUERY_KEYS.ALL_CUSTOMER_QUERY_KEY],
       queryFn: fetchAllOldCustomersForSelect,
       initialData: [],
+      refetchOnWindowFocus: true,
     })
 
     const { data: CustomerAccounts } = useQuery({
       queryKey: [QUERY_KEYS.CUSTOMER_ACCOUNTS_QUERY_KEY, CustomerID],
       queryFn: () => fetchAllCustomerAccountsForSelect(CustomerID),
       initialData: [],
+      refetchOnWindowFocus: true,
     })
 
     const method = useFormContext()
@@ -898,7 +907,7 @@ function CreditNoteDetailTableRow({
           <input
             id="RowID"
             readOnly
-            className="form-control"
+            className="p-inputtext w-full"
             style={{ padding: "0.25rem 0.4rem", fontSize: "0.9em" }}
             value={index + 1}
             disabled={disable}

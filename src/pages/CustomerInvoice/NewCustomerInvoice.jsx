@@ -61,16 +61,16 @@ import { CustomerEntryForm } from "../../components/CustomerEntryFormComponent"
 import { ShowErrorToast } from "../../utils/CommonFunctions"
 import NewCustomerInvoiceIntallmentsModal from "../../components/Modals/NewCustomerInvoiceInstallmentModal"
 import { CustomSpinner } from "../../components/CustomSpinner"
-import { AppConfigurationContext } from "../../context/AppConfigurationContext"
+import { useAppConfigurataionProvider } from "../../context/AppConfigurationContext"
 import useConfirmationModal from "../../hooks/useConfirmationModalHook"
 
 import { decryptID, encryptID } from "../../utils/crypto"
 import { CustomerInvoiceDetailTableRowComponent } from "./CustomerInvoiceDetailTable/BusinessUnitDependantRowFields"
-import { CheckBox, TextAreaField } from "../../components/Forms/form"
+import { TextAreaField } from "../../components/Forms/form"
 import { usePrintReportAsPDF } from "../../hooks/CommonHooks/commonhooks"
 
 import { FormRightsWrapper } from "../../components/Wrappers/wrappers"
-import { Checkbox } from "primereact/checkbox"
+
 import {
   FormColumn,
   FormRow,
@@ -559,11 +559,15 @@ export function CustomerInvoiceFormCompoent({
 
   function onSubmit(data) {
     if (data?.CustomerInvoiceDetail.length > 0) {
-      CustomerInvoiceMutation.mutate({
-        formData: data,
-        userID: UserId,
-        CustomerInvoiceID: CustomerInvoiceID,
-      })
+      if (data.TotalNetAmount !== 0) {
+        CustomerInvoiceMutation.mutate({
+          formData: data,
+          userID: UserId,
+          CustomerInvoiceID: CustomerInvoiceID,
+        })
+      } else {
+        ShowErrorToast("Total Invoice Amount must be greater than 0!")
+      }
     } else {
       ShowErrorToast("Please add atleast 1 row!")
     }
@@ -604,6 +608,13 @@ export function CustomerInvoiceFormCompoent({
                 navigate(`${parentRoute}/${PreviousAndNextIDs.NextRecordID}`)
               }
               isPublic={isPublicRoute}
+              currentRecordId={CustomerInvoiceID}
+              handleFirstRecord={() => {
+                navigate(`${parentRoute}/${PreviousAndNextIDs.FirstRecordID}`)
+              }}
+              handleLastRecord={() => {
+                navigate(`${parentRoute}/${PreviousAndNextIDs.LastRecordID}`)
+              }}
             />
             <form id="CustomerInvoice" className="mt-4">
               <FormProvider {...method}>
@@ -785,6 +796,9 @@ function CustomerInvoiceToolbar({
   handleNext,
   handlePrevious,
   PreviousAndNextIDs,
+  handleFirstRecord,
+  handleLastRecord,
+  currentRecordId,
   isPublic,
 }) {
   const [printQueryParams, setPrintQueryParams] = useState(
@@ -826,6 +840,9 @@ function CustomerInvoiceToolbar({
         PreviousAndNextIDs={PreviousAndNextIDs}
         handlePrevious={handlePrevious}
         handleNext={handleNext}
+        handleFirstRecord={handleFirstRecord}
+        handleLastRecord={handleLastRecord}
+        currentRecordId={currentRecordId}
         showPreviousButton={!isPublic}
         showSaveButton={!isPublic}
         showCancelButton={!isPublic}
@@ -934,6 +951,18 @@ const CustomerDependentFields = React.forwardRef(
 
     const method = useFormContext()
 
+    function emptyCustomerBranchesInDetailTable() {
+      try {
+        const detailLength =
+          method.getValues("CustomerInvoiceDetail")?.length ?? 0
+        for (let i = 0; i < detailLength; i++) {
+          method.setValue(`CustomerInvoiceDetail.${i}.CustomerBranch`, null)
+        }
+      } catch (error) {
+        console.error(error)
+      }
+    }
+
     return (
       <>
         <FormColumn lg={4} xl={4} md={6}>
@@ -985,7 +1014,7 @@ const CustomerDependentFields = React.forwardRef(
               filter={true}
               onChange={(e) => {
                 setAccountID(e.value)
-                removeAllRows()
+                emptyCustomerBranchesInDetailTable()
               }}
               focusOptions={() => method.setFocus("CustomerInvoiceMode")}
             />
@@ -1097,7 +1126,7 @@ function BusinessUnitDependantFields({ mode }) {
 // New Detail Header Form
 function CustomerInvoiceDetailHeaderForm({ appendSingleRow }) {
   const invoiceTypeRef = useRef()
-  const { pageTitles } = useContext(AppConfigurationContext)
+  const { pageTitles } = useAppConfigurataionProvider()
 
   const method = useForm({
     defaultValues: {
@@ -1306,7 +1335,7 @@ const DetailHeaderBusinessUnitDependents = React.forwardRef((props, ref) => {
   const [InvoiceType, setInvoiceType] = useState()
   const [BusinessUnitID, setBusinessUnitID] = useState(0)
 
-  const { pageTitles } = useContext(AppConfigurationContext)
+  const { pageTitles } = useAppConfigurataionProvider()
 
   const { data: BusinessUnitSelectData } = useQuery({
     queryKey: [SELECT_QUERY_KEYS.BUSINESS_UNIT_SELECT_QUERY_KEY],
@@ -1435,7 +1464,7 @@ const CustomerInvoiceDetailTable = React.forwardRef(
       },
     }))
 
-    const { pageTitles } = useContext(AppConfigurationContext)
+    const { pageTitles } = useAppConfigurataionProvider()
 
     const typesOptions = [
       { label: `${pageTitles?.product || "Product"}`, value: "Product" },
@@ -1548,7 +1577,7 @@ const BranchSelectField = () => {
   const { AccountID } = useContext(CustomerBranchDataContext)
 
   const method = useFormContext()
-  const { pageTitles } = useContext(AppConfigurationContext)
+  const { pageTitles } = useAppConfigurataionProvider()
 
   const { data } = useQuery({
     queryKey: [SELECT_QUERY_KEYS.CUSTOMER_BRANCHES_SELECT_QUERY_KEY, AccountID],

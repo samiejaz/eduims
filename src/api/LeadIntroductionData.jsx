@@ -1,7 +1,11 @@
 import axios from "axios"
 import { toast } from "react-toastify"
 import { decryptID, encryptID } from "../utils/crypto"
-import { ShowErrorToast, ShowSuccessToast } from "../utils/CommonFunctions"
+import {
+  formatDateWithSymbol,
+  ShowErrorToast,
+  ShowSuccessToast,
+} from "../utils/CommonFunctions"
 
 const apiUrl = import.meta.env.VITE_APP_API_URL
 
@@ -17,14 +21,7 @@ export async function fetchAllLeadIntroductions(LoginUserID) {
       `${apiUrl}/${CONTROLLER}/${WHEREMETHOD}?LoginUserID=${LoginUserID}`
     )
 
-    const updatedData = data.data.map((item) => {
-      return {
-        ...item,
-        VoucherDate: new Date(item.VoucherDate),
-      }
-    })
-
-    return updatedData ?? []
+    return data.data ?? []
   } catch (err) {
     ShowErrorToast(err.message)
     return []
@@ -89,6 +86,8 @@ export async function addNewLeadIntroduction({
       LeadSourceID: formData.LeadSourceID,
       InActive: formData.InActive === true ? 1 : 0,
       EntryUserID: userID,
+      DemoPersonID: formData.DemoPersonID,
+      DemoDate: formatDateWithSymbol(formData.DemoDate ?? new Date()),
     }
     DataToSend.ContactPersonMobileNo = formData.ContactPersonMobileNo
 

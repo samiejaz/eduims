@@ -418,7 +418,7 @@ export function LeadIntroductionDetail({
             </>
           )}
           <DataTable
-            value={data}
+            value={data || []}
             dataKey="LeadIntroductionID"
             paginator
             rows={Rows}
@@ -484,6 +484,20 @@ export function LeadIntroductionDetail({
               header="Contact Person Mobile No"
             ></Column>
             <Column
+              field="DemoPersonName"
+              filter
+              filterPlaceholder="Search by demo person"
+              sortable
+              header="Demo Person"
+            ></Column>
+            <Column
+              field="FormatDemoDate"
+              filter
+              filterPlaceholder="Search by demo date"
+              sortable
+              header="Demo Date"
+            ></Column>
+            <Column
               body={actionBodyTemplate}
               style={{ minWidth: "4rem", width: "4rem" }}
             ></Column>
@@ -529,6 +543,8 @@ function LeadIntroductionForm({ mode, userRights }) {
       RequirementDetails: "",
       LeadSourceID: null,
       IsWANumberSameAsMobile: false,
+      DemoDate: new Date(),
+      DemoPersonID: null,
     },
   })
   const LeadIntroductionData = useQuery({
@@ -563,7 +579,6 @@ function LeadIntroductionForm({ mode, userRights }) {
         "CompanyWebsite",
         LeadIntroductionData.data[0].CompanyWebsite
       )
-
       method.setValue(
         "ContactPersonName",
         LeadIntroductionData.data[0].ContactPersonName
@@ -572,7 +587,6 @@ function LeadIntroductionForm({ mode, userRights }) {
         "ContactPersonMobileNo",
         LeadIntroductionData.data[0].ContactPersonMobileNo
       )
-
       method.setValue(
         "ContactPersonWhatsAppNo",
         LeadIntroductionData.data[0].ContactPersonWhatsAppNo
@@ -585,8 +599,12 @@ function LeadIntroductionForm({ mode, userRights }) {
         "RequirementDetails",
         LeadIntroductionData.data[0].RequirementDetails
       )
-
       method.setValue("LeadSourceID", LeadIntroductionData.data[0].LeadSourceID)
+      method.setValue("DemoPersonID", LeadIntroductionData.data[0].DemoPersonID)
+      method.setValue(
+        "DemoDate",
+        new Date(LeadIntroductionData.data[0].DemoDate)
+      )
     }
   }, [LeadIntroductionID, LeadIntroductionData.data])
 
@@ -656,7 +674,7 @@ function LeadIntroductionForm({ mode, userRights }) {
           <div className="mt-4">
             <ButtonToolBar
               saveLoading={mutation.isPending}
-              handleGoBack={() => navigate(-1)}
+              handleGoBack={() => navigate(parentRoute)}
               handleEdit={() => handleEdit()}
               handleCancel={() => {
                 handleCancel()
@@ -680,6 +698,13 @@ function LeadIntroductionForm({ mode, userRights }) {
               handleNext={() =>
                 navigate(`${parentRoute}/${PreviousAndNextIDs.NextRecordID}`)
               }
+              currentRecordId={LeadIntroductionID}
+              handleFirstRecord={() => {
+                navigate(`${parentRoute}/${PreviousAndNextIDs.FirstRecordID}`)
+              }}
+              handleLastRecord={() => {
+                navigate(`${parentRoute}/${PreviousAndNextIDs.LastRecordID}`)
+              }}
             />
           </div>
           <div className="mt-4">
@@ -981,7 +1006,7 @@ function QuoteDialog({ visible = true, setVisible, LeadIntroductionID }) {
   const method = useForm({
     defaultValues: {
       Description: "",
-      Amount: 0,
+      Amount: "",
     },
   })
   const fileRef = useRef()
@@ -1019,6 +1044,7 @@ function QuoteDialog({ visible = true, setVisible, LeadIntroductionID }) {
             <NumberInput
               control={method.control}
               id={"Amount"}
+              required
               enterKeyOptions={() => method.setFocus("Description")}
             />
           </div>
@@ -1029,6 +1055,7 @@ function QuoteDialog({ visible = true, setVisible, LeadIntroductionID }) {
             control={method.control}
             name={"Description"}
             autoResize={true}
+            required
           />
         </FormColumn>
       </FormRow>
@@ -1048,17 +1075,14 @@ function QuoteDialog({ visible = true, setVisible, LeadIntroductionID }) {
   })
   function onSubmit(data) {
     const file = fileRef.current?.getFile()
-    if (file === null) {
-      fileRef.current?.setError()
-    } else {
-      data.AttachmentFile = file
-      mutation.mutate({
-        from: "Quoted",
-        formData: data,
-        userID: user.userID,
-        LeadIntroductionID: LeadIntroductionID,
-      })
-    }
+
+    data.AttachmentFile = file
+    mutation.mutate({
+      from: "Quoted",
+      formData: data,
+      userID: user.userID,
+      LeadIntroductionID: LeadIntroductionID,
+    })
   }
 
   return (
@@ -1127,7 +1151,7 @@ function FinalizedDialog({ visible = true, setVisible, LeadIntroductionID }) {
   const method = useForm({
     defaultValues: {
       Description: "",
-      Amount: 0,
+      Amount: "",
     },
   })
 
@@ -1178,6 +1202,7 @@ function FinalizedDialog({ visible = true, setVisible, LeadIntroductionID }) {
               control={method.control}
               id={`Amount`}
               enterKeyOptions={() => method.setFocus("Description")}
+              required
             />
           </div>
         </FormColumn>
@@ -1187,6 +1212,7 @@ function FinalizedDialog({ visible = true, setVisible, LeadIntroductionID }) {
             control={method.control}
             name={"Description"}
             autoResize={true}
+            required
           />
         </FormColumn>
       </FormRow>
@@ -1195,17 +1221,14 @@ function FinalizedDialog({ visible = true, setVisible, LeadIntroductionID }) {
 
   function onSubmit(data) {
     const file = fileRef.current?.getFile()
-    if (file === null) {
-      fileRef.current?.setError()
-    } else {
-      data.AttachmentFile = file
-      mutation.mutate({
-        from: "Finalized",
-        formData: data,
-        userID: user.userID,
-        LeadIntroductionID: LeadIntroductionID,
-      })
-    }
+
+    data.AttachmentFile = file
+    mutation.mutate({
+      from: "Finalized",
+      formData: data,
+      userID: user.userID,
+      LeadIntroductionID: LeadIntroductionID,
+    })
   }
 
   return (

@@ -276,26 +276,24 @@ function FormComponent({ mode, userRights }) {
   })
 
   useEffect(() => {
-    if (!isDirty) {
-      if (+UserID !== undefined && UserData?.data?.length > 0) {
-        try {
-          setValue("FirstName", UserData?.data[0]?.FirstName)
-          setValue("LastName", UserData?.data[0]?.LastName)
-          setValue("Email", UserData?.data[0]?.Email)
-          setValue("UserName", UserData?.data[0]?.UserName)
-          setValue("Password", UserData?.data[0]?.Password)
-          setValue("InActive", UserData?.data[0]?.InActive)
-          setValue("DepartmentID", UserData?.data[0]?.DepartmentID)
-          setValue("RoleID", UserData?.data[0]?.RoleID)
-          if (UserData?.data[0]?.ProfilePic) {
-            fileRef.current?.setBase64File(
-              "data:image/png;base64," + UserData?.data[0]?.ProfilePic
-            )
-          }
-        } catch (error) {}
-      }
+    if (UserID !== undefined && UserData?.data?.length > 0) {
+      try {
+        setValue("FirstName", UserData?.data[0]?.FirstName)
+        setValue("LastName", UserData?.data[0]?.LastName)
+        setValue("Email", UserData?.data[0]?.Email)
+        setValue("UserName", UserData?.data[0]?.UserName)
+        setValue("Password", UserData?.data[0]?.Password)
+        setValue("InActive", UserData?.data[0]?.InActive)
+        setValue("DepartmentID", UserData?.data[0]?.DepartmentID)
+        setValue("RoleID", UserData?.data[0]?.RoleID)
+        if (UserData?.data[0]?.ProfilePic) {
+          fileRef.current?.setBase64File(
+            "data:image/png;base64," + UserData?.data[0]?.ProfilePic
+          )
+        }
+      } catch (error) {}
     }
-  }, [UserID, UserData])
+  }, [UserID, UserData.data])
 
   const mutation = useMutation({
     mutationFn: addNewUser,
@@ -404,6 +402,13 @@ function FormComponent({ mode, userRights }) {
               handleNext={() =>
                 navigate(`${parentRoute}/${PreviousAndNextIDs.NextRecordID}`)
               }
+              currentRecordId={UserID}
+              handleFirstRecord={() => {
+                navigate(`${parentRoute}/${PreviousAndNextIDs.FirstRecordID}`)
+              }}
+              handleLastRecord={() => {
+                navigate(`${parentRoute}/${PreviousAndNextIDs.LastRecordID}`)
+              }}
             />
           </div>
           <form className="mt-4">

@@ -3,3 +3,4 @@ export { default as BusinessUnitAndBalanceWiseAccountLedgersReprot } from "./Bus
 export { default as SubsidiarySheetReport } from "./SubsidiarySheetReport"
 export { default as SubsidiarySheetSummary } from "./SubsidiarySheetSummary"
 export { default as CustomerAgingReport } from "./CustomerAgingReport"
+export { default as LeadInformationReport } from "./LeadInformationReport"

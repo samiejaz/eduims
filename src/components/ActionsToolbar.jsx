@@ -9,6 +9,7 @@ import { displayYesNoDialog } from "../utils/helpers"
 import { SEVERITIES } from "../utils/CONSTANTS"
 
 export default function ButtonToolBar({
+  currentRecordId,
   printLoading = false,
   saveLoading = false,
   deleteDisable = false,
@@ -19,6 +20,8 @@ export default function ButtonToolBar({
   printDisable = false,
   previousDisable = false,
   nextDisable = false,
+  firstRecordDisable = false,
+  lastRecordDisable = false,
   showPrint = false,
   utilityContent = [],
   handleCancel = () => {},
@@ -30,6 +33,8 @@ export default function ButtonToolBar({
   handleGoBack = () => {},
   handlePrevious = () => {},
   handleNext = () => {},
+  handleFirstRecord = () => {},
+  handleLastRecord = () => {},
   saveLabel = "Save",
   viewLabel = "View",
   editLabel = "Edit",
@@ -37,6 +42,8 @@ export default function ButtonToolBar({
   deleteLabel = "Delete",
   nextLabel = "Next",
   previousLabel = "Previous",
+  firstRecordLabel = "First",
+  lastRecordLabel = "Last",
   GoBackLabel = "",
   showDelete = true,
   showDeleteButton = true,
@@ -46,13 +53,20 @@ export default function ButtonToolBar({
   showEditButton = true,
   showNextButton = true,
   showPreviousButton = true,
+  showFirstRecordButton = true,
+  showLastRecordButton = true,
   mode = "new",
   getPrintFromUrl = "",
   splitButtonItems = [],
   showUtilityContent = false,
   showBackButton = true,
   showSeparator = true,
-  PreviousAndNextIDs = { NextRecordID: null, PreviousRecordID: null },
+  PreviousAndNextIDs = {
+    NextRecordID: null,
+    PreviousRecordID: null,
+    FirstRecordID: null,
+    LastRecordID: null,
+  },
 }) {
   useKeyCombination(() => {
     if (mode === "edit" || mode === "new") {
@@ -109,7 +123,7 @@ export default function ButtonToolBar({
   )
   const centerContent = (
     <React.Fragment>
-      <div className="w-full flex gap-1 flex-wrap">
+      <div className="w-full flex align-items-center gap-1 flex-wrap">
         {showCancelButton && (
           <>
             <Button
@@ -231,7 +245,35 @@ export default function ButtonToolBar({
             <i className="pi pi-bars p-toolbar-separator mr-2" />
           </>
         )}
-
+        {showFirstRecordButton && (
+          <>
+            <Button
+              label={firstRecordLabel}
+              icon="pi pi-angle-double-left"
+              className="rounded"
+              type="button"
+              severity="secondary"
+              text
+              disabled={shouldPrevNextButtonsBeDisabled(
+                "first_record",
+                firstRecordDisable,
+                mode,
+                PreviousAndNextIDs.FirstRecordID,
+                currentRecordId
+              )}
+              onClick={() => {
+                if (PreviousAndNextIDs.FirstRecordID !== null) {
+                  handleFirstRecord()
+                }
+              }}
+              pt={{
+                label: {
+                  className: "hidden md:block lg:block",
+                },
+              }}
+            />
+          </>
+        )}
         {showPreviousButton && (
           <>
             <Button
@@ -241,12 +283,13 @@ export default function ButtonToolBar({
               type="button"
               severity="secondary"
               text
-              disabled={
-                previousDisable ||
-                (mode === "view" &&
-                  PreviousAndNextIDs.PreviousRecordID === null) ||
-                mode !== "view"
-              }
+              disabled={shouldPrevNextButtonsBeDisabled(
+                "previous",
+                previousDisable,
+                mode,
+                PreviousAndNextIDs.PreviousRecordID,
+                currentRecordId
+              )}
               onClick={() => {
                 if (PreviousAndNextIDs.PreviousRecordID !== null) {
                   handlePrevious()
@@ -269,14 +312,47 @@ export default function ButtonToolBar({
               type="button"
               severity="secondary"
               iconPos="right"
-              disabled={
-                nextDisable ||
-                (mode === "view" && PreviousAndNextIDs.NextRecordID === null) ||
-                mode !== "view"
-              }
+              disabled={shouldPrevNextButtonsBeDisabled(
+                "next",
+                nextDisable,
+                mode,
+                PreviousAndNextIDs.NextRecordID,
+                currentRecordId
+              )}
               onClick={() => {
-                if (PreviousAndNextIDs.NextRecordID !== null) {
+                if (PreviousAndNextIDs.FirstRecordID !== null) {
                   handleNext()
+                }
+              }}
+              text
+              pt={{
+                label: {
+                  className: "hidden md:block lg:block",
+                },
+              }}
+            />
+          </>
+        )}
+
+        {showLastRecordButton && (
+          <>
+            <Button
+              label={lastRecordLabel}
+              icon="pi pi-angle-double-right"
+              className="rounded"
+              type="button"
+              severity="secondary"
+              iconPos="right"
+              disabled={shouldPrevNextButtonsBeDisabled(
+                "last_record",
+                lastRecordDisable,
+                mode,
+                PreviousAndNextIDs.LastRecordID,
+                currentRecordId
+              )}
+              onClick={() => {
+                if (PreviousAndNextIDs.LastRecordID !== null) {
+                  handleLastRecord()
                 }
               }}
               text
@@ -411,4 +487,38 @@ const PrintRecordButton = ({
       )}
     </>
   )
+}
+
+// UTILS
+
+function shouldPrevNextButtonsBeDisabled(
+  from,
+  disabled,
+  mode,
+  id,
+  currentRecordId
+) {
+  try {
+    let shouldBeDisabled = false
+
+    if (disabled == true) {
+      shouldBeDisabled = true
+    } else if (mode !== "view") {
+      shouldBeDisabled = true
+    } else if (mode === "view" && id === null) {
+      shouldBeDisabled = true
+    } else if (mode === "view" && id == undefined) {
+      shouldBeDisabled = true
+    }
+
+    if (from === "first_record" || from === "last_record") {
+      if (id === currentRecordId) {
+        shouldBeDisabled = true
+      }
+    }
+
+    return shouldBeDisabled
+  } catch (error) {
+    console.error(error)
+  }
 }

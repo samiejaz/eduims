@@ -410,11 +410,7 @@ a {
   box-sizing: border-box;
 }
 
-.flex {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+
 
 .small-input > input {
   padding: 0.3rem 0.4rem;

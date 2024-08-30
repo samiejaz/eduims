@@ -96,7 +96,7 @@ export async function PrintReportInNewTabWithLoadingToast({
 
     let url =
       fullUrl !== "" ? fullUrl : `${apiUrl}/Reports/${controllerName}&Export=p`
-    console.log(url)
+
     const { data } = await axios.post(url)
 
     const win = window.open("")
@@ -168,6 +168,9 @@ export const downloadFile = (file, fileName = null) => {
 }
 
 export function formatDateWithSymbol(dateInput, symbol = "-") {
+  if (typeof dateInput === "string") {
+    dateInput = new Date(dateInput)
+  }
   const month = dateInput.toLocaleString("en-US", { month: "short" })
   const date = dateInput.getDate()
   const year = dateInput.getFullYear()

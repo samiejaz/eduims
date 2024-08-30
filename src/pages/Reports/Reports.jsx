@@ -8,6 +8,7 @@ import {
   SubsidiarySheetReport,
   SubsidiarySheetSummary,
   CustomerAgingReport,
+  LeadInformationReport,
 } from "./index"
 
 const Reports = () => {
@@ -72,6 +73,18 @@ const Reports = () => {
           <ReportRightsWrapper
             menuKey={MENU_KEYS.REPORTS.CUSTOMER_AGING_FORM_KEY}
             ReportComponent={CustomerAgingReport}
+          />
+        }
+      />
+      <Route
+        path={ROUTE_URLS.REPORTS.LEADS_INFORMATION_REPORT_ROUTE.replaceAll(
+          "/reports",
+          ""
+        )}
+        element={
+          <ReportRightsWrapper
+            menuKey={MENU_KEYS.REPORTS.LEADS_INFORMATION_FORM_KEY}
+            ReportComponent={LeadInformationReport}
           />
         }
       />

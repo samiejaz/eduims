@@ -12,58 +12,49 @@ import {
   preventFormByEnterKeySubmission,
 } from "../../utils/CommonFunctions"
 import { useReportViewerHook } from "../../hooks/CommonHooks/commonhooks"
-import { useBusinessUnitsSelectData } from "../../hooks/SelectData/useSelectData"
-import { CustomerAndLedgerComponent } from "./common"
+import { useAllUsersSelectData } from "../../hooks/SelectData/useSelectData"
 import { useAppConfigurataionProvider } from "../../context/AppConfigurationContext"
+import { useEffect } from "react"
 
-export default function AccountLedgerReport() {
-  document.title = "Account Ledger"
+export default function LeadInformationReport() {
+  document.title = "Lead Information Report"
 
   const { sessionConfigData } = useAppConfigurataionProvider()
 
   const method = useForm({
     defaultValues: {
-      AccountID: [],
-      BusinessUnitID: [],
-      CustomerID: null,
       DateFrom: sessionConfigData?.data?.SessionOpeningDate,
       DateTo: new Date(),
+      UserID: [],
     },
   })
+
   const { generateReport, render } = useReportViewerHook({
-    controllerName: "/Reports/CustomerLedgerReport",
+    controllerName: "/Reports/GetLeadInformationReport",
   })
 
   function onSubmit(formData) {
-    let BusinessUnitStr =
-      formData.BusinessUnitID.length > 0
-        ? formData.BusinessUnitID.join(",")
-        : ""
-    let AccountStr =
-      formData.AccountID.length > 0 ? formData.AccountID.join(",") : ""
-    let businessUnitQueryParam =
-      BusinessUnitStr !== "" ? "&BusinessUnitID=" + BusinessUnitStr : ""
-    let AccountIDQueryParam =
-      AccountStr !== "" ? "&AccountID=" + AccountStr : ""
-    let queryParams = `?CustomerID=${formData.CustomerID}${businessUnitQueryParam}${AccountIDQueryParam}&DateFrom=${formatDateWithSymbol(formData.DateFrom ?? new Date())}&DateTo=${formatDateWithSymbol(formData.DateTo ?? new Date())}&Export=p`
+    let UserStr = formData.UserID.length > 0 ? formData.UserID.join(",") : ""
+
+    let UserIDQueryParam = UserStr !== "" ? "&DemoPersonID=" + UserStr : ""
+    let queryParams = `?${UserIDQueryParam}&DateFrom=${formatDateWithSymbol(formData.DateFrom ?? new Date())}&DateTo=${formatDateWithSymbol(formData.DateTo ?? new Date())}&Export=p`
     generateReport(queryParams)
   }
 
   return (
     <>
       <div className="flex align-items-center justify-content-center ">
-        <h1 className="text-3xl">Account Ledger</h1>
+        <h1 className="text-3xl">Lead Information Report</h1>
       </div>
       <form onKeyDown={preventFormByEnterKeySubmission}>
-        <FormRow>
+        <FormRow className="mt-2">
           <FormProvider {...method}>
-            <MultiSelectBusinessUnitField col={4} />
-            <CustomerAndLedgerComponent />
+            <MultiSelectDemoPersonsField />
           </FormProvider>
+
           <FormColumn lg={2} xl={2} md={6}>
             <FormLabel style={{ fontSize: "14px", fontWeight: "bold" }}>
               Date From
-              <span className="text-red-700 fw-bold ">*</span>
             </FormLabel>
             <div>
               <CDatePicker control={method.control} name={"DateFrom"} />
@@ -72,7 +63,6 @@ export default function AccountLedgerReport() {
           <FormColumn lg={2} xl={2} md={6}>
             <FormLabel style={{ fontSize: "14px", fontWeight: "bold" }}>
               Date To
-              <span className="text-red-700 fw-bold ">*</span>
             </FormLabel>
             <div>
               <CDatePicker control={method.control} name={"DateTo"} />
@@ -100,21 +90,21 @@ export default function AccountLedgerReport() {
   )
 }
 
-const MultiSelectBusinessUnitField = ({ col = 3 }) => {
-  const businessUnitSelectData = useBusinessUnitsSelectData()
+const MultiSelectDemoPersonsField = () => {
+  const usersSelectData = useAllUsersSelectData()
   const method = useFormContext()
 
   return (
     <>
-      <FormColumn lg={col} xl={col} md={12}>
-        <FormLabel>Business Unit</FormLabel>
+      <FormColumn lg={4} xl={4} md={12}>
+        <FormLabel>Demo Persons</FormLabel>
         <CMultiSelectField
           control={method.control}
-          name="BusinessUnitID"
-          options={businessUnitSelectData.data}
-          optionLabel="BusinessUnitName"
-          optionValue="BusinessUnitID"
-          placeholder="Select a business unit"
+          name="UserID"
+          options={usersSelectData.data}
+          optionLabel="UserName"
+          optionValue="UserID"
+          placeholder="Select demo persons..."
         />
       </FormColumn>
     </>

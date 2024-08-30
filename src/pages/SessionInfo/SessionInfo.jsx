@@ -208,7 +208,7 @@ export function FormComponent({ mode, userRights }) {
   })
 
   useEffect(() => {
-    if (+SessionID !== 0 && SessionData.data.length > 0) {
+    if (SessionID !== undefined && SessionData.data.length > 0) {
       setValue("SessionTitle", SessionData?.data[0]?.SessionTitle)
       setValue(
         "SessionOpeningDate",
@@ -228,6 +228,9 @@ export function FormComponent({ mode, userRights }) {
         queryClient.invalidateQueries({ queryKey: [queryKey] })
         queryClient.invalidateQueries({
           queryKey: [SELECT_QUERY_KEYS.SESSION_SELECT_QUERY_KEY],
+        })
+        queryClient.invalidateQueries({
+          queryKey: ["sessionConfigData"],
         })
         navigate(`${parentRoute}/${RecordID}`)
       }
@@ -309,6 +312,13 @@ export function FormComponent({ mode, userRights }) {
               handleNext={() =>
                 navigate(`${parentRoute}/${PreviousAndNextIDs.NextRecordID}`)
               }
+              currentRecordId={SessionID}
+              handleFirstRecord={() => {
+                navigate(`${parentRoute}/${PreviousAndNextIDs.FirstRecordID}`)
+              }}
+              handleLastRecord={() => {
+                navigate(`${parentRoute}/${PreviousAndNextIDs.LastRecordID}`)
+              }}
             />
           </div>
           <form className="mt-4">
