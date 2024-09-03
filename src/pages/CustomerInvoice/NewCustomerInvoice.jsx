@@ -850,6 +850,8 @@ function CustomerInvoiceToolbar({
         showDeleteButton={!isPublic}
         showBackButton={!isPublic}
         showSeparator={!isPublic}
+        showFirstRecordButton={!isPublic}
+        showLastRecordButton={!isPublic}
 
         // utilityContent={
         //   <>
@@ -1225,10 +1227,18 @@ function CustomerInvoiceDetailHeaderForm({ appendSingleRow }) {
               id={"Rate"}
               control={method.control}
               onChange={(e) => {
+                console.log("BEFORE CALC RATE VALUE ON RATE::", e.value)
                 const qty = method.getValues(["Qty"])
+                console.log("BEFORE CALC QUANTITY ON RATE::", qty)
                 method.setValue("Amount", e.value * qty)
+                console.log("AFTER CALC AMOUNT VALUE ON RATE::", e.value * qty)
                 const disc = method.getValues(["Discount"])
+                console.log("BEFORE CALC DISCOUNT ON RATE::", disc)
                 method.setValue("NetAmount", e.value * qty - disc)
+                console.log(
+                  "AFTER CALC NET AMOUNT VALUE ON RATE::",
+                  e.value * qty
+                )
               }}
               mode="decimal"
               maxFractionDigits={2}

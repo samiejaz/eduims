@@ -118,22 +118,28 @@ function LedgerDataTable({ data = {} }) {
     {
       heading: "Date",
       field: "FormatedDate",
+      textAlign: "center",
     },
     {
       heading: "V #",
       field: "VNo",
+      textAlign: "center",
     },
     {
       heading: "Description",
       field: "Description",
+      width: "10rem",
+      textAlign: "start",
     },
     {
       heading: "Debit",
       field: "Dr",
+      textAlign: "center",
     },
     {
       heading: "Credit",
       field: "Cr",
+      textAlign: "center",
     },
   ]
 
@@ -165,12 +171,10 @@ function LedgerDataTable({ data = {} }) {
       removableSort
       dataKey="key"
       emptyMessage="No ledgers found!"
-      resizableColumns
       size="small"
-      selectionMode="single"
       className={"thead"}
       loading={data.isFetching || data.isLoading}
-      tableStyle={{ minWidth: "50rem" }}
+      virtualScrollerOptions={{ itemSize: 46 }}
       value={data.data ?? []}
     >
       {columns.map((item, i) => (
@@ -178,10 +182,23 @@ function LedgerDataTable({ data = {} }) {
           headerStyle={{
             background: "#10B981",
             color: "white",
+
+            textAlign: "center",
           }}
           key={item.key + i}
           field={item.field}
           header={item.heading}
+          style={{
+            maxWidth: "50rem",
+          }}
+          pt={{
+            bodyCell: {
+              style: {
+                maxWidth: "10rem",
+                textAlign: item.textAlign,
+              },
+            },
+          }}
         ></Column>
       ))}
       <Column
