@@ -569,8 +569,8 @@ export function ReceiptEntryFormComponent({ mode, userRights, isPublicRoute }) {
               showDeleteButton={!isPublicRoute}
               showBackButton={!isPublicRoute}
               showSeparator={!isPublicRoute}
-              showFirstRecordButton={!isPublic}
-              showLastRecordButton={!isPublic}
+              showFirstRecordButton={!isPublicRoute}
+              showLastRecordButton={!isPublicRoute}
               currentRecordId={ReceiptVoucherID}
               handleFirstRecord={() => {
                 navigate(`${parentRoute}/${PreviousAndNextIDs.FirstRecordID}`)
