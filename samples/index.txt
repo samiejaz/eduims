@@ -60,19 +60,10 @@ function CurrencyInput({ control, name }) {
 }
 
 
---- TODOS
-
-1) Icon with Sale Donuts and their labels //* Done
-2) 3rd Col issue make it 2 rows
-3) Icons in each section //* Done
-4) Show totals on Bar Charts //* Done
-5) Sale Analysis Title on Sales Section  //* Done
-6) Color of payements bar (#FEB019) 
-7) Change Labels into Chips at Sales Dashboard //* Done
-8) Change the Size of overall revernue chart //* Done
-9) On Dashboard add padding and change faded colors to cool colors (Links)
-10) Backup managment card tile missing
-
--- IMSTODOS
-
-1) Enable Save button on Completed Action on User Dashboard
+TODOS::
+1) Leads dashboard no scroll in datatable (Done)
+2) Add Quotation check on leads info form (Done)
+3) New Supplier Form (Done)
+4) Date Issue for date selectors (Done)
+5) Give Leads Statuses Filtration (Done)
+6) Pending Invoices and Pending Receipts Counters

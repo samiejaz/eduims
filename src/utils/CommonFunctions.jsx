@@ -86,6 +86,7 @@ export async function PrintReportInNewTabWithLoadingToast({
   fullUrl = "",
   toastLoadingMessage = "Generating report...",
   toastSuccessMessage = "Report generated successfully",
+  onReportGenerated = () => null,
 }) {
   let id = new Date().getMilliseconds().toString()
   try {
@@ -117,6 +118,9 @@ export async function PrintReportInNewTabWithLoadingToast({
     toast.success(toastSuccessMessage, {
       position: "top-right",
     })
+    if (onReportGenerated) {
+      onReportGenerated()
+    }
   } catch (e) {
     toast.dismiss("printReportLoading_" + id)
     toast.error("Error generating report: " + e.message)

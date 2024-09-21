@@ -13,6 +13,9 @@ import LeadsDashboardIcon from "../../assets/speedometer.png"
 import LedgerIcon from "../../assets/payment.png"
 import NewLeadEntryIcon from "../../assets/leading.png"
 import ReceiptIcon from "../../assets/receipt.png"
+import PendingInvoiceCardSection from "./components/PendingInvoiceCardSection"
+import PendingReceiptsCardSection from "./components/PendingReceiptsCardSection"
+import { useAppConfigurataionProvider } from "../../context/AppConfigurationContext"
 
 const componentMapping = {
   InfoCardsContainer,
@@ -106,99 +109,120 @@ const LinkCard = ({ item, icon, textColor, backGroundColor }) => {
 
 const LinksContainer = () => {
   const { originalRoutes } = useRoutesData()
+  const { userConfigData } = useAppConfigurataionProvider()
+
+  function renderCounters() {
+    if (userConfigData.data?.ShowAccountAnalysisOnMainDashboard == true) {
+      return (
+        <FormRow>
+          <FormColumn xl={4} lg={4} md={12}>
+            <PendingInvoiceCardSection />
+          </FormColumn>
+          <FormColumn xl={8} lg={8} md={12}>
+            <PendingReceiptsCardSection />
+          </FormColumn>
+        </FormRow>
+      )
+    }
+  }
+
   return (
-    <FormRow>
-      {originalRoutes.find((item) => item.menuKey === "mnuCustomers")
-        ?.menuKey && (
-        <>
-          <FormColumn xl={2} lg={4} md={4}>
-            <LinkCard
-              item={originalRoutes.find(
-                (item) => item.menuKey === "mnuCustomers"
-              )}
-              icon={CustomerIcon}
-              backGroundColor={"#ECF2FF"}
-              textColor={"#5D87FF"}
-            />
-          </FormColumn>
-        </>
-      )}
-      {originalRoutes.find((item) => item.menuKey === "mnuNewCustomerInvoice")
-        ?.menuKey && (
-        <>
-          <FormColumn xl={2} lg={4} md={4}>
-            <LinkCard
-              item={originalRoutes.find(
-                (item) => item.menuKey === "mnuNewCustomerInvoice"
-              )}
-              icon={InvoiceIcon}
-              backGroundColor={"#EAF6FF"}
-              textColor={"#49BEFF"}
-            />
-          </FormColumn>
-        </>
-      )}
-      {originalRoutes.find((item) => item.menuKey === "mnuLeadsDashboard")
-        ?.menuKey && (
-        <>
-          <FormColumn xl={2} lg={4} md={4}>
-            <LinkCard
-              item={originalRoutes.find(
-                (item) => item.menuKey === "mnuLeadsDashboard"
-              )}
-              icon={LeadsDashboardIcon}
-              backGroundColor={"#FDEDE8"}
-              textColor={"#FA8B6E"}
-            />
-          </FormColumn>
-        </>
-      )}
-      {originalRoutes.find((item) => item.menuKey === "mnuLeadIntroduction")
-        ?.menuKey && (
-        <>
-          <FormColumn xl={2} lg={4} md={4}>
-            <LinkCard
-              item={originalRoutes.find(
-                (item) => item.menuKey === "mnuLeadIntroduction"
-              )}
-              icon={NewLeadEntryIcon}
-              backGroundColor={"#FEF5E5"}
-              textColor={"#FFAE1F"}
-            />
-          </FormColumn>
-        </>
-      )}
-      {originalRoutes.find((item) => item.menuKey === "mnuRecieptVoucher")
-        ?.menuKey && (
-        <>
-          <FormColumn xl={2} lg={4} md={4}>
-            <LinkCard
-              item={originalRoutes.find(
-                (item) => item.menuKey === "mnuRecieptVoucher"
-              )}
-              icon={ReceiptIcon}
-              backGroundColor={"#fce1c7"}
-              textColor={"#E67E22"}
-            />
-          </FormColumn>
-        </>
-      )}
-      {originalRoutes.find((item) => item.menuKey === "mnuAccountLedgerReport")
-        ?.menuKey && (
-        <>
-          <FormColumn xl={2} lg={4} md={4}>
-            <LinkCard
-              item={originalRoutes.find(
-                (item) => item.menuKey === "mnuAccountLedgerReport"
-              )}
-              icon={LedgerIcon}
-              backGroundColor={"#E6FFFA"}
-              textColor={"#13DEB9"}
-            />
-          </FormColumn>
-        </>
-      )}
-    </FormRow>
+    <>
+      <FormRow>
+        {originalRoutes.find((item) => item.menuKey === "mnuCustomers")
+          ?.menuKey && (
+          <>
+            <FormColumn xl={2} lg={4} md={4}>
+              <LinkCard
+                item={originalRoutes.find(
+                  (item) => item.menuKey === "mnuCustomers"
+                )}
+                icon={CustomerIcon}
+                backGroundColor={"#ECF2FF"}
+                textColor={"#5D87FF"}
+              />
+            </FormColumn>
+          </>
+        )}
+        {originalRoutes.find((item) => item.menuKey === "mnuNewCustomerInvoice")
+          ?.menuKey && (
+          <>
+            <FormColumn xl={2} lg={4} md={4}>
+              <LinkCard
+                item={originalRoutes.find(
+                  (item) => item.menuKey === "mnuNewCustomerInvoice"
+                )}
+                icon={InvoiceIcon}
+                backGroundColor={"#EAF6FF"}
+                textColor={"#49BEFF"}
+              />
+            </FormColumn>
+          </>
+        )}
+        {originalRoutes.find((item) => item.menuKey === "mnuLeadsDashboard")
+          ?.menuKey && (
+          <>
+            <FormColumn xl={2} lg={4} md={4}>
+              <LinkCard
+                item={originalRoutes.find(
+                  (item) => item.menuKey === "mnuLeadsDashboard"
+                )}
+                icon={LeadsDashboardIcon}
+                backGroundColor={"#FDEDE8"}
+                textColor={"#FA8B6E"}
+              />
+            </FormColumn>
+          </>
+        )}
+        {originalRoutes.find((item) => item.menuKey === "mnuLeadIntroduction")
+          ?.menuKey && (
+          <>
+            <FormColumn xl={2} lg={4} md={4}>
+              <LinkCard
+                item={originalRoutes.find(
+                  (item) => item.menuKey === "mnuLeadIntroduction"
+                )}
+                icon={NewLeadEntryIcon}
+                backGroundColor={"#FEF5E5"}
+                textColor={"#FFAE1F"}
+              />
+            </FormColumn>
+          </>
+        )}
+        {originalRoutes.find((item) => item.menuKey === "mnuRecieptVoucher")
+          ?.menuKey && (
+          <>
+            <FormColumn xl={2} lg={4} md={4}>
+              <LinkCard
+                item={originalRoutes.find(
+                  (item) => item.menuKey === "mnuRecieptVoucher"
+                )}
+                icon={ReceiptIcon}
+                backGroundColor={"#fce1c7"}
+                textColor={"#E67E22"}
+              />
+            </FormColumn>
+          </>
+        )}
+        {originalRoutes.find(
+          (item) => item.menuKey === "mnuAccountLedgerReport"
+        )?.menuKey && (
+          <>
+            <FormColumn xl={2} lg={4} md={4}>
+              <LinkCard
+                item={originalRoutes.find(
+                  (item) => item.menuKey === "mnuAccountLedgerReport"
+                )}
+                icon={LedgerIcon}
+                backGroundColor={"#E6FFFA"}
+                textColor={"#13DEB9"}
+              />
+            </FormColumn>
+          </>
+        )}
+      </FormRow>
+      {renderCounters()}
+    </>
   )
 }
 export default Dashboard

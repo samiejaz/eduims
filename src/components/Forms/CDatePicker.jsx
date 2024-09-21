@@ -12,6 +12,7 @@ const CDatePicker = ({
   showIcon = false,
   dateFormat = "dd-M-yy",
   onChange = () => null,
+  selectOtherMonths = true,
 }) => {
   return (
     <Controller
@@ -37,6 +38,7 @@ const CDatePicker = ({
             hourFormat="12"
             disabled={disabled}
             placeholder="Select a date"
+            selectOtherMonths={selectOtherMonths}
           />
         </>
       )}

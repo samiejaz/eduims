@@ -29,6 +29,7 @@ let defaultValues = {
   ProductName: "Product",
   BranchName: "Branch",
   ShowTimelineInsideLeadsForm: false,
+  Currency: "Rs ",
 }
 
 function AppConfiguration() {
@@ -73,6 +74,7 @@ function AppConfigurationForm() {
           "ShowTimelineInsideLeadsForm",
           data?.data[0]?.ShowTimelineInsideLeadsForm
         )
+        setValue("Currency", data?.data[0]?.Currency)
         // setPageTitles({
         //   product: data?.data[0]?.ProductTitle,
         //   branch: data?.data[0]?.CustomerBranchTitle,
@@ -96,6 +98,7 @@ function AppConfigurationForm() {
           ProductTitle: formData?.ProductName,
           CustomerBranchTitle: formData?.BranchName,
           ShowTimelineInsideLeadsForm: formData?.ShowTimelineInsideLeadsForm,
+          Currency: formData?.Currency,
           EntryUserID: user?.userID,
         }
 
@@ -149,6 +152,13 @@ function AppConfigurationForm() {
 
               <div>
                 <TextInput control={control} ID={"BranchName"} />
+              </div>
+            </FormColumn>
+            <FormColumn lg={3} xl={3} md={6}>
+              <FormLabel>Currency</FormLabel>
+
+              <div>
+                <TextInput control={control} ID={"Currency"} />
               </div>
             </FormColumn>
             <FormColumn lg={3} xl={3} md={6}>

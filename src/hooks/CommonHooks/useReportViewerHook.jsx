@@ -5,17 +5,24 @@ import { CustomSpinner } from "../../components/CustomSpinner"
 import { PrintReportInNewTabWithLoadingToast } from "../../utils/CommonFunctions"
 
 const apiUrl = import.meta.env.VITE_APP_API_URL
+
 const useReportViewer = ({ controllerName, ShowPrintInNewTab = false }) => {
   const queryclient = useQueryClient()
   const [queryParams, setQueryParams] = useState(null)
   const [reload, setReload] = useState(false)
+  const [onReportGenerated, setOnReportGenerated] = useState(() => null)
 
-  const { data, isLoading, isFetching, isStale } = useQuery({
+  const { data, isLoading, isFetching } = useQuery({
     queryKey: ["accountLedgerReport", reload],
     queryFn: async () => {
       const { data: base64String } = await axios.post(
         apiUrl + controllerName + queryParams
       )
+
+      // TODO make query as mutation
+      if (onReportGenerated) {
+        onReportGenerated()
+      }
 
       return base64String
     },
@@ -41,6 +48,7 @@ const useReportViewer = ({ controllerName, ShowPrintInNewTab = false }) => {
 
   return {
     generateReport,
+    setOnReportGenerated,
     render: (
       <>
         {(isLoading || isFetching) && (

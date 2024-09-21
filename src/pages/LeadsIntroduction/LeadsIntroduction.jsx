@@ -17,6 +17,7 @@ import {
   deleteLeadIntroductionByID,
   fetchAllLeadIntroductions,
   fetchLeadIntroductionById,
+  markIncentiveAsPaid,
 } from "../../api/LeadIntroductionData"
 import { ROUTE_URLS, QUERY_KEYS, MENU_KEYS } from "../../utils/enums"
 import { LeadsIntroductionFormComponent } from "../../hooks/ModalHooks/useLeadsIntroductionModalHook"
@@ -54,10 +55,16 @@ import {
   FormRow,
 } from "../../components/Layout/LayoutComponents"
 import { DetailPageTilteAndActionsComponent } from "../../components"
-import { formatDateWithSymbol } from "../../utils/CommonFunctions"
+import {
+  formatDateWithSymbol,
+  ShowSuccessToast,
+} from "../../utils/CommonFunctions"
 import { Filter, SortAsc, SortDesc } from "lucide-react"
 import { useAppConfigurataionProvider } from "../../context/AppConfigurationContext"
 import { usePreviousAndNextID } from "../../hooks/api/usePreviousAndNextIDHook"
+import { displayYesNoDialog } from "../../utils/helpers"
+import { SEVERITIES } from "../../utils/CONSTANTS"
+import { confirmDialog } from "primereact/confirmdialog"
 
 let parentRoute = ROUTE_URLS.LEAD_INTRODUCTION_ROUTE
 let editRoute = `${parentRoute}/edit/`
@@ -240,6 +247,39 @@ export function LeadIntroductionDetail({
     },
   })
 
+  const incentiveMutation = useMutation({
+    mutationFn: markIncentiveAsPaid,
+    onSuccess: ({ success }) => {
+      if (success) {
+        ShowSuccessToast("Incentive paid successfully!")
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEYS.LEADS_DEMO_DATA],
+        })
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEYS.LEAD_INTRODUCTION_QUERY_KEY],
+        })
+      }
+    },
+  })
+
+  const confirmAcknowledge = (LeadIntroductionID) => {
+    confirmDialog({
+      header: "Incentive Paid Confirmation",
+      message:
+        "You are about to mark the incentive as paid. Are you sure you want to perform this action?",
+      icon: "pi pi-exclamation-triangle",
+      defaultFocus: "accept",
+      accept: () => {
+        incentiveMutation.mutate({
+          LoginUserID: user.userID,
+          LeadIntroductionID,
+          Type: 1,
+        })
+      },
+      reject: () => {},
+    })
+  }
+
   function handleDelete(id) {
     deleteMutation.mutate({ LeadIntroductionID: id, LoginUserID: user.userID })
   }
@@ -255,7 +295,7 @@ export function LeadIntroductionDetail({
   const actionBodyTemplate = (rowData) => {
     return (
       <React.Fragment>
-        <div>
+        <div className="flex align-items-center justify-content-center gap-1  mx-1">
           <ForwardDialogComponent
             LeadIntroductionID={encryptID(rowData.LeadIntroductionID)}
           />
@@ -268,6 +308,19 @@ export function LeadIntroductionDetail({
           <ClosedDialogComponent
             LeadIntroductionID={encryptID(rowData.LeadIntroductionID)}
           />
+          {rowData.IncentivePaid == false && (
+            <>
+              <CIconButton
+                onClick={() =>
+                  confirmAcknowledge(encryptID(rowData.LeadIntroductionID))
+                }
+                icon={"pi pi-credit-card"}
+                severity="warning"
+                tooltip="Incentive paid"
+                toolTipPostion="left"
+              />
+            </>
+          )}
         </div>
       </React.Fragment>
     )
@@ -353,14 +406,6 @@ export function LeadIntroductionDetail({
     "Forwarded",
   ])
 
-  const formatDate = (value) => {
-    return value.toLocaleDateString("en-US", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    })
-  }
-
   const statusRowFilterTemplate = (options) => {
     return (
       <Dropdown
@@ -371,7 +416,7 @@ export function LeadIntroductionDetail({
         placeholder="Select One"
         className="p-column-filter"
         showClear
-        style={{ minWidth: "12rem" }}
+        style={{ minWidth: "7rem" }}
       />
     )
   }
@@ -428,7 +473,6 @@ export function LeadIntroductionDetail({
             emptyMessage="No LeadIntroductions found!"
             filters={filters}
             filterDisplay="row"
-            resizableColumns
             size="small"
             className={"thead-cell"}
             tableStyle={{ minWidth: "50rem" }}
@@ -438,17 +482,22 @@ export function LeadIntroductionDetail({
               body={leftActionBodyTemplate}
               header="Actions"
               resizeable={false}
-              style={{ minWidth: "10rem", maxWidth: "10rem", width: "10rem" }}
+              style={{
+                minWidth: "11rem",
+                maxWidth: "11rem",
+                width: "11rem",
+              }}
             ></Column>
             <Column
               field="Status"
               filterPlaceholder="Search by status"
               sortable
               header="Current Status"
-              filterMenuStyle={{ width: "14rem" }}
-              style={{ minWidth: "12rem" }}
+              filterMenuStyle={{ width: "8rem" }}
+              style={{ minWidth: "8rem" }}
               body={statusBodyTemplate}
               filter
+              showFilterMenu={false}
               filterElement={statusRowFilterTemplate}
             ></Column>
             <Column
@@ -456,10 +505,11 @@ export function LeadIntroductionDetail({
               header="Date"
               filterField="VoucherDate"
               dataType="date"
-              style={{ minWidth: "10rem" }}
+              style={{ minWidth: "8rem" }}
               filter
               body={dateBodyTemplate}
               filterElement={dateFilterTemplate}
+              showFilterMenu={false}
               sortable
             ></Column>
             <Column
@@ -467,13 +517,23 @@ export function LeadIntroductionDetail({
               filter
               filterPlaceholder="Search by firm"
               sortable
+              showFilterMenu={false}
               header="Firm Name"
+              pt={{
+                bodyCell: {
+                  style: {
+                    maxWidth: "7rem",
+                    textAlign: "start",
+                  },
+                },
+              }}
             ></Column>
             <Column
               field="ContactPersonName"
               filter
               filterPlaceholder="Search by contact person name"
               sortable
+              showFilterMenu={false}
               header="Contact Person Name"
             ></Column>
             <Column
@@ -481,11 +541,13 @@ export function LeadIntroductionDetail({
               filter
               filterPlaceholder="Search by mobile"
               sortable
+              showFilterMenu={false}
               header="Contact Person Mobile No"
             ></Column>
             <Column
               field="DemoPersonName"
               filter
+              showFilterMenu={false}
               filterPlaceholder="Search by demo person"
               sortable
               header="Demo Person"
@@ -495,11 +557,15 @@ export function LeadIntroductionDetail({
               filter
               filterPlaceholder="Search by demo date"
               sortable
+              showFilterMenu={false}
               header="Demo Date"
             ></Column>
             <Column
               body={actionBodyTemplate}
-              style={{ minWidth: "4rem", width: "4rem" }}
+              style={{
+                minWidth: ShowMetaDeta ? "4rem" : "2rem",
+                width: ShowMetaDeta ? "4rem" : "2rem",
+              }}
             ></Column>
           </DataTable>
         </>
@@ -516,6 +582,8 @@ function LeadIntroductionForm({ mode, userRights }) {
 
   const countryRef = useRef()
   const { pageTitles } = useAppConfigurataionProvider()
+  const { render, setVisible, setLeadIntroductionID, setOnQuotationAdded } =
+    useQuoteDialog()
 
   const navigate = useNavigate()
   const { LeadIntroductionID } = useParams()
@@ -612,8 +680,30 @@ function LeadIntroductionForm({ mode, userRights }) {
     mutationFn: addNewLeadIntroduction,
     onSuccess: ({ success, RecordID }) => {
       if (success) {
-        queryClient.invalidateQueries({ queryKey: [queryKey] })
-        navigate(`${parentRoute}/${RecordID}`)
+        if (mode === "new") {
+          displayYesNoDialog({
+            message: "Do you want to quote the lead?",
+            header: "Confirmation",
+            accept: () => {
+              setVisible(true)
+              setLeadIntroductionID(RecordID)
+              setOnQuotationAdded(() => () => {
+                setVisible(false)
+                queryClient.invalidateQueries({ queryKey: [queryKey] })
+                navigate(`${parentRoute}/${RecordID}`)
+              })
+            },
+            reject: () => {
+              navigate(`${parentRoute}/${RecordID}`)
+            },
+            icon: <i className="pi pi-question text-5xl"></i>,
+            severity: SEVERITIES.PRIMARY,
+            defaultFocus: "accept",
+          })
+        } else {
+          queryClient.invalidateQueries({ queryKey: [queryKey] })
+          navigate(`${parentRoute}/${RecordID}`)
+        }
       }
     },
   })
@@ -625,14 +715,12 @@ function LeadIntroductionForm({ mode, userRights }) {
       navigate(parentRoute)
     },
   })
-
   function handleDelete() {
     deleteMutation.mutate({
       LeadIntroductionID: LeadIntroductionID,
       LoginUserID: user.userID,
     })
   }
-
   function handleAddNew() {
     method.reset()
     navigate(newRoute)
@@ -671,6 +759,7 @@ function LeadIntroductionForm({ mode, userRights }) {
         </>
       ) : (
         <>
+          {render}
           <div className="mt-4">
             <ButtonToolBar
               saveLoading={mutation.isPending}
@@ -752,17 +841,16 @@ function ForwardDialogComponent({ LeadIntroductionID }) {
         icon="pi pi-send"
         rounded
         outlined
-        className="mr-2 text-blue-300"
+        className="text-blue-300 p-0"
         tooltip="Forward"
         tooltipOptions={{
           position: "left",
         }}
         onClick={() => setVisible(true)}
         style={{
-          padding: "1px 0px",
+          padding: "0px",
           fontSize: "small",
-          width: "30px",
-          marginLeft: "10px",
+          width: "20px",
           height: "2rem",
           border: "none",
         }}
@@ -958,15 +1046,27 @@ function ForwardDialog({ visible = true, setVisible, LeadIntroductionID }) {
   )
 }
 // Quoted
-const useQuoteDialog = (LeadIntroductionID) => {
+const useQuoteDialog = (leadsIntroductionID) => {
+  const [LeadIntroductionID, setLeadIntroductionID] = useState()
+  const [onQuotationAdded, setOnQuotationAdded] = useState(() => null)
+
+  useEffect(() => {
+    if (leadsIntroductionID) {
+      setLeadIntroductionID(leadsIntroductionID)
+    }
+  }, [leadsIntroductionID])
+
   const [visible, setVisible] = useState(false)
   return {
     setVisible,
+    setLeadIntroductionID,
+    setOnQuotationAdded,
     render: (
       <QuoteDialog
         visible={visible}
         setVisible={setVisible}
         LeadIntroductionID={LeadIntroductionID}
+        onQuotationAdded={onQuotationAdded}
       />
     ),
   }
@@ -982,17 +1082,16 @@ function QuoteDialogComponent({ LeadIntroductionID }) {
         rounded
         severity="success"
         outlined
-        className="mr-2"
+        className="p-0"
         tooltip="Quoted"
         tooltipOptions={{
           position: "left",
         }}
         onClick={() => setVisible(true)}
         style={{
-          padding: "1px 0px",
+          padding: "0px",
           fontSize: "small",
-          width: "30px",
-          marginLeft: "10px",
+          width: "20px",
           height: "2rem",
           border: "none",
         }}
@@ -1002,7 +1101,12 @@ function QuoteDialogComponent({ LeadIntroductionID }) {
   )
 }
 
-function QuoteDialog({ visible = true, setVisible, LeadIntroductionID }) {
+function QuoteDialog({
+  visible = true,
+  setVisible,
+  LeadIntroductionID,
+  onQuotationAdded,
+}) {
   const method = useForm({
     defaultValues: {
       Description: "",
@@ -1070,6 +1174,9 @@ function QuoteDialog({ visible = true, setVisible, LeadIntroductionID }) {
         queryClient.invalidateQueries({
           queryKey: [QUERY_KEYS.LEADS_CARD_DATA],
         })
+        if (onQuotationAdded) {
+          onQuotationAdded()
+        }
       }
     },
   })
@@ -1125,17 +1232,15 @@ function FinalizedDialogComponent({ LeadIntroductionID }) {
         rounded
         outlined
         severity="help"
-        className="mr-2"
         tooltip="Finalized"
         tooltipOptions={{
           position: "left",
         }}
         onClick={() => setVisible(true)}
         style={{
-          padding: "1px 0px",
+          padding: "0px",
           fontSize: "small",
-          width: "30px",
-          marginLeft: "10px",
+          width: "20px",
           height: "2rem",
           border: "none",
         }}
@@ -1264,7 +1369,6 @@ const useClosedDialog = (LeadIntroductionID) => {
 
 function ClosedDialogComponent({ LeadIntroductionID }) {
   const { setVisible, render } = useClosedDialog(LeadIntroductionID)
-
   return (
     <>
       <Button
@@ -1272,17 +1376,15 @@ function ClosedDialogComponent({ LeadIntroductionID }) {
         rounded
         outlined
         severity="danger"
-        className="mr-2"
         tooltip="Closed"
         tooltipOptions={{
           position: "left",
         }}
         onClick={() => setVisible(true)}
         style={{
-          padding: "1px 0px",
+          padding: "0px",
           fontSize: "small",
-          width: "30px",
-          marginLeft: "10px",
+          width: "20px",
           height: "2rem",
           border: "none",
         }}

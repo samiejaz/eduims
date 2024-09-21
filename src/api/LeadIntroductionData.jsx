@@ -83,7 +83,7 @@ export async function addNewLeadIntroduction({
       ContactPersonName: formData.ContactPersonName,
       ContactPersonEmail: formData.ContactPersonEmail,
       RequirementDetails: formData.RequirementDetails,
-      LeadSourceID: formData.LeadSourceID,
+      LeadSourceID: formData.LeadSourceID ?? 0,
       InActive: formData.InActive === true ? 1 : 0,
       EntryUserID: userID,
       DemoPersonID: formData.DemoPersonID,
@@ -262,5 +262,27 @@ export async function getLeadsFile(filename) {
       autoClose: false,
     })
     return { name: null }
+  }
+}
+
+export async function markIncentiveAsPaid({
+  LeadIntroductionID,
+  LoginUserID,
+  Type = 1,
+}) {
+  try {
+    LeadIntroductionID = decryptID(LeadIntroductionID)
+    const { data } = await axios.post(
+      `${apiUrl}/${CONTROLLER}/UpdateLeadIncentivePaid?LeadIntroductionID=${LeadIntroductionID}&LoginUserID=${LoginUserID}&Type=${Type}`
+    )
+    if (data.success === true) {
+      return { success: true }
+    } else {
+      ShowErrorToast(data.message)
+      return { success: false }
+    }
+  } catch (e) {
+    ShowErrorToast(e.message)
+    return { success: false }
   }
 }

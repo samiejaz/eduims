@@ -11,12 +11,49 @@ import {
   formatDateWithSymbol,
   preventFormByEnterKeySubmission,
 } from "../../utils/CommonFunctions"
-import { useReportViewerHook } from "../../hooks/CommonHooks/commonhooks"
+import {
+  useReportViewerHook,
+  useReportViewerWithBodyObjectHook,
+} from "../../hooks/CommonHooks/commonhooks"
 import { useAllUsersSelectData } from "../../hooks/SelectData/useSelectData"
 import { useAppConfigurataionProvider } from "../../context/AppConfigurationContext"
-import { useEffect } from "react"
 
 export default function LeadInformationReport() {
+  const leadStatusOptions = [
+    {
+      label: "New Lead",
+      value: "newlead",
+    },
+    {
+      label: "Closed",
+      value: "closed",
+    },
+    {
+      label: "Quoted",
+      value: "quoted",
+    },
+    {
+      label: "Finalized",
+      value: "finalized",
+    },
+    {
+      label: "Forwarded",
+      value: "forwarded",
+    },
+    {
+      label: "Acknowledged",
+      value: "acknowledged",
+    },
+    {
+      label: "Meeting Done",
+      value: "meetingdone",
+    },
+    {
+      label: "Pending",
+      value: "pending",
+    },
+  ]
+
   document.title = "Lead Information Report"
 
   const { sessionConfigData } = useAppConfigurataionProvider()
@@ -26,19 +63,41 @@ export default function LeadInformationReport() {
       DateFrom: sessionConfigData?.data?.SessionOpeningDate,
       DateTo: new Date(),
       UserID: [],
+      Status: [],
     },
   })
 
-  const { generateReport, render } = useReportViewerHook({
+  const { generateReport, render } = useReportViewerWithBodyObjectHook({
     controllerName: "/Reports/GetLeadInformationReport",
+    ShowPrintInNewTab: false,
   })
 
   function onSubmit(formData) {
-    let UserStr = formData.UserID.length > 0 ? formData.UserID.join(",") : ""
+    let dataToSend = {
+      DateFrom: formatDateWithSymbol(formData.DateFrom ?? new Date()),
+      DateTo: formatDateWithSymbol(formData.DateTo ?? new Date()),
+      DemoPersonID:
+        formData.UserID.length > 0 ? formData.UserID.join(",") : "0",
+      Status:
+        formData.Status.length > 0
+          ? JSON.stringify(
+              formData.Status.map((item) => {
+                return {
+                  Status: item,
+                }
+              })
+            )
+          : null,
+      Export: "p",
+    }
+    generateReport(dataToSend)
+    // let UserStr = formData.UserID.length > 0 ? formData.UserID.join(",") : ""
+    // let StatusStr = formData.Status.length > 0 ? formData.Status.join(",") : ""
+    // let UserIDQueryParam = UserStr !== "" ? "&DemoPersonID=" + UserStr : ""
+    // let StatusStrQueryParams = StatusStr !== "" ? "&Status=" + StatusStr : ""
+    // let queryParams = `?${UserIDQueryParam}${StatusStrQueryParams}&DateFrom=${formatDateWithSymbol(formData.DateFrom ?? new Date())}&DateTo=${formatDateWithSymbol(formData.DateTo ?? new Date())}&Export=p`
 
-    let UserIDQueryParam = UserStr !== "" ? "&DemoPersonID=" + UserStr : ""
-    let queryParams = `?${UserIDQueryParam}&DateFrom=${formatDateWithSymbol(formData.DateFrom ?? new Date())}&DateTo=${formatDateWithSymbol(formData.DateTo ?? new Date())}&Export=p`
-    generateReport(queryParams)
+    // generateReport(queryParams)
   }
 
   return (
@@ -51,7 +110,19 @@ export default function LeadInformationReport() {
           <FormProvider {...method}>
             <MultiSelectDemoPersonsField />
           </FormProvider>
-
+          <FormColumn lg={4} xl={4} md={6}>
+            <FormLabel style={{ fontSize: "14px", fontWeight: "bold" }}>
+              Status
+            </FormLabel>
+            <div>
+              <CMultiSelectField
+                control={method.control}
+                name="Status"
+                options={leadStatusOptions}
+                placeholder="Select statuses..."
+              />
+            </div>
+          </FormColumn>
           <FormColumn lg={2} xl={2} md={6}>
             <FormLabel style={{ fontSize: "14px", fontWeight: "bold" }}>
               Date From
@@ -68,7 +139,7 @@ export default function LeadInformationReport() {
               <CDatePicker control={method.control} name={"DateTo"} />
             </div>
           </FormColumn>
-          <div className="ml-2 mb-2" style={{ alignSelf: "end" }}>
+          <div className="mb-2 ml-2" style={{ alignSelf: "end" }}>
             <Button
               label="View"
               severity="primary"

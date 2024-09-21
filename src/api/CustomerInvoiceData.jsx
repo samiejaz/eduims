@@ -96,6 +96,7 @@ export async function addNewCustomerInvoice({
   userID,
   CustomerInvoiceID = 0,
 }) {
+  debugger
   try {
     let InvoiceDetail = formData?.CustomerInvoiceDetail?.map((item, index) => {
       return {
@@ -119,15 +120,18 @@ export async function addNewCustomerInvoice({
 
     let InstallmentDetail = []
     if (formData?.installments.length > 0) {
-      InstallmentDetail = formData?.installments?.map((item, index) => {
-        return {
-          InstallmentRowID: index + 1,
-          InstallmentDueDate:
-            formatDateWithSymbol(item.IDate) ??
-            formatDateWithSymbol(new Date()),
-          InstallmentAmount: item.Amount,
-        }
-      })
+      InstallmentDetail = formData?.installments
+        ?.map((item, index) => {
+          if (parseFloat(item.Amount || "0") == 0) {
+            return null
+          }
+          return {
+            InstallmentRowID: index + 1,
+            InstallmentDueDate: formatDateWithSymbol(item.IDate ?? new Date()),
+            InstallmentAmount: parseFloat(item.Amount),
+          }
+        })
+        .filter((item) => item != null)
     }
 
     let DataToSend = {
@@ -244,5 +248,22 @@ export async function SendCustomerInvoiceWAMsg({
     }
   } catch (error) {
     ShowErrorToast(error.message)
+  }
+}
+
+export async function GetCustomerProduct({ LoginUserID, CustomerID }) {
+  try {
+    const { data } = await axios.post(
+      `${apiUrl}/Common/GetCustomerProduct?CustomerID=${CustomerID}&LoginUserID=${LoginUserID}`
+    )
+
+    if (data.success === true) {
+      return data.data
+    } else {
+      return []
+    }
+  } catch (error) {
+    ShowErrorToast(error.message)
+    return []
   }
 }

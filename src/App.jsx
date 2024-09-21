@@ -28,6 +28,9 @@ import {
   Customers,
   OldCustomers,
   BusinessType,
+  SupplierInfoPage,
+  PendingInvoicesDetailPage,
+  PendingReceiptsDetailPage,
 } from "./pages"
 
 import { ROUTE_URLS } from "./utils/enums"
@@ -101,6 +104,14 @@ const App = () => {
         <Route path="/" element={<ProtectedRoutes />}>
           <Route index element={<Dashboard />} />
           <Route
+            path={ROUTE_URLS.DASHBOARD.PENDING_INVOICES_ROUTE}
+            element={<PendingInvoicesDetailPage />}
+          />
+          <Route
+            path={ROUTE_URLS.DASHBOARD.PENDING_RECEIPTS_ROUTE}
+            element={<PendingReceiptsDetailPage />}
+          />
+          <Route
             path={ROUTE_URLS.GENERAL.APP_CONFIGURATION_ROUTE + "/*"}
             element={<AppConfiguration />}
           />
@@ -143,6 +154,10 @@ const App = () => {
           <Route
             path={`${ROUTE_URLS.CUSTOMERS.OLD_CUSTOMER_ENTRY}/*`}
             element={<OldCustomers />}
+          />
+          <Route
+            path={`${ROUTE_URLS.CUSTOMERS.SUPPLIER_INFO_ROUTE}/*`}
+            element={<SupplierInfoPage />}
           />
 
           {/* Users Routes END*/}
@@ -216,6 +231,8 @@ const App = () => {
 
           {/* Reports End */}
         </Route>
+
+        {/* Dashboard Routes */}
       </Routes>
 
       <ConfirmDialog id="EditDeleteDialog" draggable={false} />

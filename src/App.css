@@ -413,3 +413,7 @@ a {
 .hover {
   cursor: pointer;
 }
+
+.hover.light_blue:hover {
+  background-color: #E6F4FF;
+}

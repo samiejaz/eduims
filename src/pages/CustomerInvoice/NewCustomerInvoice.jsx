@@ -20,8 +20,8 @@ import React, {
   useState,
 } from "react"
 
-import { AuthContext } from "../../context/AuthContext"
-import { useNavigate, useParams } from "react-router-dom"
+import { AuthContext, useAuthProvider } from "../../context/AuthContext"
+import { useNavigate, useParams, useSearchParams } from "react-router-dom"
 
 import TextInput from "../../components/Forms/TextInput"
 import NumberInput from "../../components/Forms/NumberInput"
@@ -36,6 +36,7 @@ import {
   fetchAllCustomerInvoices,
   SendCustomerInvoiceEmail,
   SendCustomerInvoiceWAMsg,
+  GetCustomerProduct,
 } from "../../api/CustomerInvoiceData"
 import ButtonToolBar from "../../components/ActionsToolbar"
 
@@ -449,7 +450,7 @@ export function CustomerInvoiceFormCompoent({
 
   useEffect(() => {
     if (
-      CustomerInvoiceID !== undefined &&
+      Array.isArray(CustomerInvoiceData?.Master) &&
       CustomerInvoiceData?.Master?.length > 0
     ) {
       method.setValue("SessionID", CustomerInvoiceData?.Master[0]?.SessionID)
@@ -558,19 +559,57 @@ export function CustomerInvoiceFormCompoent({
   }
 
   function onSubmit(data) {
-    if (data?.CustomerInvoiceDetail.length > 0) {
-      if (data.TotalNetAmount !== 0) {
-        CustomerInvoiceMutation.mutate({
-          formData: data,
-          userID: UserId,
-          CustomerInvoiceID: CustomerInvoiceID,
-        })
-      } else {
-        ShowErrorToast("Total Invoice Amount must be greater than 0!")
+    try {
+      const isValid = validateData(data)
+      if (isValid == true) {
+        if (data?.CustomerInvoiceDetail.length > 0) {
+          if (data.TotalNetAmount !== 0) {
+            CustomerInvoiceMutation.mutate({
+              formData: data,
+              userID: UserId,
+              CustomerInvoiceID: CustomerInvoiceID,
+            })
+          } else {
+            ShowErrorToast("Total Invoice Amount must be greater than 0!")
+          }
+        } else {
+          ShowErrorToast("Please add atleast 1 row!")
+        }
       }
-    } else {
-      ShowErrorToast("Please add atleast 1 row!")
+    } catch (error) {
+      console.error(error)
     }
+  }
+
+  function validateData(data) {
+    let success = true
+    const InstallmentTotalRemaining = getInstallmentTotal()
+
+    if (InstallmentTotalRemaining.total === 0) {
+      success == true
+    } else if (InstallmentTotalRemaining.calculatedAmount < 0) {
+      ShowErrorToast("Installment Amounts cannot exceed Total Net Amount!")
+      success = false
+    } else if (InstallmentTotalRemaining.calculatedAmount > 0) {
+      ShowErrorToast("Installment Amounts must be equal to Total Net Amount!")
+      success = false
+    }
+
+    return success
+  }
+
+  function getInstallmentTotal() {
+    let total = 0
+    const totalNetAmount = parseFloat(0 + method.getValues("TotalNetAmount"))
+    const installments = method.getValues("installments") ?? []
+
+    if (Array.isArray(installments) && installments.length > 0) {
+      for (let i = 0; i < installments.length; i++) {
+        total += parseFloat(installments[i].Amount || "0")
+      }
+    }
+
+    return { calculatedAmount: totalNetAmount - total, total }
   }
 
   return (
@@ -928,7 +967,9 @@ function SessionSelect({ mode }) {
 
 const CustomerDependentFields = React.forwardRef(
   ({ mode, removeAllRows }, ref) => {
-    const { setAccountID } = useContext(CustomerBranchDataContext)
+    const { setAccountID, setCustomerID: setContextCustomerID } = useContext(
+      CustomerBranchDataContext
+    )
     const [CustomerID, setCustomerID] = useState(0)
 
     const { data: customerSelectData } = useQuery({
@@ -965,6 +1006,42 @@ const CustomerDependentFields = React.forwardRef(
       }
     }
 
+    const [searchParams, setSearchParams] = useSearchParams()
+    const queryParams = new URLSearchParams(searchParams)
+    const params_customer_id = queryParams.get("CustomerID") ?? ""
+    const params_account_id = queryParams.get("AccountID") ?? ""
+
+    useEffect(() => {
+      if (
+        CustomerAccounts &&
+        customerSelectData &&
+        params_customer_id !== "" &&
+        params_account_id !== ""
+      ) {
+        method.setValue("Customer", parseInt(decryptID(params_customer_id)))
+        method.setValue(
+          "CustomerLedgers",
+          parseInt(decryptID(params_account_id))
+        )
+        setCustomerID(decryptID(params_customer_id))
+        setAccountID(decryptID(params_account_id))
+        setContextCustomerID(decryptID(params_customer_id))
+
+        setSearchParams({})
+      }
+    }, [params_account_id, params_customer_id, customerSelectData])
+
+    useEffect(() => {
+      if (
+        CustomerID &&
+        Array.isArray(CustomerAccounts) &&
+        CustomerAccounts.length > 0
+      ) {
+        method.setValue("CustomerLedgers", CustomerAccounts[0].AccountID)
+        setAccountID(CustomerAccounts[0].AccountID)
+      }
+    }, [CustomerAccounts])
+
     return (
       <>
         <FormColumn lg={4} xl={4} md={6}>
@@ -991,9 +1068,10 @@ const CustomerDependentFields = React.forwardRef(
               filter={true}
               onChange={(e) => {
                 setCustomerID(e.value)
+                setContextCustomerID(e.value)
                 removeAllRows()
               }}
-              focusOptions={() => method.setFocus("CustomerLedgers")}
+              // focusOptions={() => method.setFocus("CustomerLedgers")}
             />
           </div>
         </FormColumn>
@@ -1132,7 +1210,7 @@ function CustomerInvoiceDetailHeaderForm({ appendSingleRow }) {
 
   const method = useForm({
     defaultValues: {
-      InvoiceType: "",
+      InvoiceType: "Product",
       BusinessUnitID: "",
       ProductInfoID: "",
       ServiceInfoID: "",
@@ -1227,18 +1305,13 @@ function CustomerInvoiceDetailHeaderForm({ appendSingleRow }) {
               id={"Rate"}
               control={method.control}
               onChange={(e) => {
-                console.log("BEFORE CALC RATE VALUE ON RATE::", e.value)
                 const qty = method.getValues(["Qty"])
-                console.log("BEFORE CALC QUANTITY ON RATE::", qty)
+
                 method.setValue("Amount", e.value * qty)
-                console.log("AFTER CALC AMOUNT VALUE ON RATE::", e.value * qty)
+
                 const disc = method.getValues(["Discount"])
-                console.log("BEFORE CALC DISCOUNT ON RATE::", disc)
+
                 method.setValue("NetAmount", e.value * qty - disc)
-                console.log(
-                  "AFTER CALC NET AMOUNT VALUE ON RATE::",
-                  e.value * qty
-                )
               }}
               mode="decimal"
               maxFractionDigits={2}
@@ -1342,11 +1415,25 @@ function CustomerInvoiceDetailHeaderForm({ appendSingleRow }) {
 }
 
 const DetailHeaderBusinessUnitDependents = React.forwardRef((props, ref) => {
-  const [InvoiceType, setInvoiceType] = useState()
+  const [InvoiceType, setInvoiceType] = useState("Product")
   const [BusinessUnitID, setBusinessUnitID] = useState(0)
+  const { CustomerID } = useContext(CustomerBranchDataContext)
+
+  const { user } = useAuthProvider()
 
   const { pageTitles } = useAppConfigurataionProvider()
 
+  const { data: MostSaledCustomerProduct } = useQuery({
+    queryKey: ["mostSaledProducts", CustomerID],
+    queryFn: () =>
+      GetCustomerProduct({
+        LoginUserID: user?.userID,
+        CustomerID: CustomerID,
+      }),
+    refetchOnWindowFocus: true,
+    staleTime: 600000,
+    refetchInterval: 600000,
+  })
   const { data: BusinessUnitSelectData } = useQuery({
     queryKey: [SELECT_QUERY_KEYS.BUSINESS_UNIT_SELECT_QUERY_KEY],
     queryFn: fetchAllBusinessUnitsForSelect,
@@ -1373,6 +1460,28 @@ const DetailHeaderBusinessUnitDependents = React.forwardRef((props, ref) => {
   }))
 
   const method = useFormContext()
+
+  useEffect(() => {
+    if (
+      MostSaledCustomerProduct &&
+      Array.isArray(MostSaledCustomerProduct) &&
+      MostSaledCustomerProduct.length > 0
+    ) {
+      method.setValue(
+        "BusinessUnitID",
+        MostSaledCustomerProduct[0].BusinessUnitID
+      )
+      method.setValue(
+        "ProductInfoID",
+        MostSaledCustomerProduct[0].ProductToInvoiceID
+      )
+      setBusinessUnitID(MostSaledCustomerProduct[0].BusinessUnitID)
+    } else {
+      method.setValue("BusinessUnitID", 0)
+      method.setValue("ProductInfoID", 0)
+      setBusinessUnitID(0)
+    }
+  }, [MostSaledCustomerProduct])
 
   return (
     <>
@@ -1597,6 +1706,12 @@ const BranchSelectField = () => {
     refetchOnWindowFocus: false,
   })
 
+  useEffect(() => {
+    if (data && Array.isArray(data) && data.length > 0) {
+      method.setValue("CustomerBranch", data[0].BranchID)
+    }
+  }, [data])
+
   return (
     <>
       <FormColumn lg={3} xl={3} md={6} className="col-3">
@@ -1627,9 +1742,12 @@ export const CustomerBranchDataContext = createContext()
 
 const CustomerBranchDataProvider = ({ children }) => {
   const [AccountID, setAccountID] = useState(0)
+  const [CustomerID, setCustomerID] = useState(0)
 
   return (
-    <CustomerBranchDataContext.Provider value={{ setAccountID, AccountID }}>
+    <CustomerBranchDataContext.Provider
+      value={{ setAccountID, AccountID, CustomerID, setCustomerID }}
+    >
       {children}
     </CustomerBranchDataContext.Provider>
   )

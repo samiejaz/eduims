@@ -112,10 +112,7 @@ const SingleFileUpload = React.forwardRef(
             ) : null}
           </div>
           <div className="flex flex-1 w-full">
-            <div
-              className="flex align-items-center justify-content-center w-full h-full"
-              style={{ minWidth: "35%" }}
-            >
+            <div className="flex align-items-center justify-content-center w-full">
               <div className="flex flex-column gap-2">
                 <Button
                   label={currentFile === null ? chooseBtnLabel : changeBtnLabel}

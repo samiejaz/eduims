@@ -40,6 +40,33 @@ export const AppConfigurationProivder = ({ children }) => {
     refetchOnWindowFocus: false,
     staleTime: Infinity,
   })
+  const userConfigData = useQuery({
+    queryKey: ["userConfigData", user],
+    queryFn: async () => {
+      try {
+        const { data } = await axios.post(
+          `${apiUrl}/Common/GetUserConfig?LoginUserID=${user?.userID}`
+        )
+        if (data.success === true) {
+          return {
+            ShowAccountAnalysisOnMainDashboard:
+              data.data[0].ShowAccountAnalysisOnMainDashboard,
+          }
+        } else {
+          return {
+            ShowAccountAnalysisOnMainDashboard: false,
+          }
+        }
+      } catch (error) {
+        console.error(error)
+        return {
+          ShowAccountAnalysisOnMainDashboard: false,
+        }
+      }
+    },
+    refetchOnWindowFocus: false,
+    staleTime: Infinity,
+  })
   const appConfigData = useQuery({
     queryKey: ["appconfigData"],
     queryFn: async () => {
@@ -53,6 +80,7 @@ export const AppConfigurationProivder = ({ children }) => {
           branch: data?.data[0]?.CustomerBranchTitle,
           ShowTimelineInsideLeadsForm:
             data?.data[0]?.ShowTimelineInsideLeadsForm,
+          Currency: data?.data[0]?.Currency,
         })
         if (data.success === true) {
           return {
@@ -60,12 +88,14 @@ export const AppConfigurationProivder = ({ children }) => {
             branch: data?.data[0]?.CustomerBranchTitle,
             ShowTimelineInsideLeadsForm:
               data?.data[0]?.ShowTimelineInsideLeadsForm,
+            Currency: data?.data[0]?.Currency,
           }
         } else {
           return {
             product: "Product",
             branch: "Branch",
             ShowTimelineInsideLeadsForm: false,
+            Currency: "Rs ",
           }
         }
       } catch (error) {
@@ -74,6 +104,7 @@ export const AppConfigurationProivder = ({ children }) => {
           product: "Product",
           branch: "Branch",
           ShowTimelineInsideLeadsForm: false,
+          Currency: "Rs ",
         }
       }
     },
@@ -83,7 +114,12 @@ export const AppConfigurationProivder = ({ children }) => {
 
   return (
     <AppConfigurationContext.Provider
-      value={{ setPagesTitle, sessionConfigData, appConfigData }}
+      value={{
+        setPagesTitle,
+        sessionConfigData,
+        appConfigData,
+        userConfigData,
+      }}
     >
       {children}
     </AppConfigurationContext.Provider>
@@ -91,14 +127,14 @@ export const AppConfigurationProivder = ({ children }) => {
 }
 
 export const useAppConfigurataionProvider = () => {
-  const { setPagesTitle, sessionConfigData, appConfigData } = useContext(
-    AppConfigurationContext
-  )
+  const { setPagesTitle, sessionConfigData, appConfigData, userConfigData } =
+    useContext(AppConfigurationContext)
 
   return {
     pageTitles: appConfigData.data,
     setPagesTitle,
     sessionConfigData,
     appConfigData,
+    userConfigData,
   }
 }

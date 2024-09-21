@@ -8,12 +8,13 @@ export const ROUTE_URLS = {
   LEED_SOURCE_ROUTE: "/general/leadsource",
   LEAD_INTRODUCTION_ROUTE: "/general/leadintroduction",
   USER_ROUTE: "/general/users",
-  DASHBOARD: "/dashboard",
+
   CUSTOMERS: {
     CUSTOMER_ENTRY: "/customer/customerentry",
     OLD_CUSTOMER_ENTRY: "/customer/oldcustomerentry",
     CUSTOMER_INVOICE: "/customer/customerinvoice",
     RECIEPT_VOUCHER_ROUTE: "/customer/reciepts",
+    SUPPLIER_INFO_ROUTE: "/supplier/suplierinfo",
   },
   GENERAL: {
     BUSINESS_UNITS: "/general/businessunits",
@@ -66,6 +67,11 @@ export const ROUTE_URLS = {
     RECEIPT_VOUCHER_ROUTE: "/pub/receiptvoucher",
     ACCOUNT_LEDGER_ROUTE: "/pub/accountledger",
   },
+  DASHBOARD: {
+    MAIN: "/dashboard",
+    PENDING_INVOICES_ROUTE: "/dashboard/pendinginvoices",
+    PENDING_RECEIPTS_ROUTE: "/dashboard/pendingreceipts",
+  },
 }
 
 export const QUERY_KEYS = {
@@ -90,6 +96,7 @@ export const QUERY_KEYS = {
   PRODUCT_CATEGORIES_QUERY_KEY: "productCategories",
   PRODUCT_INFO_QUERY_KEY: "productsInfo",
   USER_ROLES_QUERY_KEY: "userRoles",
+  SUPPLIER_INFO_QUERY_KEY: "suppliers",
   // Select
   ALL_CUSTOMER_QUERY_KEY: "oldcustomers",
   CUSTOMER_ACCOUNTS_QUERY_KEY: "customerAccounts",
@@ -194,6 +201,7 @@ export const MENU_KEYS = {
     GROUP_KEY: "mnuCustomers",
     CUSTOMERS_FORM_KEY: "mnuCustomers",
     OLD_CUSTOMERS_FORM_KEY: "mnuOldCustomers",
+    SUPPLIER_FORM_KEY: "mnuSuppliers",
   },
 }
 

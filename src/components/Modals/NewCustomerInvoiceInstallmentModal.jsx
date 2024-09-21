@@ -12,6 +12,8 @@ import { Button } from "primereact/button"
 import NumberInput from "../Forms/NumberInput"
 import { toast } from "react-toastify"
 import CDatePicker from "../Forms/CDatePicker"
+import TextInput from "../Forms/TextInput"
+import { ShowErrorToast } from "../../utils/CommonFunctions"
 
 const NewCustomerInvoiceIntallmentsModal = React.forwardRef(({ mode }, ref) => {
   const [visible, setVisible] = useState(false)
@@ -44,6 +46,20 @@ const NewCustomerInvoiceIntallmentsModal = React.forwardRef(({ mode }, ref) => {
     } else {
       toast.error("Installment Amounts cannot exceed Total Net Amount", {
         position: "top-right",
+      })
+    }
+  }
+
+  function shouldNewRowBeAdded() {
+    let InstallmentTotalRemaining = method.getValues(
+      "InstallmentTotalRemaining"
+    )
+
+    if (InstallmentTotalRemaining == 0) {
+      ShowErrorToast("Further installments cannot be added!")
+    } else {
+      installmentsFieldArray.append({
+        Amount: 0,
       })
     }
   }
@@ -88,7 +104,7 @@ const NewCustomerInvoiceIntallmentsModal = React.forwardRef(({ mode }, ref) => {
           <Button
             label="Add Installment"
             type="button"
-            onClick={() => installmentsFieldArray.append({ Amount: 0 })}
+            onClick={shouldNewRowBeAdded}
             disabled={mode === "view"}
           />
           <div
@@ -146,20 +162,6 @@ const NewCustomerInvoiceIntallmentsModal = React.forwardRef(({ mode }, ref) => {
                     style={{ marginBottom: "10px", gap: 2 }}
                   >
                     <div style={{ width: "100%" }}>
-                      {/* <Controller
-                        control={method.control}
-                        name={`installments.${index}.IDate`}
-                        render={({ field }) => (
-                          <ReactDatePicker
-                            placeholderText="Select installment date"
-                            onChange={(date) => field.onChange(date)}
-                            selected={field.value || new Date()}
-                            dateFormat={"dd-MMM-yyyy"}
-                            className="binput"
-                            disabled={mode === "view"}
-                          />
-                        )}
-                      /> */}
                       <CDatePicker
                         control={method.control}
                         name={`installments.${index}.IDate`}
@@ -168,16 +170,14 @@ const NewCustomerInvoiceIntallmentsModal = React.forwardRef(({ mode }, ref) => {
                       />
                     </div>
                     <div style={{ width: "100%" }}>
-                      <NumberInput
+                      <TextInput
                         control={method.control}
-                        id={`installments.${index}.Amount`}
+                        ID={`installments.${index}.Amount`}
                         required={true}
                         style={{ width: "100%" }}
                         prefix="Rs "
-                        min={1}
-                        mode="decimal"
-                        useGrouping={false}
-                        disabled={mode === "view"}
+                        isEnable={mode !== "view"}
+                        keyfilter={"money"}
                       />
                     </div>
                     <div style={{ display: "flex", gap: 2 }}>
@@ -187,11 +187,7 @@ const NewCustomerInvoiceIntallmentsModal = React.forwardRef(({ mode }, ref) => {
                         style={{ borderRadius: "10px" }}
                         type="button"
                         disabled={mode === "view"}
-                        onClick={() =>
-                          installmentsFieldArray.append({
-                            Amount: 0,
-                          })
-                        }
+                        onClick={shouldNewRowBeAdded}
                       />
                       <Button
                         icon="pi pi-minus"
@@ -223,7 +219,6 @@ function CalculateInstallmentTotal() {
     control: method.control,
     name: "installments",
   })
-
   useEffect(() => {
     calculateTotal(details)
   }, [details])

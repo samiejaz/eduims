@@ -262,6 +262,7 @@ function FormComponent({ mode, userRights }) {
       InActive: false,
       DepartmentID: null,
       RoleID: null,
+      ShowAccountAnalysisOnMainDashboard: false,
     },
   })
 
@@ -286,6 +287,10 @@ function FormComponent({ mode, userRights }) {
         setValue("InActive", UserData?.data[0]?.InActive)
         setValue("DepartmentID", UserData?.data[0]?.DepartmentID)
         setValue("RoleID", UserData?.data[0]?.RoleID)
+        setValue(
+          "ShowAccountAnalysisOnMainDashboard",
+          UserData?.data[0]?.ShowAccountAnalysisOnMainDashboard
+        )
         if (UserData?.data[0]?.ProfilePic) {
           fileRef.current?.setBase64File(
             "data:image/png;base64," + UserData?.data[0]?.ProfilePic
@@ -536,13 +541,24 @@ function FormComponent({ mode, userRights }) {
                   />
                 </div>
               </FormColumn>
-              <FormColumn lg={6} xl={6} md={6}>
+              <FormColumn lg={4} xl={4} md={4}>
                 <FormLabel></FormLabel>
-                <div className="mt-1">
+                <div className="mt-4">
                   <CheckBox
                     control={control}
                     ID={"InActive"}
                     Label={"InActive"}
+                    isEnable={mode !== "view"}
+                  />
+                </div>
+              </FormColumn>
+              <FormColumn lg={4} xl={4} md={4}>
+                <FormLabel></FormLabel>
+                <div className="mt-4">
+                  <CheckBox
+                    control={control}
+                    ID={"ShowAccountAnalysisOnMainDashboard"}
+                    Label={"Show Account Analysis On Main Dashboard"}
                     isEnable={mode !== "view"}
                   />
                 </div>

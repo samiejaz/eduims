@@ -14,7 +14,7 @@ import { FilterMatchMode } from "primereact/api"
 import React, { useContext, useEffect, useRef, useState } from "react"
 
 import { AuthContext } from "../../context/AuthContext"
-import { useNavigate, useParams } from "react-router-dom"
+import { useNavigate, useParams, useSearchParams } from "react-router-dom"
 
 import TextInput from "../../components/Forms/TextInput"
 import NumberInput from "../../components/Forms/NumberInput"
@@ -727,6 +727,29 @@ const CustomerDependentFields = React.forwardRef(
     })
 
     const method = useFormContext()
+
+    const [searchParams, setSearchParams] = useSearchParams()
+    const queryParams = new URLSearchParams(searchParams)
+    const params_customer_id = queryParams.get("CustomerID") ?? ""
+    const params_account_id = queryParams.get("AccountID") ?? ""
+
+    useEffect(() => {
+      if (
+        CustomerAccounts &&
+        customerSelectData &&
+        params_customer_id !== "" &&
+        params_account_id !== ""
+      ) {
+        method.setValue("Customer", parseInt(decryptID(params_customer_id)))
+        method.setValue(
+          "CustomerLedgers",
+          parseInt(decryptID(params_account_id))
+        )
+        setCustomerID(decryptID(params_customer_id))
+
+        setSearchParams({})
+      }
+    }, [params_account_id, params_customer_id, customerSelectData])
 
     return (
       <>

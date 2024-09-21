@@ -76,6 +76,11 @@ export const routes = [
         menuKey: MENU_KEYS.CUSTOMERS.OLD_CUSTOMERS_FORM_KEY,
         route: ROUTE_URLS.CUSTOMERS.OLD_CUSTOMER_ENTRY,
       },
+      {
+        name: "Supplier Entry",
+        menuKey: MENU_KEYS.CUSTOMERS.SUPPLIER_FORM_KEY,
+        route: ROUTE_URLS.CUSTOMERS.SUPPLIER_INFO_ROUTE,
+      },
     ],
   },
   {
