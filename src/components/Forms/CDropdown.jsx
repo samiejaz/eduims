@@ -52,8 +52,10 @@ const CDropdown = ({
                     focusOptions(e)
                     let obj = {
                       value: e.value,
+                      label: e?.originalEvent?.target?.innerText,
                       ref: field.ref,
                     }
+
                     if (onChange) {
                       onChange(obj)
                     }

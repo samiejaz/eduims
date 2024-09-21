@@ -65,6 +65,10 @@ import {
 } from "../../components/Layout/LayoutComponents"
 import { DetailPageTilteAndActionsComponent } from "../../components"
 import { usePreviousAndNextID } from "../../hooks/api/usePreviousAndNextIDHook"
+import {
+  ReceiptEntryContextProvider,
+  useReceiptEntryProvider,
+} from "./ReceiptEntryContext"
 
 const receiptModeOptions = [
   { label: "Cash", value: "Cash" },
@@ -332,7 +336,7 @@ const defaultValues = {
   VoucherNo: "",
   SessionBasedVoucherNo: "",
   ReceiptMode: "",
-  Description: "",
+  Description: "Against Ledger Balance",
   FromBank: "",
   TransactionID: "",
   ReceivedInBankID: "",
@@ -529,7 +533,7 @@ export function ReceiptEntryFormComponent({ mode, userRights, isPublicRoute }) {
           <CustomSpinner />
         </>
       ) : (
-        <>
+        <ReceiptEntryContextProvider>
           <div className="mt-4">
             <ButtonToolBar
               mode={mode}
@@ -656,7 +660,7 @@ export function ReceiptEntryFormComponent({ mode, userRights, isPublicRoute }) {
               />
             </div>
           </FormColumn>
-        </>
+        </ReceiptEntryContextProvider>
       )}
     </>
   )
@@ -909,6 +913,11 @@ function BusinessUnitDependantFields({ mode }) {
 const ReceiptModeDependantFields = React.forwardRef(
   ({ mode, removeAllRows }, ref) => {
     const [receiptMode, setReceiptMode] = useState("")
+    const {
+      setBank,
+      setReceiptMode: setContextReceiptMode,
+      setInstrumentType,
+    } = useReceiptEntryProvider()
 
     React.useImperativeHandle(ref, () => ({
       setReceiptMode,
@@ -920,7 +929,7 @@ const ReceiptModeDependantFields = React.forwardRef(
       if (receiptMode === "Online") {
         return (
           <>
-            <MasterBankFields mode={mode} col={4} />
+            <MasterBankFields mode={mode} col={4} setBank={setBank} />
           </>
         )
       } else if (receiptMode === "DD" || receiptMode === "Cheque") {
@@ -932,6 +941,7 @@ const ReceiptModeDependantFields = React.forwardRef(
               ReceivedInBankTitle="In Bank"
               TranstactionIDTitle="Instrument No"
               col={3}
+              setBank={setBank}
             />
             <FormColumn lg={3} xl={3} md={6}>
               <FormLabel style={{ fontSize: "14px", fontWeight: "bold" }}>
@@ -974,6 +984,7 @@ const ReceiptModeDependantFields = React.forwardRef(
               placeholder="Select receipt mode"
               onChange={(e) => {
                 setReceiptMode(e.value)
+                setContextReceiptMode(e.value)
                 method.setValue("InstrumentType", [])
                 removeAllRows()
                 emptyAllFieldsOnReceiptModeChange()
@@ -1008,6 +1019,7 @@ const ReceiptModeDependantFields = React.forwardRef(
               focusOptions={() => method.setFocus("Description")}
               onChange={(e) => {
                 setReceiptMode(e.value)
+                setInstrumentType(e.value)
                 removeAllRows()
                 emptyAllFieldsOnReceiptModeChange()
               }}
@@ -1027,6 +1039,7 @@ const MasterBankFields = ({
   ReceivedInBankTitle = "Receieved In Bank",
   TranstactionIDTitle = "TransactionID",
   col,
+  setBank,
 }) => {
   const { data } = useQuery({
     queryKey: [SELECT_QUERY_KEYS.BANKS_SELECT_QUERY_KEY],
@@ -1063,6 +1076,9 @@ const MasterBankFields = ({
             placeholder="Select a bank"
             required={true}
             disabled={mode === "view"}
+            onChange={(e) => {
+              setBank(e.label)
+            }}
             focusOptions={() => method.setFocus("TransactionID")}
           />
         </div>
@@ -1101,28 +1117,61 @@ function ReceiptDetailHeaderForm({ appendSingleRow }) {
   return (
     <>
       <form>
-        <FormRow>
-          <FormProvider {...method}>
+        <FormProvider {...method}>
+          <FormRow>
             <DetailHeaderBusinessUnitDependents />
-          </FormProvider>
-        </FormRow>
-        <FormRow>
-          <FormColumn lg={9} xl={9} md={6}>
-            <FormLabel>Description</FormLabel>
-            <div>
-              <TextAreaField control={method.control} name={"Description"} />
-            </div>
-          </FormColumn>
-          <FormColumn className="col-xl-3" lg={3} xl={3} md={6}>
-            <FormLabel></FormLabel>
-            <DetailHeaderActionButtons
-              handleAdd={() => method.handleSubmit(onSubmit)()}
-              handleClear={() => method.reset()}
-            />
-          </FormColumn>
-        </FormRow>
-        <DevTool control={method.control} />
+          </FormRow>
+          <FormRow>
+            <FormColumn lg={9} xl={9} md={6}>
+              <FormLabel>Description</FormLabel>
+              <div>
+                <DetailHeaderDescription />
+              </div>
+            </FormColumn>
+            <FormColumn className="col-xl-3" lg={3} xl={3} md={6}>
+              <FormLabel></FormLabel>
+              <DetailHeaderActionButtons
+                handleAdd={() => method.handleSubmit(onSubmit)()}
+                handleClear={() => method.reset()}
+              />
+            </FormColumn>
+          </FormRow>
+        </FormProvider>
       </form>
+    </>
+  )
+}
+
+function DetailHeaderDescription() {
+  const method = useFormContext()
+  const { Bank, InstrumentType, ReceiptMode } = useReceiptEntryProvider()
+
+  useEffect(() => {
+    if (ReceiptMode === "Cash") {
+      method.setValue("Description", "Cash received")
+    } else if (ReceiptMode === "Online") {
+      method.setValue("Description", "Online payment received in")
+    } else if (ReceiptMode === "Instrument") {
+      method.setValue("Description", "")
+    }
+  }, [ReceiptMode])
+
+  useEffect(() => {
+    if (Bank !== null) {
+      const Description = method.getValues("Description")
+      method.setValue("Description", `${Description} ${Bank}`)
+    }
+  }, [Bank])
+
+  useEffect(() => {
+    if (InstrumentType !== null) {
+      method.setValue("Description", `${InstrumentType} deposited in`)
+    }
+  }, [InstrumentType])
+
+  return (
+    <>
+      <TextAreaField control={method.control} name={"Description"} />
     </>
   )
 }

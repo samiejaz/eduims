@@ -14,6 +14,7 @@ import { Calendar } from "primereact/calendar"
 import { ROUTE_URLS } from "../../../utils/enums"
 import { encryptID } from "../../../utils/crypto"
 import useReportViewerWithQueryParams from "../../../hooks/CommonHooks/useReportViewHookWithQueryParams"
+import { FilterMatchMode } from "primereact/api"
 
 const PendingInvoiceCardSectionDetail = () => {
   const { user } = useAuthProvider()
@@ -21,6 +22,10 @@ const PendingInvoiceCardSectionDetail = () => {
     useChooseDatesForLedger()
 
   const navigate = useNavigate()
+  const [filters, setFilters] = useState({
+    CustomerName: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    AccountTitle: { value: null, matchMode: FilterMatchMode.CONTAINS },
+  })
 
   const data = useQuery({
     queryKey: ["pendingInvoiceDataDetail", user?.userID],
@@ -71,13 +76,13 @@ const PendingInvoiceCardSectionDetail = () => {
   }
 
   const AmountTemplate = (rowData) => {
+    const formattedAmount = new Intl.NumberFormat("en-US", {
+      currency: "USD",
+    }).format(rowData.Amount < 0 ? -1 * rowData.Amount : rowData.Amount)
+
     return (
       <>
-        {rowData.Amount < 0 ? (
-          <span>({-1 * rowData.Amount})</span>
-        ) : (
-          <span>{rowData.Amount}</span>
-        )}
+        <span>({formattedAmount})</span>
       </>
     )
   }
@@ -90,10 +95,12 @@ const PendingInvoiceCardSectionDetail = () => {
     {
       field: "CustomerName",
       header: "Customer Name",
+      filter: true,
     },
     {
       field: "AccountTitle",
       header: "Account Title",
+      filter: true,
     },
     {
       field: "Amount",
@@ -123,12 +130,19 @@ const PendingInvoiceCardSectionDetail = () => {
           type="button"
         />
       </div>
-      <DataTable dataKey="AccountID" value={data.data || []}>
+      <DataTable
+        filterDisplay="row"
+        filters={filters}
+        size="small"
+        dataKey="AccountID"
+        value={data.data || []}
+      >
         {columns.map((item) => {
           return (
             <Column
               key={item.field}
               field={item.field}
+              filter={item?.filter ?? false}
               header={item.header}
               headerStyle={{
                 background: "#10B981",

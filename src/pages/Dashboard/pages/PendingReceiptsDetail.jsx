@@ -3,15 +3,13 @@ import { useAuthProvider } from "../../../context/AuthContext"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import {
   GetPendingReceiptsCountData,
-  GetToInvoiceData,
   UpdateInstallmentDueDate,
 } from "../dashboard.api"
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import { Button } from "primereact/button"
 import { Column } from "primereact/column"
 import { DataTable } from "primereact/datatable"
 import { useAppConfigurataionProvider } from "../../../context/AppConfigurationContext"
-import { useReportViewerHook } from "../../../hooks/CommonHooks/commonhooks"
 import {
   formatDateWithSymbol,
   ShowErrorToast,
@@ -22,6 +20,8 @@ import { Calendar } from "primereact/calendar"
 import { ROUTE_URLS } from "../../../utils/enums"
 import { encryptID } from "../../../utils/crypto"
 import useReportViewerWithQueryParams from "../../../hooks/CommonHooks/useReportViewHookWithQueryParams"
+import { FilterMatchMode } from "primereact/api"
+import { useAllowFormHook } from "../../../hooks/CommonHooks/commonhooks"
 
 const PendingReceiptCardSectionDetail = () => {
   const { user } = useAuthProvider()
@@ -32,6 +32,11 @@ const PendingReceiptCardSectionDetail = () => {
     setVisible: setDueDateDialogVisible,
     setInvoiceInstallmentID,
   } = useChooseDateForDueDateUpdate(user?.userID)
+
+  const [filters, setFilters] = useState({
+    CustomerName: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    AccountTitle: { value: null, matchMode: FilterMatchMode.CONTAINS },
+  })
 
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
@@ -104,13 +109,13 @@ const PendingReceiptCardSectionDetail = () => {
   }
 
   const AmountTemplate = (rowData) => {
+    const formattedAmount = new Intl.NumberFormat("en-US", {
+      currency: "USD",
+    }).format(rowData.Amount < 0 ? -1 * rowData.Amount : rowData.Amount)
+
     return (
       <>
-        {rowData.Amount < 0 ? (
-          <span>({-1 * rowData.Amount})</span>
-        ) : (
-          <span>{rowData.Amount}</span>
-        )}
+        <span>{formattedAmount}</span>
       </>
     )
   }
@@ -119,10 +124,12 @@ const PendingReceiptCardSectionDetail = () => {
     {
       field: "CustomerName",
       header: "Customer Name",
+      filter: true,
     },
     {
       field: "AccountTitle",
       header: "Account Title",
+      filter: true,
     },
     {
       field: "DueDate",
@@ -152,6 +159,8 @@ const PendingReceiptCardSectionDetail = () => {
     Total: "Total",
   }
 
+  //useAllowFormHook(userConfigData.data?.ShowAccountAnalysisOnMainDashboard)
+
   if (data.isLoading || data.isFetching) {
     return <span>Loading...</span>
   }
@@ -170,13 +179,20 @@ const PendingReceiptCardSectionDetail = () => {
         <>
           <div>
             <span className="font-bold text-lg mb-2">Pending</span>
-            <DataTable dataKey="AccountID" value={data.data["Pending"] || []}>
+            <DataTable
+              filters={filters}
+              filterDisplay="row"
+              size="small"
+              dataKey="AccountID"
+              value={data.data["Pending"] || []}
+            >
               {columns.map((item) => {
                 return (
                   <Column
                     key={item.field}
                     field={item.field}
                     header={item.header}
+                    filter={item?.filter ?? false}
                     headerStyle={{
                       background: "#10B981",
                       color: "white",
@@ -189,13 +205,20 @@ const PendingReceiptCardSectionDetail = () => {
           </div>
           <div className="mt-2">
             <span className="font-bold text-lg mb-2">Due</span>
-            <DataTable dataKey="AccountID" value={data.data["Due"] || []}>
+            <DataTable
+              filters={filters}
+              filterDisplay="row"
+              size="small"
+              dataKey="AccountID"
+              value={data.data["Due"] || []}
+            >
               {columns.map((item) => {
                 return (
                   <Column
                     key={item.field}
                     field={item.field}
                     header={item.header}
+                    filter={item?.filter ?? false}
                     headerStyle={{
                       background: "#10B981",
                       color: "white",
@@ -208,13 +231,20 @@ const PendingReceiptCardSectionDetail = () => {
           </div>
           <div className="mt-2">
             <span className="font-bold text-lg mb-2">Up Coming</span>
-            <DataTable dataKey="AccountID" value={data.data["UpComing"] || []}>
+            <DataTable
+              filters={filters}
+              size="small"
+              filterDisplay="row"
+              dataKey="AccountID"
+              value={data.data["UpComing"] || []}
+            >
               {columns.map((item) => {
                 return (
                   <Column
                     key={item.field}
                     field={item.field}
                     header={item.header}
+                    filter={item?.filter ?? false}
                     headerStyle={{
                       background: "#10B981",
                       color: "white",
@@ -229,13 +259,20 @@ const PendingReceiptCardSectionDetail = () => {
       )
     } else {
       return (
-        <DataTable dataKey="AccountID" value={data.data[params_type] || []}>
+        <DataTable
+          filters={filters}
+          filterDisplay="row"
+          size="small"
+          dataKey="AccountID"
+          value={data.data[params_type] || []}
+        >
           {columns.map((item) => {
             return (
               <Column
                 key={item.field}
                 field={item.field}
                 header={item.header}
+                filter={item?.filter ?? false}
                 headerStyle={{
                   background: "#10B981",
                   color: "white",
