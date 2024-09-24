@@ -115,7 +115,7 @@ const PendingInvoiceCardSectionDetail = () => {
   ]
 
   function navigateToInvoice(params) {
-    const queryParams = `?CustomerID=${encryptID(params.CustomerID)}&AccountID=${encryptID(params.AccountID)}`
+    const queryParams = `?CustomerID=${encryptID(params.CustomerID)}&AccountID=${encryptID(params.AccountID)}&f=pending_invoices`
     navigate(`${ROUTE_URLS.ACCOUNTS.NEW_CUSTOMER_INVOICE}/new${queryParams}`)
   }
   return (
@@ -134,7 +134,12 @@ const PendingInvoiceCardSectionDetail = () => {
         filterDisplay="row"
         filters={filters}
         size="small"
-        dataKey="AccountID"
+        paginator
+        rows={10}
+        scrollHeight="75vh"
+        scrollable
+        rowsPerPageOptions={[5, 10, 50, 100]}
+        dataKey="InvoiceInstallmentID"
         value={data.data || []}
       >
         {columns.map((item) => {

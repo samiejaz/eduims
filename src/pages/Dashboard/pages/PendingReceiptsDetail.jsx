@@ -32,6 +32,7 @@ const PendingReceiptCardSectionDetail = () => {
     setVisible: setDueDateDialogVisible,
     setInvoiceInstallmentID,
   } = useChooseDateForDueDateUpdate(user?.userID)
+  const { userConfigData } = useAppConfigurataionProvider()
 
   const [filters, setFilters] = useState({
     CustomerName: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -148,7 +149,7 @@ const PendingReceiptCardSectionDetail = () => {
   ]
 
   function navigateToInvoice(params) {
-    const queryParams = `?CustomerID=${encryptID(params.CustomerID)}&AccountID=${encryptID(params.AccountID)}`
+    const queryParams = `?CustomerID=${encryptID(params.CustomerID)}&AccountID=${encryptID(params.AccountID)}&f=pending_receipts`
     navigate(`${ROUTE_URLS.ACCOUNTS.RECIEPT_VOUCHER_ROUTE}/new${queryParams}`)
   }
 
@@ -159,7 +160,7 @@ const PendingReceiptCardSectionDetail = () => {
     Total: "Total",
   }
 
-  //useAllowFormHook(userConfigData.data?.ShowAccountAnalysisOnMainDashboard)
+  useAllowFormHook(userConfigData.data?.ShowAccountAnalysisOnMainDashboard)
 
   if (data.isLoading || data.isFetching) {
     return <span>Loading...</span>
@@ -183,7 +184,12 @@ const PendingReceiptCardSectionDetail = () => {
               filters={filters}
               filterDisplay="row"
               size="small"
-              dataKey="AccountID"
+              paginator
+              rows={10}
+              scrollHeight="400px"
+              scrollable
+              rowsPerPageOptions={[5, 10, 50, 100]}
+              dataKey="InvoiceInstallmentID"
               value={data.data["Pending"] || []}
             >
               {columns.map((item) => {
@@ -209,7 +215,12 @@ const PendingReceiptCardSectionDetail = () => {
               filters={filters}
               filterDisplay="row"
               size="small"
-              dataKey="AccountID"
+              paginator
+              rows={10}
+              scrollHeight="400px"
+              scrollable
+              rowsPerPageOptions={[5, 10, 50, 100]}
+              dataKey="InvoiceInstallmentID"
               value={data.data["Due"] || []}
             >
               {columns.map((item) => {
@@ -235,13 +246,17 @@ const PendingReceiptCardSectionDetail = () => {
               filters={filters}
               size="small"
               filterDisplay="row"
-              dataKey="AccountID"
+              paginator
+              rows={10}
+              scrollHeight="400px"
+              scrollable
+              rowsPerPageOptions={[5, 10, 50, 100]}
+              dataKey="InvoiceInstallmentID"
               value={data.data["UpComing"] || []}
             >
               {columns.map((item) => {
                 return (
                   <Column
-                    key={item.field}
                     field={item.field}
                     header={item.header}
                     filter={item?.filter ?? false}
@@ -263,7 +278,12 @@ const PendingReceiptCardSectionDetail = () => {
           filters={filters}
           filterDisplay="row"
           size="small"
-          dataKey="AccountID"
+          dataKey="InvoiceInstallmentID"
+          paginator
+          rows={10}
+          scrollHeight="75vh"
+          scrollable
+          rowsPerPageOptions={[5, 10, 50, 100]}
           value={data.data[params_type] || []}
         >
           {columns.map((item) => {

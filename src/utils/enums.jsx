@@ -238,3 +238,20 @@ export const TABLE_NAMES = {
   LEAD_SOURCE: "gen_LeadSource",
   LEAD_INTRODUCTION: "gen_LeadIntroduction",
 }
+
+const NAVIGATED_FROM_ARR = [
+  {
+    title: "Pending Invoices",
+    routeUrl: ROUTE_URLS.DASHBOARD.PENDING_INVOICES_ROUTE,
+    key: "pending_invoices",
+  },
+  {
+    title: "Pending Receipts",
+    routeUrl: -1,
+    key: "pending_receipts",
+  },
+]
+
+export function getNavigatedFrom(key) {
+  return NAVIGATED_FROM_ARR.find((item) => item.key === key)
+}

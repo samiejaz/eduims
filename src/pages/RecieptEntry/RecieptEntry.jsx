@@ -55,7 +55,10 @@ import useConfirmationModal from "../../hooks/useConfirmationModalHook"
 
 import { decryptID, encryptID } from "../../utils/crypto"
 import { Dropdown } from "primereact/dropdown"
-import { usePrintReportAsPDF } from "../../hooks/CommonHooks/commonhooks"
+import {
+  useNavigatedRouteConfigHook,
+  usePrintReportAsPDF,
+} from "../../hooks/CommonHooks/commonhooks"
 
 import { FormRightsWrapper } from "../../components/Wrappers/wrappers"
 import {
@@ -359,6 +362,10 @@ export function ReceiptEntryFormComponent({ mode, userRights, isPublicRoute }) {
     LoginUserID: UserId,
     RecordID: ReceiptVoucherID,
   })
+  const { routeConfig } = useNavigatedRouteConfigHook({
+    title: "Receipt Vouchers",
+    parentRoute,
+  })
   // Ref
   const detailTableRef = useRef()
   const customerCompRef = useRef()
@@ -537,7 +544,7 @@ export function ReceiptEntryFormComponent({ mode, userRights, isPublicRoute }) {
           <div className="mt-4">
             <ButtonToolBar
               mode={mode}
-              handleGoBack={() => navigate(parentRoute)}
+              handleGoBack={() => navigate(routeConfig.routeUrl)}
               handleEdit={() => handleEdit()}
               handleCancel={() => {
                 handleCancel()
@@ -546,7 +553,7 @@ export function ReceiptEntryFormComponent({ mode, userRights, isPublicRoute }) {
                 handleAddNew()
               }}
               handleSave={() => method.handleSubmit(onSubmit)()}
-              GoBackLabel="Receipts"
+              GoBackLabel={routeConfig.title}
               saveLoading={receiptVoucherMutation.isPending}
               handleDelete={handleDelete}
               showPrint={userRights[0]?.RolePrint}
@@ -736,6 +743,7 @@ const CustomerDependentFields = React.forwardRef(
     const queryParams = new URLSearchParams(searchParams)
     const params_customer_id = queryParams.get("CustomerID") ?? ""
     const params_account_id = queryParams.get("AccountID") ?? ""
+    const f = queryParams.get("f") ?? ""
 
     useEffect(() => {
       if (
@@ -750,8 +758,7 @@ const CustomerDependentFields = React.forwardRef(
           parseInt(decryptID(params_account_id))
         )
         setCustomerID(decryptID(params_customer_id))
-
-        setSearchParams({})
+        // setSearchParams({ f })
       }
     }, [params_account_id, params_customer_id, customerSelectData])
 

@@ -41,6 +41,7 @@ import {
 import ButtonToolBar from "../../components/ActionsToolbar"
 
 import {
+  getNavigatedFrom,
   MENU_KEYS,
   QUERY_KEYS,
   ROUTE_URLS,
@@ -370,6 +371,10 @@ export function CustomerInvoiceFormCompoent({
   const navigate = useNavigate()
   const { user } = useContext(AuthContext)
 
+  const [searchParams, setSearchParams] = useSearchParams()
+  const queryParams = new URLSearchParams(searchParams)
+  const from = queryParams.get("f") ?? ""
+
   let UserId = isPublicRoute ? 1 : user?.userID
   // Ref
   const detailTableRef = useRef()
@@ -612,6 +617,24 @@ export function CustomerInvoiceFormCompoent({
     return { calculatedAmount: totalNetAmount - total, total }
   }
 
+  function getGoBackRoute() {
+    const navigated_from = getNavigatedFrom(from)
+    const navigate_from_obj = { ...navigated_from }
+    if (from) {
+      if (navigated_from) {
+        navigate_from_obj.routeUrl = navigated_from.routeUrl
+        navigate_from_obj.title = navigated_from.title
+      }
+    } else {
+      navigate_from_obj.routeUrl = parentRoute
+      navigate_from_obj.title = "Customer Invoices"
+    }
+
+    return navigate_from_obj
+  }
+
+  const getRouteConfig = getGoBackRoute()
+
   return (
     <>
       {isLoading ? (
@@ -623,7 +646,9 @@ export function CustomerInvoiceFormCompoent({
           <CustomerBranchDataProvider>
             <CustomerInvoiceToolbar
               mode={mode}
-              handleGoBack={() => navigate(parentRoute)}
+              handleGoBack={() => {
+                navigate(getRouteConfig.routeUrl)
+              }}
               handleCancel={() => {
                 handleCancel()
               }}
@@ -654,6 +679,7 @@ export function CustomerInvoiceFormCompoent({
               handleLastRecord={() => {
                 navigate(`${parentRoute}/${PreviousAndNextIDs.LastRecordID}`)
               }}
+              GoBackLabel={getRouteConfig.title}
             />
             <form id="CustomerInvoice" className="mt-4">
               <FormProvider {...method}>
@@ -839,6 +865,7 @@ function CustomerInvoiceToolbar({
   handleLastRecord,
   currentRecordId,
   isPublic,
+  GoBackLabel,
 }) {
   const [printQueryParams, setPrintQueryParams] = useState(
     `InvoicePrint?CustomerInvoiceID=${decryptID(CustomerInvoiceID)}`
@@ -859,7 +886,7 @@ function CustomerInvoiceToolbar({
         handleCancel={handleCancel}
         handleAddNew={handleAddNew}
         handleSave={handleSave}
-        GoBackLabel="CustomerInvoices"
+        GoBackLabel={GoBackLabel}
         saveLoading={saveLoaing}
         handleDelete={handleDelete}
         showAddNewButton={userRights[0]?.RoleNew}
@@ -1010,6 +1037,7 @@ const CustomerDependentFields = React.forwardRef(
     const queryParams = new URLSearchParams(searchParams)
     const params_customer_id = queryParams.get("CustomerID") ?? ""
     const params_account_id = queryParams.get("AccountID") ?? ""
+    const f = queryParams.get("f") ?? ""
 
     useEffect(() => {
       if (
@@ -1027,7 +1055,7 @@ const CustomerDependentFields = React.forwardRef(
         setAccountID(decryptID(params_account_id))
         setContextCustomerID(decryptID(params_customer_id))
 
-        setSearchParams({})
+        setSearchParams({ f })
       }
     }, [params_account_id, params_customer_id, customerSelectData])
 

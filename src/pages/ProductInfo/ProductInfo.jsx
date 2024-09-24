@@ -84,7 +84,7 @@ function DetailComponent({ userRights }) {
   })
   const [filters, setFilters] = useState({
     ProductInfoTitle: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    ProductType: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    ProductCategoryTitle: { value: null, matchMode: FilterMatchMode.CONTAINS },
   })
 
   const user = useUserData()
