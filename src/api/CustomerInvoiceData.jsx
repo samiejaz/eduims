@@ -96,11 +96,44 @@ export async function addNewCustomerInvoice({
   userID,
   CustomerInvoiceID = 0,
 }) {
-  debugger
   try {
-    let InvoiceDetail = formData?.CustomerInvoiceDetail?.map((item, index) => {
-      return {
-        RowID: index + 1,
+    // let InvoiceDetail = formData?.CustomerInvoiceDetail?.map((item, index) => {
+
+    //   return {
+    //     RowID: index + 1,
+    //     InvoiceType: item.InvoiceType,
+    //     BusinessUnitID: item.BusinessUnitID,
+    //     BranchID: item.CustomerBranch,
+    //     ProductToInvoiceID: item.ProductInfoID,
+    //     ServiceToInvoiceID:
+    //       item.ServiceInfoID === undefined ? null : item.ServiceInfoID,
+    //     Quantity: item.Qty,
+    //     Rate: item.Rate,
+    //     CGS: item.CGS,
+    //     Amount: item.Amount,
+    //     Discount: item.Discount,
+    //     NetAmount: item.NetAmount,
+    //     DetailDescription: item.DetailDescription,
+    //     IsFree: item.IsFree ? 1 : 0,
+    //   }
+    // })
+    let InvoiceDetail = []
+    let valid = true
+    for (let i = 0; i < formData.CustomerInvoiceDetail.length; i++) {
+      const item = formData.CustomerInvoiceDetail[i]
+
+      if (item.ProductInfoID == 0 || item.ProductInfoID == "") {
+        valid = false
+        break
+      }
+
+      if (item.BusinessUnitID == 0 || item.BusinessUnitID == "") {
+        valid = false
+        break
+      }
+
+      InvoiceDetail.push({
+        RowID: i + 1,
         InvoiceType: item.InvoiceType,
         BusinessUnitID: item.BusinessUnitID,
         BranchID: item.CustomerBranch,
@@ -115,80 +148,87 @@ export async function addNewCustomerInvoice({
         NetAmount: item.NetAmount,
         DetailDescription: item.DetailDescription,
         IsFree: item.IsFree ? 1 : 0,
+      })
+    }
+
+    if (valid == true) {
+      let InstallmentDetail = []
+      if (formData?.installments.length > 0) {
+        InstallmentDetail = formData?.installments
+          ?.map((item, index) => {
+            if (parseFloat(item.Amount || "0") == 0) {
+              return null
+            }
+            return {
+              InstallmentRowID: index + 1,
+              InstallmentDueDate: formatDateWithSymbol(
+                item.IDate ?? new Date()
+              ),
+              InstallmentAmount: parseFloat(item.Amount),
+            }
+          })
+          .filter((item) => item != null)
       }
-    })
 
-    let InstallmentDetail = []
-    if (formData?.installments.length > 0) {
-      InstallmentDetail = formData?.installments
-        ?.map((item, index) => {
-          if (parseFloat(item.Amount || "0") == 0) {
-            return null
-          }
-          return {
-            InstallmentRowID: index + 1,
-            InstallmentDueDate: formatDateWithSymbol(item.IDate ?? new Date()),
-            InstallmentAmount: parseFloat(item.Amount),
-          }
-        })
-        .filter((item) => item != null)
-    }
+      let DataToSend = {
+        SessionID: formData?.SessionID,
+        InvoiceNo: formData?.VoucherNo,
+        SessionBasedVoucherNo: formData?.SessionBasedVoucherNo,
+        InvoiceDate:
+          formatDateWithSymbol(formData?.VoucherDate) ||
+          formatDateWithSymbol(new Date()),
+        InvoiceDueDate:
+          formatDateWithSymbol(formData?.VoucherDueDate) ||
+          formatDateWithSymbol(new Date()),
+        CustomerID: formData?.Customer,
+        AccountID: formData?.CustomerLedgers,
+        BusinessUnitID: formData?.BusinessUnitID,
+        InvoiceTitle: formData?.InvoiceTitle,
+        Description: formData?.Description,
+        TotalRate: formData?.TotalRate,
+        TotalCGS: formData?.TotalAmount,
+        TotalDiscount: formData?.TotalDiscount,
+        TotalNetAmount: formData?.TotalNetAmount,
+        DocumentNo: formData?.DocumentNo,
+        EntryUserID: userID,
+        InvoiceDetail: JSON.stringify(InvoiceDetail),
+      }
 
-    let DataToSend = {
-      SessionID: formData?.SessionID,
-      InvoiceNo: formData?.VoucherNo,
-      SessionBasedVoucherNo: formData?.SessionBasedVoucherNo,
-      InvoiceDate:
-        formatDateWithSymbol(formData?.VoucherDate) ||
-        formatDateWithSymbol(new Date()),
-      InvoiceDueDate:
-        formatDateWithSymbol(formData?.VoucherDueDate) ||
-        formatDateWithSymbol(new Date()),
-      CustomerID: formData?.Customer,
-      AccountID: formData?.CustomerLedgers,
-      BusinessUnitID: formData?.BusinessUnitID,
-      InvoiceTitle: formData?.InvoiceTitle,
-      Description: formData?.Description,
-      TotalRate: formData?.TotalRate,
-      TotalCGS: formData?.TotalAmount,
-      TotalDiscount: formData?.TotalDiscount,
-      TotalNetAmount: formData?.TotalNetAmount,
-      DocumentNo: formData?.DocumentNo,
-      EntryUserID: userID,
-      InvoiceDetail: JSON.stringify(InvoiceDetail),
-    }
+      if (InstallmentDetail.length > 0) {
+        DataToSend.InvoiceInstallmentDetail = JSON.stringify(InstallmentDetail)
+      }
 
-    if (InstallmentDetail.length > 0) {
-      DataToSend.InvoiceInstallmentDetail = JSON.stringify(InstallmentDetail)
-    }
+      CustomerInvoiceID =
+        CustomerInvoiceID === 0 ? 0 : decryptID(CustomerInvoiceID)
 
-    CustomerInvoiceID =
-      CustomerInvoiceID === 0 ? 0 : decryptID(CustomerInvoiceID)
-
-    if (CustomerInvoiceID !== 0 || CustomerInvoiceID !== undefined) {
-      DataToSend.CustomerInvoiceID = CustomerInvoiceID
-    } else {
-      DataToSend.CustomerInvoiceID = 0
-    }
-
-    const { data } = await axios.post(
-      apiUrl + `/CustomerInvoice/CustomerInvoiceInsertUpdate`,
-      DataToSend
-    )
-
-    if (data.success === true) {
-      if (CustomerInvoiceID !== 0) {
-        ShowSuccessToast("Invoice updated successfully!")
+      if (CustomerInvoiceID !== 0 || CustomerInvoiceID !== undefined) {
+        DataToSend.CustomerInvoiceID = CustomerInvoiceID
       } else {
-        ShowSuccessToast("Invoice created successfully!")
+        DataToSend.CustomerInvoiceID = 0
       }
-      return {
-        success: true,
-        RecordID: encryptID(data?.CustomerInvoiceID),
-        Type: data?.Type,
+
+      const { data } = await axios.post(
+        apiUrl + `/CustomerInvoice/CustomerInvoiceInsertUpdate`,
+        DataToSend
+      )
+
+      if (data.success === true) {
+        if (CustomerInvoiceID !== 0) {
+          ShowSuccessToast("Invoice updated successfully!")
+        } else {
+          ShowSuccessToast("Invoice created successfully!")
+        }
+        return {
+          success: true,
+          RecordID: encryptID(data?.CustomerInvoiceID),
+          Type: data?.Type,
+        }
+      } else {
+        ShowErrorToast(data.message)
+        return { success: false, RecordID: CustomerInvoiceID, Type: "" }
       }
     } else {
-      ShowErrorToast(data.message)
+      ShowErrorToast("Please select complete data in detail row!")
       return { success: false, RecordID: CustomerInvoiceID, Type: "" }
     }
   } catch (e) {

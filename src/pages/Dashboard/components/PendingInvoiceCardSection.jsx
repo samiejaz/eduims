@@ -24,6 +24,8 @@ const PendingInvoiceCardSection = () => {
       Balance: 0,
       Count: 0,
     },
+    refetchOnWindowFocus: true,
+    refetchIntervalInBackground: 60000,
   })
 
   if (data.isFetching || data.isLoading) {

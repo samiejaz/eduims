@@ -7,7 +7,6 @@ import { Button } from "primereact/button"
 import { Column } from "primereact/column"
 import { DataTable } from "primereact/datatable"
 import { useAppConfigurataionProvider } from "../../../context/AppConfigurationContext"
-import { useReportViewerHook } from "../../../hooks/CommonHooks/commonhooks"
 import { formatDateWithSymbol } from "../../../utils/CommonFunctions"
 import { Dialog } from "primereact/dialog"
 import { Calendar } from "primereact/calendar"
@@ -34,6 +33,8 @@ const PendingInvoiceCardSectionDetail = () => {
         LoginUserID: user?.userID,
       }),
     initialData: [],
+    refetchOnWindowFocus: true,
+    refetchIntervalInBackground: 60000,
   })
 
   const ActionTemplate = (rowData) => {
@@ -125,7 +126,7 @@ const PendingInvoiceCardSectionDetail = () => {
           text
           link
           icon="pi pi-arrow-left"
-          onClick={() => navigate(-1)}
+          onClick={() => navigate("/")}
           label="Dashboard"
           type="button"
         />

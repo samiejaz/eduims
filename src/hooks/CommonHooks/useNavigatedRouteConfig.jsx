@@ -8,11 +8,15 @@ const useNavigatedRouteConfig = ({ title, parentRoute }) => {
 
   function getGoBackRoute() {
     const navigated_from = getNavigatedFrom(from)
-    const navigate_from_obj = { ...navigated_from }
+    const navigate_from_obj = {
+      ...navigated_from,
+      isNavigatedFromOtherRoute: false,
+    }
     if (from) {
       if (navigated_from) {
         navigate_from_obj.routeUrl = navigated_from.routeUrl
         navigate_from_obj.title = navigated_from.title
+        navigate_from_obj.isNavigatedFromOtherRoute = true
       }
     } else {
       navigate_from_obj.routeUrl = parentRoute

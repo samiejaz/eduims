@@ -80,6 +80,7 @@ import {
 } from "../../components/Layout/LayoutComponents"
 import { DetailPageTilteAndActionsComponent } from "../../components"
 import { usePreviousAndNextID } from "../../hooks/api/usePreviousAndNextIDHook"
+import { DevTool } from "@hookform/devtools"
 
 let parentRoute = ROUTE_URLS.ACCOUNTS.NEW_CUSTOMER_INVOICE
 let editRoute = `${parentRoute}/edit/`
@@ -393,6 +394,24 @@ export function CustomerInvoiceFormCompoent({
     RecordID: CustomerInvoiceID,
   })
 
+  function getGoBackRoute() {
+    const navigated_from = getNavigatedFrom(from)
+    const navigate_from_obj = { ...navigated_from }
+    if (from) {
+      if (navigated_from) {
+        navigate_from_obj.routeUrl = navigated_from.routeUrl
+        navigate_from_obj.title = navigated_from.title
+      }
+    } else {
+      navigate_from_obj.routeUrl = parentRoute
+      navigate_from_obj.title = "Customer Invoices"
+    }
+
+    return navigate_from_obj
+  }
+
+  const getRouteConfig = getGoBackRoute()
+
   const { data: CustomerInvoiceData } = useQuery({
     queryKey: [
       QUERY_KEYS.CUSTOMER_INVOICE_QUERY_KEY,
@@ -440,6 +459,10 @@ export function CustomerInvoiceFormCompoent({
           CustomerInvoiceID: decryptID(RecordID),
           Type: Type,
         })
+
+        if (from !== "") {
+          navigate(getRouteConfig.routeUrl)
+        }
       }
     },
   })
@@ -580,9 +603,12 @@ export function CustomerInvoiceFormCompoent({
         } else {
           ShowErrorToast("Please add atleast 1 row!")
         }
+      } else {
+        ShowErrorToast("Please add atleast 1 row!")
       }
     } catch (error) {
       console.error(error)
+      ShowErrorToast(error.message)
     }
   }
 
@@ -616,24 +642,6 @@ export function CustomerInvoiceFormCompoent({
 
     return { calculatedAmount: totalNetAmount - total, total }
   }
-
-  function getGoBackRoute() {
-    const navigated_from = getNavigatedFrom(from)
-    const navigate_from_obj = { ...navigated_from }
-    if (from) {
-      if (navigated_from) {
-        navigate_from_obj.routeUrl = navigated_from.routeUrl
-        navigate_from_obj.title = navigated_from.title
-      }
-    } else {
-      navigate_from_obj.routeUrl = parentRoute
-      navigate_from_obj.title = "Customer Invoices"
-    }
-
-    return navigate_from_obj
-  }
-
-  const getRouteConfig = getGoBackRoute()
 
   return (
     <>
@@ -1046,16 +1054,7 @@ const CustomerDependentFields = React.forwardRef(
         params_customer_id !== "" &&
         params_account_id !== ""
       ) {
-        method.setValue("Customer", parseInt(decryptID(params_customer_id)))
-        method.setValue(
-          "CustomerLedgers",
-          parseInt(decryptID(params_account_id))
-        )
-        setCustomerID(decryptID(params_customer_id))
-        setAccountID(decryptID(params_account_id))
-        setContextCustomerID(decryptID(params_customer_id))
-
-        setSearchParams({ f })
+        initCustomerAndAccount()
       }
     }, [params_account_id, params_customer_id, customerSelectData])
 
@@ -1065,10 +1064,22 @@ const CustomerDependentFields = React.forwardRef(
         Array.isArray(CustomerAccounts) &&
         CustomerAccounts.length > 0
       ) {
-        method.setValue("CustomerLedgers", CustomerAccounts[0].AccountID)
-        setAccountID(CustomerAccounts[0].AccountID)
+        if (f == "" && params_account_id === "") {
+          method.setValue("CustomerLedgers", CustomerAccounts[0].AccountID)
+          setAccountID(CustomerAccounts[0].AccountID)
+        }
       }
-    }, [CustomerAccounts])
+    }, [params_account_id, CustomerAccounts])
+
+    function initCustomerAndAccount() {
+      method.setValue("Customer", parseInt(decryptID(params_customer_id)))
+      method.setValue("CustomerLedgers", parseInt(decryptID(params_account_id)))
+      setCustomerID(decryptID(params_customer_id))
+      setAccountID(decryptID(params_account_id))
+      setContextCustomerID(decryptID(params_customer_id))
+
+      setSearchParams({ f })
+    }
 
     return (
       <>
@@ -1256,14 +1267,20 @@ function CustomerInvoiceDetailHeaderForm({ appendSingleRow }) {
   })
 
   function onSubmit(data) {
-    appendSingleRow(data)
-    method.resetField("Qty")
-    method.resetField("Rate")
-    method.resetField("CGS")
-    method.resetField("Amount")
-    method.resetField("Discount")
-    method.resetField("NetAmount")
-    method.resetField("DetailDescription")
+    if (!data.BusinessUnitID) {
+      method.setError("BusinessUnitID")
+    } else if (!data.ProductInfoID) {
+      method.setError("ProductInfoID")
+    } else {
+      appendSingleRow(data)
+      method.resetField("Qty")
+      method.resetField("Rate")
+      method.resetField("CGS")
+      method.resetField("Amount")
+      method.resetField("Discount")
+      method.resetField("NetAmount")
+      method.resetField("DetailDescription")
+    }
   }
 
   const typesOptions = [
@@ -1527,7 +1544,7 @@ const DetailHeaderBusinessUnitDependents = React.forwardRef((props, ref) => {
             optionValue="BusinessUnitID"
             placeholder="Select a business unit"
             options={BusinessUnitSelectData}
-            required={true}
+            required
             focusOptions={() => method.setFocus("Customer")}
             onChange={(e) => {
               setBusinessUnitID(e.value)
@@ -1554,7 +1571,7 @@ const DetailHeaderBusinessUnitDependents = React.forwardRef((props, ref) => {
               pageTitles?.product?.toLowerCase() ?? "product"
             }`}
             options={ProductsInfoSelectData}
-            required={true}
+            required
             filter={true}
             focusOptions={() => method.setFocus("ServiceInfo")}
           />

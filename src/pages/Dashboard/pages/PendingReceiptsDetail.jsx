@@ -52,6 +52,8 @@ const PendingReceiptCardSectionDetail = () => {
         Type: "Table",
       }),
     initialData: [],
+    refetchOnWindowFocus: true,
+    refetchIntervalInBackground: 60000,
   })
 
   const ActionTemplate = (rowData) => {
@@ -313,7 +315,7 @@ const PendingReceiptCardSectionDetail = () => {
           text
           link
           icon="pi pi-arrow-left"
-          onClick={() => navigate(-1)}
+          onClick={() => navigate("/")}
           label="Dashboard"
           type="button"
           style={{

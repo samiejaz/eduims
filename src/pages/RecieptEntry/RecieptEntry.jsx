@@ -413,6 +413,10 @@ export function ReceiptEntryFormComponent({ mode, userRights, isPublicRoute }) {
           ReceiptVoucherID: decryptID(RecordID),
           Type: Type,
         })
+        if (routeConfig.isNavigatedFromOtherRoute == true) {
+          navigate(routeConfig.routeUrl)
+          navigate(-1)
+        }
       }
     },
   })
@@ -758,7 +762,6 @@ const CustomerDependentFields = React.forwardRef(
           parseInt(decryptID(params_account_id))
         )
         setCustomerID(decryptID(params_customer_id))
-        // setSearchParams({ f })
       }
     }, [params_account_id, params_customer_id, customerSelectData])
 
@@ -996,6 +999,7 @@ const ReceiptModeDependantFields = React.forwardRef(
                 removeAllRows()
                 emptyAllFieldsOnReceiptModeChange()
               }}
+              required
               showOnFocus={true}
               disabled={mode === "view"}
               focusOptions={(e) => {
@@ -1118,7 +1122,8 @@ function ReceiptDetailHeaderForm({ appendSingleRow }) {
 
   function onSubmit(data) {
     appendSingleRow(data)
-    method.reset()
+    method.resetField("Amount")
+    method.resetField("BalanceAmount")
   }
 
   return (
@@ -1364,7 +1369,7 @@ function ReceiptDetailTableRow({
             optionLabel="BusinessUnitName"
             optionValue="BusinessUnitID"
             required={true}
-            showOnFocus={true}
+            showOnFocus={false}
             disabled={disable}
           />
         </td>
