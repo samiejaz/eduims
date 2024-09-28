@@ -138,9 +138,10 @@ const PendingInvoiceCardSectionDetail = () => {
         paginator
         rows={10}
         scrollHeight="75vh"
+        stateStorage="session"
+        stateKey="dt-state-pending-invoices"
         scrollable
         rowsPerPageOptions={[5, 10, 50, 100]}
-        dataKey="InvoiceInstallmentID"
         value={data.data || []}
       >
         {columns.map((item) => {

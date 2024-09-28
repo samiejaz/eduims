@@ -192,6 +192,8 @@ const PendingReceiptCardSectionDetail = () => {
               scrollable
               rowsPerPageOptions={[5, 10, 50, 100]}
               dataKey="InvoiceInstallmentID"
+              stateStorage="session"
+              stateKey="dt-state-pending-receipts"
               value={data.data["Pending"] || []}
             >
               {columns.map((item) => {
@@ -223,6 +225,8 @@ const PendingReceiptCardSectionDetail = () => {
               scrollable
               rowsPerPageOptions={[5, 10, 50, 100]}
               dataKey="InvoiceInstallmentID"
+              stateStorage="session"
+              stateKey="dt-state-due-receipts"
               value={data.data["Due"] || []}
             >
               {columns.map((item) => {
@@ -252,6 +256,8 @@ const PendingReceiptCardSectionDetail = () => {
               rows={10}
               scrollHeight="400px"
               scrollable
+              stateStorage="session"
+              stateKey="dt-state-upcoming-receipts"
               rowsPerPageOptions={[5, 10, 50, 100]}
               dataKey="InvoiceInstallmentID"
               value={data.data["UpComing"] || []}

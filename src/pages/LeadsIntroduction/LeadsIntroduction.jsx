@@ -227,6 +227,8 @@ export function LeadIntroductionDetail({
     CompanyName: { value: null, matchMode: FilterMatchMode.CONTAINS },
     ContactPersonName: { value: null, matchMode: FilterMatchMode.CONTAINS },
     ContactPersonMobileNo: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    DemoPersonName: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    FormatDemoDate: { value: null, matchMode: FilterMatchMode.CONTAINS },
   })
 
   const user = useUserData()
