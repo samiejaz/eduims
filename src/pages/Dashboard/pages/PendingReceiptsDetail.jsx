@@ -191,7 +191,7 @@ const PendingReceiptCardSectionDetail = () => {
               scrollHeight="400px"
               scrollable
               rowsPerPageOptions={[5, 10, 50, 100]}
-              dataKey="InvoiceInstallmentID"
+              dataKey="Key"
               stateStorage="session"
               stateKey="dt-state-pending-receipts"
               value={data.data["Pending"] || []}
@@ -199,7 +199,7 @@ const PendingReceiptCardSectionDetail = () => {
               {columns.map((item) => {
                 return (
                   <Column
-                    key={item.field}
+                    key={`Total_Pending_` + item.field}
                     field={item.field}
                     header={item.header}
                     filter={item?.filter ?? false}
@@ -224,7 +224,7 @@ const PendingReceiptCardSectionDetail = () => {
               scrollHeight="400px"
               scrollable
               rowsPerPageOptions={[5, 10, 50, 100]}
-              dataKey="InvoiceInstallmentID"
+              dataKey="Key"
               stateStorage="session"
               stateKey="dt-state-due-receipts"
               value={data.data["Due"] || []}
@@ -232,7 +232,7 @@ const PendingReceiptCardSectionDetail = () => {
               {columns.map((item) => {
                 return (
                   <Column
-                    key={item.field}
+                    key={`Total_Due_` + item.field}
                     field={item.field}
                     header={item.header}
                     filter={item?.filter ?? false}
@@ -259,12 +259,13 @@ const PendingReceiptCardSectionDetail = () => {
               stateStorage="session"
               stateKey="dt-state-upcoming-receipts"
               rowsPerPageOptions={[5, 10, 50, 100]}
-              dataKey="InvoiceInstallmentID"
+              dataKey="Key"
               value={data.data["UpComing"] || []}
             >
               {columns.map((item) => {
                 return (
                   <Column
+                    key={`Total_Upcoming_` + item.field}
                     field={item.field}
                     header={item.header}
                     filter={item?.filter ?? false}
@@ -286,7 +287,7 @@ const PendingReceiptCardSectionDetail = () => {
           filters={filters}
           filterDisplay="row"
           size="small"
-          dataKey="InvoiceInstallmentID"
+          dataKey="Key"
           paginator
           rows={10}
           scrollHeight="75vh"
@@ -297,7 +298,6 @@ const PendingReceiptCardSectionDetail = () => {
           {columns.map((item) => {
             return (
               <Column
-                key={item.field}
                 field={item.field}
                 header={item.header}
                 filter={item?.filter ?? false}

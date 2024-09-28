@@ -136,6 +136,7 @@ const PendingInvoiceCardSectionDetail = () => {
         filters={filters}
         size="small"
         paginator
+        dataKey="AccountID"
         rows={10}
         scrollHeight="75vh"
         stateStorage="session"
