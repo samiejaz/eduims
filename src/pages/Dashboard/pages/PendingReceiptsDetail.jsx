@@ -292,6 +292,7 @@ const PendingReceiptCardSectionDetail = () => {
           rows={10}
           scrollHeight="75vh"
           scrollable
+          stateKey={`dt-${params_type}-receipts`}
           rowsPerPageOptions={[5, 10, 50, 100]}
           value={data.data[params_type] || []}
         >
