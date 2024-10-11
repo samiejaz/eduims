@@ -213,6 +213,23 @@ export const routes = [
       },
     ],
   },
+  {
+    menuGroupName: "Edu Software Management",
+    icon: "pi pi-report",
+    menuGroupKey: MENU_KEYS.EDU_SOFTWARE_MANAGEMENT.GROUP_KEY,
+    subItems: [
+      {
+        name: "Task Management",
+        menuKey: MENU_KEYS.EDU_SOFTWARE_MANAGEMENT.TASK_MANAGEMENT_FORM_KEY,
+        route: ROUTE_URLS.EDU_SOFTWARE_MANAGEMENT.MAIN,
+      },
+      {
+        name: "Pending Discussion Tasks",
+        menuKey: MENU_KEYS.EDU_SOFTWARE_MANAGEMENT.PENDING_TASK_FORM_KEY,
+        route: ROUTE_URLS.EDU_SOFTWARE_MANAGEMENT.DISCUSSION_PENDING_TASKS,
+      },
+    ],
+  },
 ]
 
 export const routesWithUserRights = routes.map((route) => {
