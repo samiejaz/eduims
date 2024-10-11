@@ -417,3 +417,9 @@ a {
 .hover.light_blue:hover {
   background-color: #E6F4FF;
 }
+
+.p-datatable-reorderablerow-handle{
+  font-size: 50px;
+  height: 20px;
+  width: 88px;
+}

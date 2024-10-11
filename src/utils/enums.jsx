@@ -72,6 +72,10 @@ export const ROUTE_URLS = {
     PENDING_INVOICES_ROUTE: "/dashboard/pendinginvoices",
     PENDING_RECEIPTS_ROUTE: "/dashboard/pendingreceipts",
   },
+  EDU_SOFTWARE_MANAGEMENT: {
+    MAIN: "/taskmanagement",
+    DISCUSSION_PENDING_TASKS: "/dicussionpending",
+  },
 }
 
 export const QUERY_KEYS = {
@@ -202,6 +206,12 @@ export const MENU_KEYS = {
     CUSTOMERS_FORM_KEY: "mnuCustomers",
     OLD_CUSTOMERS_FORM_KEY: "mnuOldCustomers",
     SUPPLIER_FORM_KEY: "mnuSuppliers",
+  },
+  EDU_SOFTWARE_MANAGEMENT: {
+    GROUP_NAME: "Edu Software Management",
+    GROUP_KEY: "mnuEduSoftwareManagement",
+    TASK_MANAGEMENT_FORM_KEY: "mnuTaskManagement",
+    PENDING_TASK_FORM_KEY: "mnuPendingTasks",
   },
 }
 

@@ -31,6 +31,8 @@ import {
   SupplierInfoPage,
   PendingInvoicesDetailPage,
   PendingReceiptsDetailPage,
+  DevelopmentTasksManagementPage,
+  PendingDiscussionTasksPage,
 } from "./pages"
 
 import { ROUTE_URLS } from "./utils/enums"
@@ -221,8 +223,18 @@ const App = () => {
           />
 
           <Route path="/*" element={<LeadsDashboardWrapper />} />
-          {/* Leads End */}
 
+          {/* Leads End */}
+          {/* Edu Software Management Start */}
+          <Route
+            path={`${ROUTE_URLS.EDU_SOFTWARE_MANAGEMENT.MAIN}/*`}
+            element={<DevelopmentTasksManagementPage />}
+          />
+          <Route
+            path={`${ROUTE_URLS.EDU_SOFTWARE_MANAGEMENT.DISCUSSION_PENDING_TASKS}/*`}
+            element={<PendingDiscussionTasksPage />}
+          />
+          {/* Edu Software Management End */}
           {/* Reports */}
           <Route path={`/reports/*`} element={<Reports />} />
 

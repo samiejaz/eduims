@@ -105,3 +105,10 @@ export const PendingInvoicesDetailPage = lazyImport(
 export const PendingReceiptsDetailPage = lazyImport(
   () => import("./Dashboard/pages/PendingReceiptsDetail")
 )
+export const DevelopmentTasksManagementPage = lazyImport(
+  () => import("./DevelopmentTasksManagement/DevelopmentTasksManagement")
+)
+
+export const PendingDiscussionTasksPage = lazyImport(
+  () => import("./DevelopmentTasksManagement/PendingDiscussionTasks")
+)
