@@ -112,3 +112,7 @@ export const DevelopmentTasksManagementPage = lazyImport(
 export const PendingDiscussionTasksPage = lazyImport(
   () => import("./DevelopmentTasksManagement/PendingDiscussionTasks")
 )
+
+export const TasksAndProjectsDashboardPage = lazyImport(
+  () => import("./TasksAndProjects/Dashboard/TaskAndProjectsDashboard")
+)

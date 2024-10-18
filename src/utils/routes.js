@@ -230,6 +230,18 @@ export const routes = [
       },
     ],
   },
+  {
+    menuGroupName: "Tasks and Projects",
+    icon: "pi pi-user",
+    menuGroupKey: MENU_KEYS.TASKS_AND_PROJECTS.GROUP_KEY,
+    subItems: [
+      {
+        name: "Tasks and Projectsers",
+        menuKey: MENU_KEYS.TASKS_AND_PROJECTS.GROUP_KEY,
+        route: ROUTE_URLS.TASKSANDPROJECTS.MAIN,
+      },
+    ],
+  },
 ]
 
 export const routesWithUserRights = routes.map((route) => {
