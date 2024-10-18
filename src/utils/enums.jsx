@@ -76,6 +76,9 @@ export const ROUTE_URLS = {
     MAIN: "/taskmanagement",
     DISCUSSION_PENDING_TASKS: "/dicussionpending",
   },
+  TASKSANDPROJECTS: {
+    MAIN: "/tasksandprojects",
+  },
 }
 
 export const QUERY_KEYS = {
@@ -212,6 +215,10 @@ export const MENU_KEYS = {
     GROUP_KEY: "mnuEduSoftwareManagement",
     TASK_MANAGEMENT_FORM_KEY: "mnuTaskManagement",
     PENDING_TASK_FORM_KEY: "mnuPendingTasks",
+  },
+  TASKS_AND_PROJECTS: {
+    GROUP_NAME: "Tasks and Projects",
+    GROUP_KEY: "mnuTasksandProjects",
   },
 }
 

@@ -33,6 +33,7 @@ import {
   PendingReceiptsDetailPage,
   DevelopmentTasksManagementPage,
   PendingDiscussionTasksPage,
+  TasksAndProjectsDashboardPage,
 } from "./pages"
 
 import { ROUTE_URLS } from "./utils/enums"
@@ -235,6 +236,14 @@ const App = () => {
             element={<PendingDiscussionTasksPage />}
           />
           {/* Edu Software Management End */}
+
+          {/* Tasks and Projects start */}
+          <Route
+            path={`${ROUTE_URLS.TASKSANDPROJECTS.MAIN}/*`}
+            element={<TasksAndProjectsDashboardPage />}
+          />
+          {/* Tasks and Projects End  */}
+
           {/* Reports */}
           <Route path={`/reports/*`} element={<Reports />} />
 
