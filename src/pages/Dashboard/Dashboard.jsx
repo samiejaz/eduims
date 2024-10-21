@@ -1,60 +1,25 @@
-import React, { useEffect, useState } from "react"
-
-import { MOVEABLE_COMPNENTS_NAMES } from "../../utils/enums"
-
-import { InfoCardsContainer } from "../Leads/LeadsDashboard/LeadsDashboard"
+import React from "react"
 import { FormColumn, FormRow } from "../../components/Layout/LayoutComponents"
-import { useRoutesData } from "../../context/RoutesContext"
-
 import { Link } from "react-router-dom"
-import CustomerIcon from "../../assets/new.png"
-import InvoiceIcon from "../../assets/invoice.png"
-import LeadsDashboardIcon from "../../assets/speedometer.png"
-import LedgerIcon from "../../assets/payment.png"
-import NewLeadEntryIcon from "../../assets/leading.png"
-import ReceiptIcon from "../../assets/receipt.png"
 import PendingInvoiceCardSection from "./components/PendingInvoiceCardSection"
-import PendingReceiptsCardSection from "./components/PendingReceiptsCardSection"
 import { useAppConfigurataionProvider } from "../../context/AppConfigurationContext"
-
-const componentMapping = {
-  InfoCardsContainer,
-}
-
-function DynamicComponent({ componentName }) {
-  const Component = componentMapping[componentName]
-  return <Component />
-}
+import SupplierAnalysisSection from "./components/SupplierAnalysisSection"
+import QuickActionSections from "./components/QuickActionSections"
+import CustomerAnalysisSection from "./components/CustomerAnalysisSection"
+import { SalesPercentageCard } from "./components/AmountPercentageCards"
+import SaleAndReceiptsPercentageSections from "./components/SaleAndReceiptsPercentageSections"
 
 function Dashboard() {
   document.title = "Dashboard"
-  const [dynamicComponent, setDynamicComponent] = useState("")
-
-  useEffect(() => {
-    function getDynamicallyCreatedComponent() {
-      const dynamicComponent = localStorage.getItem("dynamic-component")
-      if (dynamicComponent) {
-        setDynamicComponent(dynamicComponent)
-      }
-    }
-    getDynamicallyCreatedComponent()
-  }, [localStorage.getItem("dynamic-component")])
 
   return (
     <div className="flex flex-column gap-1 mt-4">
       <div className="w-full">
-        <div className="flex align-items-center justify-content-between">
+        {/* <div className="flex align-items-center justify-content-between">
           <h1 className="text-2xl">Dashboard</h1>
         </div>
-        <hr />
+        <hr /> */}
         <LinksContainer />
-        {dynamicComponent !== "" && (
-          <>
-            <DynamicComponent
-              componentName={MOVEABLE_COMPNENTS_NAMES.LEADS_DASHBOARD_CARDS}
-            />
-          </>
-        )}
       </div>
     </div>
   )
@@ -108,18 +73,25 @@ const LinkCard = ({ item, icon, textColor, backGroundColor }) => {
 }
 
 const LinksContainer = () => {
-  const { originalRoutes } = useRoutesData()
   const { userConfigData } = useAppConfigurataionProvider()
 
   function renderCounters() {
     if (userConfigData.data?.ShowAccountAnalysisOnMainDashboard == true) {
       return (
         <FormRow>
-          <FormColumn xl={4} lg={4} md={12}>
-            <PendingInvoiceCardSection />
+          <FormColumn xl={6} lg={6} md={12}>
+            <div className="flex flex-column gap-2 h-full w-full">
+              <div className="flex-1 flex flex-column gap-2 py-2">
+                <QuickActionSections />
+                <SaleAndReceiptsPercentageSections />
+              </div>
+            </div>
           </FormColumn>
-          <FormColumn xl={8} lg={8} md={12}>
-            <PendingReceiptsCardSection />
+          <FormColumn xl={6} lg={6} md={12}>
+            <div className="flex flex-column gap-2">
+              <CustomerAnalysisSection />
+              <SupplierAnalysisSection />
+            </div>
           </FormColumn>
         </FormRow>
       )
@@ -128,7 +100,7 @@ const LinksContainer = () => {
 
   return (
     <>
-      <FormRow>
+      {/* <FormRow>
         {originalRoutes.find((item) => item.menuKey === "mnuCustomers")
           ?.menuKey && (
           <>
@@ -220,7 +192,7 @@ const LinksContainer = () => {
             </FormColumn>
           </>
         )}
-      </FormRow>
+      </FormRow> */}
       {renderCounters()}
     </>
   )

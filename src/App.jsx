@@ -34,6 +34,7 @@ import {
   DevelopmentTasksManagementPage,
   PendingDiscussionTasksPage,
   TasksAndProjectsDashboardPage,
+  SupplierAnalysisDetailPage,
 } from "./pages"
 
 import { ROUTE_URLS } from "./utils/enums"
@@ -113,6 +114,10 @@ const App = () => {
           <Route
             path={ROUTE_URLS.DASHBOARD.PENDING_RECEIPTS_ROUTE}
             element={<PendingReceiptsDetailPage />}
+          />
+          <Route
+            path={ROUTE_URLS.DASHBOARD.SUPPLIER_ANALYSIS_DETAIL_ROUTE}
+            element={<SupplierAnalysisDetailPage />}
           />
           <Route
             path={ROUTE_URLS.GENERAL.APP_CONFIGURATION_ROUTE + "/*"}

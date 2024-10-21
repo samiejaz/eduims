@@ -48,7 +48,7 @@ import CDatePicker from "../../components/Forms/CDatePicker"
 import CNumberInput from "../../components/Forms/CNumberInput"
 import { CustomSpinner } from "../../components/CustomSpinner"
 import useConfirmationModal from "../../hooks/useConfirmationModalHook"
-import { encryptID } from "../../utils/crypto"
+import { decryptID, encryptID } from "../../utils/crypto"
 import { FormRightsWrapper } from "../../components/Wrappers/wrappers"
 import {
   FormColumn,
@@ -57,6 +57,10 @@ import {
 } from "../../components/Layout/LayoutComponents"
 import { DetailPageTilteAndActionsComponent } from "../../components"
 import { usePreviousAndNextID } from "../../hooks/api/usePreviousAndNextIDHook"
+import {
+  useNavigatedRouteConfigHook,
+  useQueryParametersHook,
+} from "../../hooks/CommonHooks/commonhooks"
 
 let parentRoute = ROUTE_URLS.ACCOUNTS.DEBIT_NODE_ROUTE
 let editRoute = `${parentRoute}/edit/`
@@ -239,6 +243,11 @@ function DebitNoteEntryForm({ mode, userRights }) {
     RecordID: DebitNoteID,
   })
 
+  const { routeConfig } = useNavigatedRouteConfigHook({
+    title: "Debit Notes",
+    parentRoute,
+  })
+
   // Ref
   const detailTableRef = useRef()
   const customerCompRef = useRef()
@@ -266,7 +275,12 @@ function DebitNoteEntryForm({ mode, userRights }) {
     onSuccess: ({ success, RecordID }) => {
       if (success) {
         queryClient.invalidateQueries({ queryKey: [queryKey] })
-        navigate(`${parentRoute}/${RecordID}`)
+
+        if (routeConfig.isNavigatedFromOtherRoute == true) {
+          navigate(routeConfig.routeUrl + "?type=payable")
+        } else {
+          navigate(`${parentRoute}/${RecordID}`)
+        }
       }
     },
   })
@@ -368,7 +382,9 @@ function DebitNoteEntryForm({ mode, userRights }) {
           <div className="mt-4">
             <ButtonToolBar
               mode={mode}
-              handleGoBack={() => navigate(parentRoute)}
+              handleGoBack={() =>
+                navigate(routeConfig.routeUrl + "?type=payable")
+              }
               handleEdit={() => handleEdit()}
               handleCancel={() => {
                 handleCancel()
@@ -377,7 +393,7 @@ function DebitNoteEntryForm({ mode, userRights }) {
                 handleAddNew()
               }}
               handleSave={() => method.handleSubmit(onSubmit)()}
-              GoBackLabel="DebitNotes"
+              GoBackLabel={routeConfig.title}
               saveLoading={DebitNoteMutation.isPending}
               handleDelete={handleDelete}
               showAddNewButton={userRights[0]?.RoleNew}
@@ -542,6 +558,43 @@ const CustomerDependentFields = React.forwardRef(
     })
 
     const method = useFormContext()
+
+    const { getQueryParameterOrEmpty, setSearchParams } =
+      useQueryParametersHook()
+    const params_customer_id = getQueryParameterOrEmpty("CustomerID")
+    const params_account_id = getQueryParameterOrEmpty("AccountID")
+    const f = getQueryParameterOrEmpty("f")
+
+    useEffect(() => {
+      if (
+        CustomerAccounts &&
+        customerSelectData &&
+        params_customer_id !== "" &&
+        params_account_id !== ""
+      ) {
+        initCustomerAndAccount()
+      }
+    }, [params_account_id, params_customer_id, customerSelectData])
+
+    useEffect(() => {
+      if (
+        CustomerID &&
+        Array.isArray(CustomerAccounts) &&
+        CustomerAccounts.length > 0
+      ) {
+        if (f == "" && params_account_id === "") {
+          method.setValue("CustomerLedgers", CustomerAccounts[0].AccountID)
+        }
+      }
+    }, [params_account_id, CustomerAccounts])
+
+    function initCustomerAndAccount() {
+      method.setValue("Customer", parseInt(decryptID(params_customer_id)))
+      method.setValue("CustomerLedgers", parseInt(decryptID(params_account_id)))
+      setCustomerID(decryptID(params_customer_id))
+
+      setSearchParams({ f })
+    }
 
     return (
       <>

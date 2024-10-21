@@ -71,6 +71,7 @@ export const ROUTE_URLS = {
     MAIN: "/dashboard",
     PENDING_INVOICES_ROUTE: "/dashboard/pendinginvoices",
     PENDING_RECEIPTS_ROUTE: "/dashboard/pendingreceipts",
+    SUPPLIER_ANALYSIS_DETAIL_ROUTE: "/dashboard/supplieranalysis",
   },
   EDU_SOFTWARE_MANAGEMENT: {
     MAIN: "/taskmanagement",
@@ -266,6 +267,11 @@ const NAVIGATED_FROM_ARR = [
     title: "Pending Receipts",
     routeUrl: -1,
     key: "pending_receipts",
+  },
+  {
+    title: "Supplier Analysis",
+    routeUrl: ROUTE_URLS.DASHBOARD.SUPPLIER_ANALYSIS_DETAIL_ROUTE,
+    key: "supplier_analysis",
   },
 ]
 

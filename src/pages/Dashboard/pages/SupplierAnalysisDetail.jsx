@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom"
 import { useAuthProvider } from "../../../context/AuthContext"
 import { useQuery } from "@tanstack/react-query"
-import { GetToInvoiceData } from "../dashboard.api"
+import { GetSupplierAnalysisDetailData } from "../dashboard.api"
 import React, { useState } from "react"
 import { Button } from "primereact/button"
 import { Column } from "primereact/column"
@@ -11,11 +11,12 @@ import { formatDateWithSymbol } from "../../../utils/CommonFunctions"
 import { Dialog } from "primereact/dialog"
 import { Calendar } from "primereact/calendar"
 import { ROUTE_URLS } from "../../../utils/enums"
-import { encryptID } from "../../../utils/crypto"
 import useReportViewerWithQueryParams from "../../../hooks/CommonHooks/useReportViewHookWithQueryParams"
 import { FilterMatchMode } from "primereact/api"
+import { useQueryParametersHook } from "../../../hooks/CommonHooks/commonhooks"
+import { encryptID } from "../../../utils/crypto"
 
-const PendingInvoiceCardSectionDetail = () => {
+const SupplierAnalysisSectionDetail = () => {
   const { user } = useAuthProvider()
   const { render, setVisible, setAccountID, setCustomerID } =
     useChooseDatesForLedger()
@@ -26,15 +27,18 @@ const PendingInvoiceCardSectionDetail = () => {
     AccountTitle: { value: null, matchMode: FilterMatchMode.CONTAINS },
   })
 
+  const { getQueryParameterOrEmpty } = useQueryParametersHook()
+  const type = getQueryParameterOrEmpty("type")
+
   const data = useQuery({
-    queryKey: ["pendingInvoiceDataDetail", user?.userID],
+    queryKey: ["supplierAnalysisDetail", type, user?.userID],
     queryFn: () =>
-      GetToInvoiceData({
+      GetSupplierAnalysisDetailData({
         LoginUserID: user?.userID,
+        type,
       }),
     initialData: [],
     refetchOnWindowFocus: true,
-    refetchIntervalInBackground: 60000,
   })
 
   const ActionTemplate = (rowData) => {
@@ -65,7 +69,7 @@ const PendingInvoiceCardSectionDetail = () => {
             outlined
             size="small"
             className="p-0"
-            tooltip="Make Invoice"
+            tooltip={type == "payable" ? `Make Debit Note` : "Make Credit Note"}
             tooltipOptions={{
               position: "left",
             }}
@@ -104,10 +108,6 @@ const PendingInvoiceCardSectionDetail = () => {
       filter: true,
     },
     {
-      field: "LastReceiptDate",
-      header: "Last Receipt Date",
-    },
-    {
       field: "Amount",
       header: "Amount",
       template: AmountTemplate,
@@ -120,8 +120,12 @@ const PendingInvoiceCardSectionDetail = () => {
   ]
 
   function navigateToInvoice(params) {
-    const queryParams = `?CustomerID=${encryptID(params.CustomerID)}&AccountID=${encryptID(params.AccountID)}&f=pending_invoices`
-    navigate(`${ROUTE_URLS.ACCOUNTS.NEW_CUSTOMER_INVOICE}/new${queryParams}`)
+    const queryParams = `?CustomerID=${encryptID(params.CustomerID)}&AccountID=${encryptID(params.AccountID)}&f=supplier_analysis`
+    if (type == "payable") {
+      navigate(`${ROUTE_URLS.ACCOUNTS.DEBIT_NODE_ROUTE}/new${queryParams}`)
+    } else {
+      navigate(`${ROUTE_URLS.ACCOUNTS.CREDIT_NODE_ROUTE}/new${queryParams}`)
+    }
   }
   return (
     <>
@@ -147,7 +151,7 @@ const PendingInvoiceCardSectionDetail = () => {
         stateKey="dt-state-pending-invoices"
         scrollable
         rowsPerPageOptions={[5, 10, 50, 100]}
-        value={data.data || []}
+        value={data.data.dt || []}
       >
         {columns.map((item) => {
           return (
@@ -267,4 +271,4 @@ const useChooseDatesForLedger = () => {
     ),
   }
 }
-export default PendingInvoiceCardSectionDetail
+export default SupplierAnalysisSectionDetail

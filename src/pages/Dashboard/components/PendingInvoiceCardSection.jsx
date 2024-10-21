@@ -36,14 +36,10 @@ const PendingInvoiceCardSection = () => {
     <div
       style={{
         background: "#E6F4FF",
-        width: "100%",
-        border: "none",
-        outline: "none",
-        borderRadius: "16px",
-        height: "11rem",
       }}
+      className="w-full border-none outline-none border-round-lg"
     >
-      <div className="flex align-items-start justify-content-between w-full py-5 px-4">
+      <div className="flex align-items-start justify-content-between w-full py-3 px-4">
         <div className="flex flex-column gap-1">
           <span className="font-bold text-sm">Pending Invoices</span>
           <span className="font-bold text-3xl" style={{ color: "#1D4CB7" }}>
